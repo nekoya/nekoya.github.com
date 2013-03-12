@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: python | blog on github]]></title>
+  <link href="http://nekoya.github.com/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.com/"/>
+  <updated>2013-03-12T11:06:44+09:00</updated>
+  <id>http://nekoya.github.com/</id>
+  <author>
+    <name><![CDATA[nekoya]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
+    <link href="http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc/"/>
+    <updated>2013-03-12T09:49:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc</id>
+    <content type="html"><![CDATA[<p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
+
+<p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
+
+<p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
+
+<p><div><script src='https://gist.github.com/5088592.js?file=publish_hex_key.pl'></script>
+<noscript><pre><code>use strict;
+use warnings;
+
+# http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password
+
+use Crypt::CBC;
+
+my $key = shift or die '[usage] hex_key.pl key';
+
+my $cipher = Crypt::CBC-&gt;new({
+        'key'            =&gt; $key,
+        'cipher'         =&gt; 'Blowfish',
+        'iv'             =&gt; '12345678',
+        'regenerate_key' =&gt; 1,
+        'padding'        =&gt; 'standard',
+        'prepend_iv'     =&gt; 0,
+    });
+
+$cipher-&gt;encrypt('ShutTheFuckUpAndWriteSomeCode');
+print unpack('H*', $cipher-&gt;key), &quot;\n&quot;;</code></pre></noscript></div>
+</p>
+
+<p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
+
+<p><div><script src='https://gist.github.com/5088592.js?file=decrypt.py'></script>
+<noscript><pre><code>import base64
+from Crypto.Cipher import Blowfish
+from binascii import unhexlify
+from struct import pack
+
+key = unhexlify('144a6b229633360207ff9c79016fc49426f1814727b663bc39df05df9a1892073e2812df9492c1e952aac68d1ddfefba635d3a33aba21535')  # &quot;thisiskey&quot;
+iv = '123abc45'
+
+
+def enc(str):
+    plen = Blowfish.block_size - len(str) % Blowfish.block_size
+    padding = [plen] * plen
+    pad_str = str + pack('b' * plen, *padding)
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    return base64.urlsafe_b64encode(cipher.encrypt(pad_str))
+
+
+def dec(str):
+    plen = 4 - len(str) &amp; 3
+    pad_str = str + '=' * plen
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    dec = cipher.decrypt(base64.urlsafe_b64decode(pad_str))
+    num_padding = ord(dec[-1])
+    return dec[:(-1 * num_padding)]
+
+assert enc('1234567') == '7Zbfy4S_B28='
+assert enc('12345678') == '_V5IPxYq4omALzIyl10aMw=='
+
+assert enc('hello world') == 'V6r02_ivXP2ChJ0DGd_7aw=='
+assert dec('V6r02_ivXP2ChJ0DGd_7aw==') == 'hello world'
+assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V6r02_ivXP2ChJ0DGd_7aw==') == dec('V6r02_ivXP2ChJ0DGd_7aw===')</code></pre></noscript></div>
+</p>
+
+<p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う]]></title>
+    <link href="http://nekoya.github.com/blog/2013/02/08/python27-stream-handler/"/>
+    <updated>2013-02-08T09:12:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/02/08/python27-stream-handler</id>
+    <content type="html"><![CDATA[<p>CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。</p>
+
+<p>logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。</p>
+
+<ul>
+<li><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler">http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler</a></li>
+<li><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler">http://docs.python.org/2.7/library/logging.handlers.html#streamhandler</a></li>
+</ul>
+
+
+<p>Python2.6で</p>
+
+<pre><code>handler = logging.StreamHandler(strm=stream)
+</code></pre>
+
+<p>と書いていたところが、2.7では</p>
+
+<pre><code>handler = logging.StreamHandler(stream=stream)
+</code></pre>
+
+<p>と書かないと動かなくなっています。StreamHandlerの<strong>init</strong>()では、</p>
+
+<pre><code>def __init__(self, stream=None):
+    """
+    Initialize the handler.
+
+    If stream is not specified, sys.stderr is used.
+    """
+    Handler.__init__(self)
+    if stream is None:
+        stream = sys.stderr
+    self.stream = stream
+</code></pre>
+
+<p>として受け取っているだけで他の引数もないので、単に</p>
+
+<pre><code>handler = logging.StreamHandler(stream)
+</code></pre>
+
+<p>とキーワード引数で渡すのをやめれば動くんだけど、こういう「短縮名じゃない方がいいよね」みたいな深い意味のなさそうな変更をあっさり入れられると萎える…</p>
+
+<p>それとも2.6.5と2.7.3の間にはそういう変更を入れても問題ないとされるぐらいの隔たりがあるのだろうか。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Pythonのパッケージimportで間接的に参照が生える]]></title>
+    <link href="http://nekoya.github.com/blog/2013/01/18/python-package-import/"/>
+    <updated>2013-01-18T07:25:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/01/18/python-package-import</id>
+    <content type="html"><![CDATA[<p>社内のプロダクト開発がPythonに移行したはいいけど、調査・運用系のスクリプトは変わらずPerlで書いてDevsとOpsの分離が進みそうで老害化著しい今日この頃です。</p>
+
+<p>これじゃいかんと思って、ワンライナー以外はPythonで書くようになりました。pull req送るとダメ出しもらえるのでありがたいです。</p>
+
+<p>そんなPythonでパッケージをimportしたりfrom〜importしたりすると、自分のイメージと違う動作をすることがあって新鮮だったのでメモ。</p>
+
+<p>（2013/01/19 barとbazが紛らわしいのでs/baz/hoge/gしました）</p>
+
+<p>main.py</p>
+
+<pre><code>import foo.bar
+print foo.hoge.var
+</code></pre>
+
+<p>foo/__init__.py</p>
+
+<p>foo/bar.py</p>
+
+<pre><code>from foo.hoge import var
+</code></pre>
+
+<p>foo/hoge.py</p>
+
+<pre><code>var = 'DEAAAAAAAATH'
+</code></pre>
+
+<p>これでmain.pyを実行すると</p>
+
+<pre><code>$ python main.py
+DEAAAAAAAATH
+</code></pre>
+
+<p>main.pyではfoo.hogeをimportしていないのに、参照できる。Python 2.6.5, 2.7.1で確認。</p>
+
+<ul>
+<li>foo.barが走った時点でfooの名前空間にhogeが取り込まれる</li>
+<li>foo.barをimportするとfoo.barだけでなく、fooへの参照も取り込まれる</li>
+<li>foo以下のパッケージをimportするとfoo.hoge.varにアクセス可能</li>
+</ul>
+
+
+<p>ということか。</p>
+
+<p>以下追記（2013/01/19）</p>
+
+<p><a href="http://twitter.com/hiratara">@hiratara</a>さんとお話ししたので、少し補足。</p>
+
+<p>（2013/01/22 リンク追加）<a href="https://www.facebook.com/hiratara/posts/10152460490030164">https://www.facebook.com/hiratara/posts/10152460490030164</a></p>
+
+<p>『初めてのPython』によると、from module import name1は</p>
+
+<pre><code>import module
+name1 = module.name1
+del module
+</code></pre>
+
+<p>と理屈の上ではほぼ同じ意味を持ちます、というような記述があって、パッケージでないモジュールでは実際そういう動作をするので「fromで指定したモジュールへの参照は保持されない」と思っていました。</p>
+
+<p>上記のサンプルでは、foo.hogeはどこからも直接importはされず、foo.bar内でfrom〜importの形で参照されているだけなので、foo.hogeへの参照が残ると思っていなかったのです。「ほぼ」であって同一でないのはこういうところなのか、と。</p>
+
+<p>確かにdel foo.hoge的なことをしてしまうと、問題が起こりうるしそこを厳密に管理するのは大変すぎるのでこうなっているのは合理的だけど、今まで考えてなかったなぁというのがこちらのエントリでございます。</p>
+]]></content>
+  </entry>
+  
+</feed>

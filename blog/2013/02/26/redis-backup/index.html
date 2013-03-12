@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>redisのバックアップは慎重に - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。 弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。 本番環境でRedisを運用する上で、強く訴えたい注意点は「 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/blog/2013/02/26/redis-backup">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Redisのバックアップは慎重に</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-26T23:06:00+09:00" pubdate data-updated="true">Feb 26<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<p>皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。</p>
+
+<p>弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。</p>
+
+<p>本番環境でRedisを運用する上で、強く訴えたい注意点は「RDBが壊れることがある」ということです。</p>
+
+<p>「RDBがあるからインスタンスが落ちても平気だぜ」とか思ってると、RDBが壊れてリストア失敗→データ消失ということになりかねません。ファイルにdumpされるからと安心していると痛い目に遭うかも知れません。</p>
+
+<p>（2013/02/27追記）今のところ壊れたのはハード障害が怪しい場面のみです。「RDB壊れるとかRedis使えねー」とかそういう話ではまったくありません。誤解無きよう。壊れる時はRedisじゃなくても壊れます。自分のユースケースではTokyo Cabinet/Tyrantからの乗り換えだったので「RDBの修復自体がサポートされていない」というのが一番の注意点でした（AOFは育ちすぎるのと、I/O発生しすぎで見送り）。</p>
+
+<p>Redisにはredis-check-dump, redis-check-aofというファイルのチェックツールが同梱されています。</p>
+
+<p>redis-check-aofには&#8211;fixオプションがあり、ディスクに保存されたAOFログの復旧を試みることが出来ますが、redis-check-dumpにはそういったオプションはありません。ちゃんと準備しておかないと、RDBが壊れていることは確認できても、それを修復することはかなわず途方に暮れることになります。</p>
+
+<p>ふつうに使っていてRDBが壊れることはそうそうないのは確かですが、メモリ故障などのハード障害のあおりを受けてクラッシュすることはあります。ハード障害に対してはレプリケーションは有効な対策ですが、RDB自体のバックアップもきっちり取っておきたいもの。</p>
+
+<p>なので、ごくごく単純ですがRedisサーバでのRDBのバックアップは</p>
+
+<ol>
+<li>RDBファイルの待避</li>
+<li>redis-check-dumpで検査</li>
+<li>bzip2で固める</li>
+<li>バックアップキューに突っ込む</li>
+</ol>
+
+
+<p>という手順で取っています。</p>
+
+<p>キューに登録しておくと、バックアップサーバが後でrsyncしてくれるような簡単なジョブキューの仕組みをRedisのSortedSetを使って作っています。</p>
+
+<p>なお、アプリケーションレベルでのRedisの使い方については<a href="http://www.manning.com/carlson/">Redis in Action</a>が実例豊富でお勧めです。データ型の解説などもじっくりたっぷり解説してあるので、これからRedisを始めようという人はWEB+DBの特集を見た上で、この本を読むのがよいと思います。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (nekoya)" rel="author">nekoya</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-26T23:06:00+09:00" pubdate data-updated="true">Feb 26<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/redis/'>redis</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/http://nekoya.github.com/blog/2013/02/26/redis-backup/" class="hatena-bookmark-button" data-hatena-bookmark-title="nekoya press" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://nekoya.github.com/blog/2013/02/26/redis-backup/" data-via="nekoya" data-counturl="http://nekoya.github.com/blog/2013/02/26/redis-backup/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/20/what-about-get-user/" title="Previous Post: get_user()の何がいかんのか">&laquo; get_user()の何がいかんのか</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/03/12/python-crypt-cbc/" title="next Post: PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする">PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

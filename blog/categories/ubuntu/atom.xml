@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ubuntu | blog on github]]></title>
+  <link href="http://nekoya.github.com/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.com/"/>
+  <updated>2013-03-12T11:06:44+09:00</updated>
+  <id>http://nekoya.github.com/</id>
+  <author>
+    <name><![CDATA[nekoya]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[さくらのVPSにUbuntuを入れる初期設定手順]]></title>
+    <link href="http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu/"/>
+    <updated>2013-01-24T10:15:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu</id>
+    <content type="html"><![CDATA[<p>さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。</p>
+
+<p>ただ、インストール直後は本当にOSを入れただけの無防備な状態で非常に危険です。</p>
+
+<p>最低限の設定を定型化しておかないと怖いので、以下メモ。</p>
+
+<p>手順はUbuntu12.04LTSを前提にしていますが、特別なことはしていないので多少の違いは問題ないはず。</p>
+
+<h2>OSインストール直後の安全確保</h2>
+
+<p>インストール自体はマニュアルに沿ってやればOK。</p>
+
+<p>ただし、パスワードは万が一抜かれてもいいように、普段使っていない捨てパスワードを使う。</p>
+
+<p>起動したら急いでufwを使ってiptablesの設定を入れる。まずは全部閉じる。</p>
+
+<p><code>
+sudo ufw enable
+sudo ufw default DENY
+</code></p>
+
+<p>念のためiptablesの設定を見ておく。</p>
+
+<p><code>
+sudo iptables -L
+</code></p>
+
+<p>いろいろ出てきたら個別のルールは精査しなくてもとりあえずはOK。</p>
+
+<p>外からのアクセスを遮断したら、その時点で不審なログが無いことを確認する。</p>
+
+<p><code>
+sudo less /var/log/auth.log
+</code></p>
+
+<h2>SSHの設定</h2>
+
+<p>ひとまず安全が確保されたので、ここからは落ち着いて作業できる。</p>
+
+<p>~/.ssh/が無いので作るところから。</p>
+
+<p><code>
+mkdir .ssh
+chmod 700 .ssh
+</code></p>
+
+<p>リモートコンソールのコピペボタンを使って、~/.ssh/authorized_keysを作る。</p>
+
+<p><code>
+cat &gt; .ssh/authorized_keys
+chmod 600 .ssh/authorized_keys
+</code></p>
+
+<p>パーミッションは644とかでも怒られなかったが、落ち着かないので600にしておく。</p>
+
+<p>SSHの設定もデフォルトのままなので、rootログインとパスワード認証をつぶす。</p>
+
+<p>リモートコンソールでのコピペが結構面倒なので、viで直接編集した方が早いかも。</p>
+
+<p><code>
+sudo sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo /etc/init.d/ssh reload
+</code></p>
+
+<p>外からのSSH接続を許可する。</p>
+
+<p><code>
+sudo ufw allow ssh
+</code></p>
+
+<p>外からrootと適当なユーザ名（user等）で入れないのを確認してから、自分のアカウントでSSH接続する。</p>
+
+<p>これで最低限の安全性を確保したサーバが出来るので、あとはふつうに使う。</p>
+]]></content>
+  </entry>
+  
+</feed>

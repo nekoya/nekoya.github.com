@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[blog on github]]></title>
+  <link href="http://nekoya.github.com/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.com/"/>
+  <updated>2013-03-12T11:06:44+09:00</updated>
+  <id>http://nekoya.github.com/</id>
+  <author>
+    <name><![CDATA[nekoya]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
+    <link href="http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc/"/>
+    <updated>2013-03-12T09:49:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc</id>
+    <content type="html"><![CDATA[<p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
+
+<p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
+
+<p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
+
+<div><script src='https://gist.github.com/5088592.js?file=publish_hex_key.pl'></script>
+<noscript><pre><code>use strict;
+use warnings;
+
+# http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password
+
+use Crypt::CBC;
+
+my $key = shift or die '[usage] hex_key.pl key';
+
+my $cipher = Crypt::CBC-&gt;new({
+        'key'            =&gt; $key,
+        'cipher'         =&gt; 'Blowfish',
+        'iv'             =&gt; '12345678',
+        'regenerate_key' =&gt; 1,
+        'padding'        =&gt; 'standard',
+        'prepend_iv'     =&gt; 0,
+    });
+
+$cipher-&gt;encrypt('ShutTheFuckUpAndWriteSomeCode');
+print unpack('H*', $cipher-&gt;key), &quot;\n&quot;;</code></pre></noscript></div>
+
+
+<p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
+
+<div><script src='https://gist.github.com/5088592.js?file=decrypt.py'></script>
+<noscript><pre><code>import base64
+from Crypto.Cipher import Blowfish
+from binascii import unhexlify
+from struct import pack
+
+key = unhexlify('144a6b229633360207ff9c79016fc49426f1814727b663bc39df05df9a1892073e2812df9492c1e952aac68d1ddfefba635d3a33aba21535')  # &quot;thisiskey&quot;
+iv = '123abc45'
+
+
+def enc(str):
+    plen = Blowfish.block_size - len(str) % Blowfish.block_size
+    padding = [plen] * plen
+    pad_str = str + pack('b' * plen, *padding)
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    return base64.urlsafe_b64encode(cipher.encrypt(pad_str))
+
+
+def dec(str):
+    plen = 4 - len(str) &amp; 3
+    pad_str = str + '=' * plen
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    dec = cipher.decrypt(base64.urlsafe_b64decode(pad_str))
+    num_padding = ord(dec[-1])
+    return dec[:(-1 * num_padding)]
+
+assert enc('1234567') == '7Zbfy4S_B28='
+assert enc('12345678') == '_V5IPxYq4omALzIyl10aMw=='
+
+assert enc('hello world') == 'V6r02_ivXP2ChJ0DGd_7aw=='
+assert dec('V6r02_ivXP2ChJ0DGd_7aw==') == 'hello world'
+assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V6r02_ivXP2ChJ0DGd_7aw==') == dec('V6r02_ivXP2ChJ0DGd_7aw===')</code></pre></noscript></div>
+
+
+<p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[redisのバックアップは慎重に]]></title>
+    <link href="http://nekoya.github.com/blog/2013/02/26/redis-backup/"/>
+    <updated>2013-02-26T23:06:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/02/26/redis-backup</id>
+    <content type="html"><![CDATA[<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<p>皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。</p>
+
+<p>弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。</p>
+
+<p>本番環境でRedisを運用する上で、強く訴えたい注意点は「RDBが壊れることがある」ということです。</p>
+
+<p>「RDBがあるからインスタンスが落ちても平気だぜ」とか思ってると、RDBが壊れてリストア失敗→データ消失ということになりかねません。ファイルにdumpされるからと安心していると痛い目に遭うかも知れません。</p>
+
+<p>（2013/02/27追記）今のところ壊れたのはハード障害が怪しい場面のみです。「RDB壊れるとかRedis使えねー」とかそういう話ではまったくありません。誤解無きよう。壊れる時はRedisじゃなくても壊れます。自分のユースケースではTokyo Cabinet/Tyrantからの乗り換えだったので「RDBの修復自体がサポートされていない」というのが一番の注意点でした（AOFは育ちすぎるのと、I/O発生しすぎで見送り）。</p>
+
+<p>Redisにはredis-check-dump, redis-check-aofというファイルのチェックツールが同梱されています。</p>
+
+<p>redis-check-aofには&#8211;fixオプションがあり、ディスクに保存されたAOFログの復旧を試みることが出来ますが、redis-check-dumpにはそういったオプションはありません。ちゃんと準備しておかないと、RDBが壊れていることは確認できても、それを修復することはかなわず途方に暮れることになります。</p>
+
+<p>ふつうに使っていてRDBが壊れることはそうそうないのは確かですが、メモリ故障などのハード障害のあおりを受けてクラッシュすることはあります。ハード障害に対してはレプリケーションは有効な対策ですが、RDB自体のバックアップもきっちり取っておきたいもの。</p>
+
+<p>なので、ごくごく単純ですがRedisサーバでのRDBのバックアップは</p>
+
+<ol>
+<li>RDBファイルの待避</li>
+<li>redis-check-dumpで検査</li>
+<li>bzip2で固める</li>
+<li>バックアップキューに突っ込む</li>
+</ol>
+
+
+<p>という手順で取っています。</p>
+
+<p>キューに登録しておくと、バックアップサーバが後でrsyncしてくれるような簡単なジョブキューの仕組みをRedisのSortedSetを使って作っています。</p>
+
+<p>なお、アプリケーションレベルでのRedisの使い方については<a href="http://www.manning.com/carlson/">Redis in Action</a>が実例豊富でお勧めです。データ型の解説などもじっくりたっぷり解説してあるので、これからRedisを始めようという人はWEB+DBの特集を見た上で、この本を読むのがよいと思います。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[get_user()の何がいかんのか]]></title>
+    <link href="http://nekoya.github.com/blog/2013/02/20/what-about-get-user/"/>
+    <updated>2013-02-20T08:30:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/02/20/what-about-get-user</id>
+    <content type="html"><![CDATA[<p><a href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/">先のエントリ</a>で以下のように述べた伏線の回収エントリとなります。</p>
+
+<blockquote><p>そして、get_user()という名前はサンプルコードにはありがちだが、この名前も闇が深いと思っている。これについてはまた別途取り上げたい。</p></blockquote>
+
+<p>このメソッドを構成する単語であるget, userともに問題があると考えており、それぞれについて見ていきます。</p>
+
+<h2>Userとは具体的に何か</h2>
+
+<p>これはよくある話で、まず自問すべきは「そのUserの定義を教えてください」である。</p>
+
+<p>多くの業務システムではユーザ（アクタ）が複数存在しており、単に「ユーザ」と言った場合に指す対象が文脈によって異なることが多い。</p>
+
+<p>これに対しては、Employee, Staff, Administrator, Visitor, Sponsorなど別の具体的な単語に置き換えられないかを検討することになる。</p>
+
+<p>「ユーザ」が一意なシステムであればUserと名付けるのも妥当だろう（SNSなどが該当するだろうか）。</p>
+
+<p>userについては、より具象化した名前が見付からないかよく検討しましょう、という話で簡単に終わる。</p>
+
+<h2>get_XXX()という名前</h2>
+
+<p>このgetという名前についてはここ数年に渡って思うところがあり、もやもやしていたが、この話題を通してある程度は自分のスタンスが見えてきた。</p>
+
+<p>個人的な経験から、近年のプログラム言語はメソッドとプロパティ（メンバ変数）の境界線が曖昧になる方向に進んでいると感じている。</p>
+
+<p>具体的には、PerlでMoose系モジュールによるlazyとdefaultを使ったアクセサと初期値の定義や、Pythonの@propertyがそう感じるに至った体験である。また、JavaScriptでもクロージャを使うことで似たような感覚に陥ることがある。</p>
+
+<p>ここから生まれた疑問が「メソッドや関数への参照を変数に格納可能な言語において、その内容が現物の値そのものなのか、何らかの処理の結果なのかを区別することに意味はあるのか」というものだ。</p>
+
+<p>書籍『リーダブルコード』では、</p>
+
+<blockquote><p>多くのプログラマは、getで始まるメソッドはメンバの値を返すだけのアクセサ」であるという規約に慣れ親しんでいる。この規約を守らなければ誤解を招く可能性がある。</p></blockquote>
+
+<p>として、get*()にコストの高い処理を組み込むことを戒め、</p>
+
+<blockquote><p>コストの高さが事前にわかるように、このメソッドはcoputeMean()などの名前に変えるべきだろう（あるいは、コストの高くない実装に変えるべきだろう）。</p></blockquote>
+
+<p>と書いている。この論には大筋では同意なのだが、「そもそもgetを付ける必然性はあるのか」という疑念がついて回る。</p>
+
+<p>setterについては言語仕様も含めて一概には言えないが、少なくともgetterはプロパティへのアクセスと区別する必要はないとの思いが日に日に強くなっている。</p>
+
+<p>また、呼び出しのコストについては名前の如何に関わらず、呼び出し元がそこを意識するべきではないとも思う。</p>
+
+<p>少し理想論も入ってくるが、外部に公開しているインタフェースは呼び出し元がその内部の実装を意識することなく利用されるべきであると考えている。非機能要件が機能を制限すべきでない、とも言い換えられる。</p>
+
+<p>現実的には呼び出しコストを完全に無視できないケースは多々あるが、それが命名規則に影響を与えることには違和感がある。</p>
+
+<p>例えば、キャッシュを導入すればそれまで毎回大きなコストがかかっていた処理が、最初の1回だけ高コストで、その後は軽い処理になる。</p>
+
+<p>その計算をアクセサが呼ばれた瞬間でなく、オブジェクトが生成されたタイミングで行えば、メソッドそのものは重い処理ではなくなる。</p>
+
+<p>更には、事前にその集計結果をKVS等に格納することになれば、オブジェクト生成も含めて呼び出しコストの問題は無視できるレベルになるだろう。</p>
+
+<p>このような対策が考えられる問題に対して、命名が影響を受けることには疑問がある。</p>
+
+<p>コストの問題は命名とは別のものとして、別途計測やチューニングの対象とすべきではないか。高コストであっても呼び出し頻度が低ければ問題にならないことも多いだろうし、頻度が高いのであれば、名前で警告するよりもコスト軽減に目を向けた方が実りが多いように思う。</p>
+
+<h2>3行まとめ</h2>
+
+<ul>
+<li>抽象化されたサンプルの名前に引きずられるな</li>
+<li>アクセサとプロパティの違いは明確にしなくていい</li>
+<li>命名と処理コストは別問題として扱え</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ダメなのはcheck_xxxだけではない]]></title>
+    <link href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/"/>
+    <updated>2013-02-12T08:23:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx</id>
+    <content type="html"><![CDATA[<p>id:<a href="http://d.hatena.ne.jp/Yamashiro0217/">Yamashiro0217</a>さんの<a href="http://d.hatena.ne.jp/Yamashiro0217/20130210/1360480362">check_xxx がなんでダメなのか - Yamashiro0217の日記</a>が面白かったので、少し掘り下げてみる。</p>
+
+<p>第一印象は「いくら何でも例が恣意的すぎ。check_XXX言うな言いたいだけちゃうんか」だったが、現実は非情であり、こういうコードを押し付けられたこともあるので決して大袈裟ではなかった。</p>
+
+<p>こういう名前が付く場合というのは、往々にしてメソッドの目的が定まっていないことが多い。そこに、is_valid_XXXのような名前を持ち込んで戻り値の型を規定してしまうことは有効なアプローチである。やる人は名前に関わらずどこでもexitするが、それは個別に教育していくしかない。</p>
+
+<p>そんな訳でcheck_XXXは確かに避けたい名前だが、is_valid_x_stateやis_valid_user_about_xもやはりよろしくない。check_user_x_value_and_if_invalid_update_x_and_redirectはネタとしても、その方向性には危険な香りがする。</p>
+
+<p>メソッド名が長くなるのはクラスが自身の責務を外部に放り投げることにつながるからだ。is_valid_user_about_xはその分かりやすい例で、対象となるオブジェクトがUserなのかXなのか分からない。</p>
+
+<p>これは、$user->hasValidX()もしくは$x->isValid()として実装されるべきだろう。メソッド名に対象となりうる物が複数出てきたら、その時点でクラスの責務が揺らいでいるのでリファクタリングした方がよい。</p>
+
+<p>また、メソッド名に具体的な条件を表す文言が出てきた場合は、クラスではなくメソッドが責務を持っている可能性が高いので、これも怪しい匂いである。「メソッド名が処理内容そのままで、何も抽象化されていない」が代表的な症例だろう。</p>
+
+<p>と、ここまで読んで何かおかしいと思ったら、サンプルコードに一つもクラスが無いことに気付いた。オブジェクトが設計されていないので、メソッド名だけを整えたところで根本的な問題が解決しないのだ。</p>
+
+<p>メソッドはオブジェクトの公開インタフェースなので、メソッド自体の名前ももちろん大切だけど、その前提となるオブジェクトのクラス設計の方がもっと大切なので気を付けましょう。クラス設計が不適切だと、名前の付けようもなかったりするし。</p>
+
+<p>元ネタでは簡略化のためにあえてクラスを省略したのかも知れないが、メソッドはオブジェクトと対になって意味を持つものなので、やはり省略すべきではない。</p>
+
+<p>なお、オブジェクトに従属していないPHPの関数はメソッドではなく「サブルーチン」と呼びたい。なので自分には、このサンプルのget_XXXをメソッド名と呼ぶこと自体に違和感がある。</p>
+
+<p>そして、get_user()という名前はサンプルコードにはありがちだが、この名前も闇が深いと思っている。これについてはまた別途取り上げたい。</p>
+
+<p>ちなみに、個人的にはcheck_XXXと聞いて最初に思い浮かぶのはNagiosプラグインなので、boolで成否が返ってくることが期待される。が、Nagiosプラグインもwarn/crit/unknownなど様々な戻り値があるので、確認する対象によっては違う型を返すことがあり、やはり適切でない。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う]]></title>
+    <link href="http://nekoya.github.com/blog/2013/02/08/python27-stream-handler/"/>
+    <updated>2013-02-08T09:12:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/02/08/python27-stream-handler</id>
+    <content type="html"><![CDATA[<p>CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。</p>
+
+<p>logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。</p>
+
+<ul>
+<li><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler">http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler</a></li>
+<li><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler">http://docs.python.org/2.7/library/logging.handlers.html#streamhandler</a></li>
+</ul>
+
+
+<p>Python2.6で</p>
+
+<pre><code>handler = logging.StreamHandler(strm=stream)
+</code></pre>
+
+<p>と書いていたところが、2.7では</p>
+
+<pre><code>handler = logging.StreamHandler(stream=stream)
+</code></pre>
+
+<p>と書かないと動かなくなっています。StreamHandlerの<strong>init</strong>()では、</p>
+
+<pre><code>def __init__(self, stream=None):
+    """
+    Initialize the handler.
+
+    If stream is not specified, sys.stderr is used.
+    """
+    Handler.__init__(self)
+    if stream is None:
+        stream = sys.stderr
+    self.stream = stream
+</code></pre>
+
+<p>として受け取っているだけで他の引数もないので、単に</p>
+
+<pre><code>handler = logging.StreamHandler(stream)
+</code></pre>
+
+<p>とキーワード引数で渡すのをやめれば動くんだけど、こういう「短縮名じゃない方がいいよね」みたいな深い意味のなさそうな変更をあっさり入れられると萎える…</p>
+
+<p>それとも2.6.5と2.7.3の間にはそういう変更を入れても問題ないとされるぐらいの隔たりがあるのだろうか。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[さくらのVPSにUbuntuを入れる初期設定手順]]></title>
+    <link href="http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu/"/>
+    <updated>2013-01-24T10:15:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu</id>
+    <content type="html"><![CDATA[<p>さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。</p>
+
+<p>ただ、インストール直後は本当にOSを入れただけの無防備な状態で非常に危険です。</p>
+
+<p>最低限の設定を定型化しておかないと怖いので、以下メモ。</p>
+
+<p>手順はUbuntu12.04LTSを前提にしていますが、特別なことはしていないので多少の違いは問題ないはず。</p>
+
+<h2>OSインストール直後の安全確保</h2>
+
+<p>インストール自体はマニュアルに沿ってやればOK。</p>
+
+<p>ただし、パスワードは万が一抜かれてもいいように、普段使っていない捨てパスワードを使う。</p>
+
+<p>起動したら急いでufwを使ってiptablesの設定を入れる。まずは全部閉じる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo ufw enable
+</span><span class='line'>sudo ufw default DENY</span></code></pre></td></tr></table></div></figure>
+
+
+<p>念のためiptablesの設定を見ておく。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo iptables -L</span></code></pre></td></tr></table></div></figure>
+
+
+<p>いろいろ出てきたら個別のルールは精査しなくてもとりあえずはOK。</p>
+
+<p>外からのアクセスを遮断したら、その時点で不審なログが無いことを確認する。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo less /var/log/auth.log</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>SSHの設定</h2>
+
+<p>ひとまず安全が確保されたので、ここからは落ち着いて作業できる。</p>
+
+<p>~/.ssh/が無いので作るところから。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir .ssh
+</span><span class='line'>chmod 700 .ssh</span></code></pre></td></tr></table></div></figure>
+
+
+<p>リモートコンソールのコピペボタンを使って、~/.ssh/authorized_keysを作る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cat &gt; .ssh/authorized_keys
+</span><span class='line'>chmod 600 .ssh/authorized_keys</span></code></pre></td></tr></table></div></figure>
+
+
+<p>パーミッションは644とかでも怒られなかったが、落ち着かないので600にしておく。</p>
+
+<p>SSHの設定もデフォルトのままなので、rootログインとパスワード認証をつぶす。</p>
+
+<p>リモートコンソールでのコピペが結構面倒なので、viで直接編集した方が早いかも。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+</span><span class='line'>sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+</span><span class='line'>sudo /etc/init.d/ssh reload</span></code></pre></td></tr></table></div></figure>
+
+
+<p>外からのSSH接続を許可する。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo ufw allow ssh</span></code></pre></td></tr></table></div></figure>
+
+
+<p>外からrootと適当なユーザ名（user等）で入れないのを確認してから、自分のアカウントでSSH接続する。</p>
+
+<p>これで最低限の安全性を確保したサーバが出来るので、あとはふつうに使う。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Pythonのパッケージimportで間接的に参照が生える]]></title>
+    <link href="http://nekoya.github.com/blog/2013/01/18/python-package-import/"/>
+    <updated>2013-01-18T07:25:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/01/18/python-package-import</id>
+    <content type="html"><![CDATA[<p>社内のプロダクト開発がPythonに移行したはいいけど、調査・運用系のスクリプトは変わらずPerlで書いてDevsとOpsの分離が進みそうで老害化著しい今日この頃です。</p>
+
+<p>これじゃいかんと思って、ワンライナー以外はPythonで書くようになりました。pull req送るとダメ出しもらえるのでありがたいです。</p>
+
+<p>そんなPythonでパッケージをimportしたりfrom〜importしたりすると、自分のイメージと違う動作をすることがあって新鮮だったのでメモ。</p>
+
+<p>（2013/01/19 barとbazが紛らわしいのでs/baz/hoge/gしました）</p>
+
+<p>main.py</p>
+
+<pre><code>import foo.bar
+print foo.hoge.var
+</code></pre>
+
+<p>foo/__init__.py</p>
+
+<p>foo/bar.py</p>
+
+<pre><code>from foo.hoge import var
+</code></pre>
+
+<p>foo/hoge.py</p>
+
+<pre><code>var = 'DEAAAAAAAATH'
+</code></pre>
+
+<p>これでmain.pyを実行すると</p>
+
+<pre><code>$ python main.py
+DEAAAAAAAATH
+</code></pre>
+
+<p>main.pyではfoo.hogeをimportしていないのに、参照できる。Python 2.6.5, 2.7.1で確認。</p>
+
+<ul>
+<li>foo.barが走った時点でfooの名前空間にhogeが取り込まれる</li>
+<li>foo.barをimportするとfoo.barだけでなく、fooへの参照も取り込まれる</li>
+<li>foo以下のパッケージをimportするとfoo.hoge.varにアクセス可能</li>
+</ul>
+
+
+<p>ということか。</p>
+
+<p>以下追記（2013/01/19）</p>
+
+<p><a href="http://twitter.com/hiratara">@hiratara</a>さんとお話ししたので、少し補足。</p>
+
+<p>（2013/01/22 リンク追加）<a href="https://www.facebook.com/hiratara/posts/10152460490030164">https://www.facebook.com/hiratara/posts/10152460490030164</a></p>
+
+<p>『初めてのPython』によると、from module import name1は</p>
+
+<pre><code>import module
+name1 = module.name1
+del module
+</code></pre>
+
+<p>と理屈の上ではほぼ同じ意味を持ちます、というような記述があって、パッケージでないモジュールでは実際そういう動作をするので「fromで指定したモジュールへの参照は保持されない」と思っていました。</p>
+
+<p>上記のサンプルでは、foo.hogeはどこからも直接importはされず、foo.bar内でfrom〜importの形で参照されているだけなので、foo.hogeへの参照が残ると思っていなかったのです。「ほぼ」であって同一でないのはこういうところなのか、と。</p>
+
+<p>確かにdel foo.hoge的なことをしてしまうと、問題が起こりうるしそこを厳密に管理するのは大変すぎるのでこうなっているのは合理的だけど、今まで考えてなかったなぁというのがこちらのエントリでございます。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ウノウとZyngaJapanは別の会社だし、ウノウも時期によっていろいろだったよという話]]></title>
+    <link href="http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish/"/>
+    <updated>2012-11-20T08:37:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish</id>
+    <content type="html"><![CDATA[<p>この記事は「全くもってAdvent Calendarじゃない」と評判の<a href="http://atnd.org/events/33478">Unoh Advent Calendar</a>に参加しています。一日遅れたけど…</p>
+
+<p>こういう話は内輪の酒の席でいいじゃないのかと思うけど、「ZyngaJapanが閉鎖されるかも（現時点でそのような公式アナウンスはありません）」という話題が持ち上がった時に、目に付いた「ウノウもこれで終わりか」とか「ウノウの人たちどうなるの」みたいな論調には違和感が強いので、あえて過去を振り返ってみることにしました。</p>
+
+<p>ウノウとZyngaJapanは別の会社だし、そもそもウノウという会社も時期によって大きく姿を変えてきたんだということを、勝手気ままに振り返ってみようというのがこのエントリの趣旨です。</p>
+
+<h2>第一期</h2>
+
+<p>創業から2006年ぐらいのイメージ。</p>
+
+<p>「映画生活」「フォト蔵」のふたつを柱に、エンジニアが何でもかんでもやってたっぽい時期。自分はこの時の中のことを知らないけど、会社にエンジニアしかいなかったので事務仕事やバックオフィス系の雑務も何もかも全てエンジニアがやっていたと聞いた。</p>
+
+<p>ラボブログの被ブクマ数は、実はこの頃が一番多かったっぽい。まだ世の中が情報過多になる前のこの時期にブランドを確立したことは、大きなことだったのだろうなと改めて感じます。</p>
+
+<h2>第二期</h2>
+
+<p>2007年から、「まちつく！」立ち上げぐらい。</p>
+
+<h3>人が一気に増えた</h3>
+
+<p>その後、ZyngaJapan期までを支えることになるエンジニア達の入社もこの時期</p>
+
+<h3>「映画生活」売却</h3>
+
+<p>事業の大きな柱を手放し、次のステージを模索していた</p>
+
+<p>「PHPの会社」というイメージが定着したのはこの時期で、毎日いろんな人が入れ替わり立ち替わりラボブログを更新していた。</p>
+
+<p>自分が在籍してたのはこの時期の中盤あたりで、社外プロジェクトやってました。</p>
+
+<p>あんまり知られてないと思うけど、当時のウノウは社外の面白そうなプロジェクトにエンジニアを出すということもしていました。</p>
+
+<p>ユニークなのは「こういうプロジェクトがあるけど、誰かやりたいですか？」と聞いて、誰もいなかったら案件自体をお断りするというスタンスだったこと。</p>
+
+<p>この体制の象徴的なエピソードは今をときめくgumiが危うく立ち上げ損ねかねなかった事案でしょう。当時の様子が<a href="http://digimaga.net/2011/11/zynga-japan-yamada-gumi-kunimitsu-report/3">「起業は若いうちにやればやるほど得」『Zynga Japan』山田進太郎×『gumi』国光宏尚対談レポート</a>で赤裸々に語られております。</p>
+
+<p>坂田くんという架空の人物のことはよく分からないけど、GoogleもPythonだから仕方ないですね。</p>
+
+<h2>第三期</h2>
+
+<p>ソーシャルゲームで業界が一気に動いた時期。2009年秋、mixiアプリのモバイルプラットフォームが産まれ、独立したサービスとしてコツコツやってた「まちつく！」がそこで大当たりする。この時に一気に「まちつく！」にリリースを寄せてSAPとしての地位を確立したスピード感はかなりのものだったように思う。</p>
+
+<p>この時期、自分はサーバ構築屋として非常勤で週2〜4回ぐらい顔を出してて、少し離れたところから中のことを見ていました。</p>
+
+<p>人数もエンジニア以外も合わせて20人ぐらいだったのが、一気に増えて、ZyngaJapanになるまでの1年足らずで50人を超えるまでになってた。</p>
+
+<p>社内の体制も今までは、各エンジニアが独立採算的なよく言えば自律的な、悪く言えば烏合の衆みたいなものだったのが、この時期には「俺たちはチームだ」という意識が強く働いていたように思います。</p>
+
+<p>そうでなければ恐らく破綻していたし、この時期にそういうマインドを持ったエンジニアが在籍していたことには巡り合わせの妙を感じざるを得ません。</p>
+
+<p>この時期はラボブログの更新も週一がルールになって、やや盛り下がった印象ごあったのだけど、</p>
+
+<p><a href="http://unoh.github.com/">http://unoh.github.com/</a></p>
+
+<p>を見ると元気に更新されてましたね。思い込みｲｸﾅｲ。</p>
+
+<h2>ZyngaJapan期</h2>
+
+<p>そして売却後。この時期のことは知らないので、何とも言えない。</p>
+
+<p>自分はこの買収と時を同じくして離れたのだけど、それは本当に偶然で、3ヶ月ぐらいかけた離れる計画を立ててたら、途中でいきなり話が出てきてあらあらという具合でした。</p>
+
+<p>ラボブログが本当に更新されなくなって、外から見えなくなったのは残念だなぁというぐらい。少なからぬ人にとって「ウノウ=ラボブログ」という認識があるはずなので、そういう意味ではやはりZyngaJapanとウノウは全く別の会社として考えていいと思う。</p>
+
+<p>ウノウ時代からの人ももちろんいたけど、半数以上の人は最初から「ZyngaJapan」に入ったと思われるので、あまりウノウウノウ言うのもおかしいんじゃないかというのが個人的な見解です。</p>
+
+<h2>まとめ</h2>
+
+<p>とまぁ独断で好き勝手に切り分けてみたのだけど、だいたい合ってるのではないだろうかと。</p>
+
+<p>あなたにとって「ウノウ」とは、どの期が思い起こされますか？</p>
+
+<p>それぞれの期で半分ぐらい中の人が入れ替わっていて（ZyngaJapan期は憶測）、新陳代謝の活発度としては悪くない線をいってたと思います。多すぎず、少なすぎず、人は動くけど現場が破綻しない程度のさじ加減。それは間違いなく、根幹を支えていたコアメンバーたちの力によるもので、彼らの尽力たるや、そりゃもうたいへんなものだったわけです。</p>
+
+<p>今はもう皆それぞれの場所で素敵に活躍しているので、一部で観測された「ウノウ復活させればいいんや」的な時計の針を巻き戻すような論調はむしろ夢がないと断言します。</p>
+
+<p>ZyngaJapan期はよく知らないけど、それなりに入れ替わりはあったようだし、ここ一年はコアメンバーの離脱も結構ありました。</p>
+
+<p>なので、今回ZyngaJapanがもし閉鎖されたとしても、皆が知ってる「ウノウの人たち」は大半は既にいないわけです。今も残っているエンジニアたちは、自分が知っている人たちについては強者たちしかいないので「会社が閉鎖なんて気の毒」とか「これから彼らはどうなるんだろう」なんて心配をするのはむしろ失礼なぐらいなので、今までお疲れさまというだけです。</p>
+
+<p>ZyngaJapanという会社に来た人たちとは全然交流がないので分からないけど、彼らのことを案じるならばウノウではなくZyngaJapanに思いを馳せて欲しいし、ZyngaJapanがこれまで積み上げてきたものを評価するのが彼らに対する礼儀ではないかと思います。</p>
+
+<p>まとめのまとめ</p>
+
+<ul>
+<li>皆それぞれ元気でやってるんだからそれでいい</li>
+<li>ZyngaJapanはZyngaJapanとして頑張ったのだから評価されるべき</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CentOS5でもRPS/RFSでNICが捗る話]]></title>
+    <link href="http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs/"/>
+    <updated>2012-11-13T15:52:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs</id>
+    <content type="html"><![CDATA[<p><a href="http://twitter.com/kazeburo">kazeburo</a>さんが<a href="http://blog.nomadscafe.jp/2012/08/centos-62-rpsrfs.html">CentOS6.2での事例</a>を紹介されていますが、CentOS5系でもkernelを上げればRPS/RFSが使えるようになって、NICの負荷状況が劇的に改善します。</p>
+
+<p>やり方は意外に簡単で、<a href="http://elrepo.org/tiki/tiki-index.php">ELRepo</a>から<a href="http://elrepo.org/linux/kernel/el5/x86_64/RPMS/kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm">kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm</a>を落としてきてインストール。</p>
+
+<p>あとは、/boot/grub/menu.lstの設定をdefault=0にしてrebootすればOK。</p>
+
+<pre><code>$ uname -r
+2.6.35-14.2.el5.elrepo
+</code></pre>
+
+<p>ELRepoはNICのドライバなんかもいろいろ提供してくれるし、古いバージョンのRPMを<a href="http://mirror.ventraip.net.au/elrepo/archive/">archive</a>で提供してくれて非常にいいですね（kernelの過去RPMはないのかな）。</p>
+
+<p>RPS/RFSを有効にする設定はCentOS6と同様です。</p>
+
+<pre><code># echo "f" &gt; /sys/class/net/eth0/queues/rx-0/rps_cpus
+# echo 4096 &gt; /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
+# echo 32768 &gt; /proc/sys/net/core/rps_sock_flow_entries
+
+# cat /sys/class/net/eth0/queues/rx-0/rps_cpus
+0f
+</code></pre>
+
+<p>それまで特定のコアだけが他よりも30〜50%ぐらい負荷が高かったのが、各コアにいい具合に分散するようになって、1台で捌けるトラフィックがぐっと多くなりました。</p>
+
+<h2>ip_conntrack_maxと監視系の変更</h2>
+
+<p>kernel 2.6.35を入れることで、それまでの/proc/sys/net/ipv4/ip_conntrack_maxが/proc/sys/net/nf_conntrack_maxに移動します。</p>
+
+<p>この値を見るNagiosプラグインを書いて、NRPE経由で監視してたのが動かなくなったので、プラグインを更新しました。</p>
+
+<ul>
+<li><a href="https://github.com/nekoya/nagios-plugins-ip_conntrack_max">https://github.com/nekoya/nagios-plugins-ip_conntrack_max</a></li>
+</ul>
+
+
+<p>/etc/sysctl.confの設定も変わるのですが、既存のサーバと統一するために</p>
+
+<pre><code>net.ipv4.ip_conntrack_max = 524288
+net.nf_conntrack_max = 524288
+</code></pre>
+
+<p>と両方書いてしまうことにしました。</p>
+
+<p>sysctl -pすると</p>
+
+<pre><code>error: "net.ipv4.ip_conntrack_max" is an unknown key
+</code></pre>
+
+<p>って怒られるけど、実際のところは無視されるだけで特に実害無さそう…</p>
+
+<p>Puppetのテンプレートで真面目に判定すればいいんだろうけど、ひとまずこれで。</p>
+
+<p><a href="http://kau.li/jp">弊社</a>ではLVSをUbuntu、GWをVyattaにして自作サーバでNIC叩き回してがんばっていますが、appサーバはこれでまだ戦えそうです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Yokohama.pm#9でトークしてきました]]></title>
+    <link href="http://nekoya.github.com/blog/2012/10/30/yokohamapm9/"/>
+    <updated>2012-10-30T02:04:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2012/10/30/yokohamapm9</id>
+    <content type="html"><![CDATA[<p><a href="http://yokohama.pm.org/2012/09/yokohamapm-9.html">Yokohama.pm #9</a>にて「インターネット広告とPerl、ここ数年の歩み」と題してお話しさせて頂きました。</p>
+
+<iframe src="http://www.slideshare.net/slideshow/embed_code/14813377" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
+
+
+<p> <div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/nekoya/perl-14813377" title="インターネット広告とPerl、ここ数年の歩み" target="_blank">インターネット広告とPerl、ここ数年の歩み</a> </strong> from <strong><a href="http://www.slideshare.net/nekoya" target="_blank">Ryo Miyake</a></strong> </div></p>
+
+<p>アドテク関係の人はあまりこういった各言語のコミュニティには姿を現さないイメージが強く、自分もわりとそういう流れに乗るような感じで、ここしばらくあまりオープンとは言えない日々を過ごしていました。</p>
+
+<p>そんな中、YAPCで<a href="http://twitter.com/myfinder">@myfinder</a>さんが「<a href="http://yapcasia.org/2012/talk/show/d1edd2c0-ab9b-11e1-918c-2a656aeab6a4">平均レスポンスタイム50msをPerlで捌く中規模サービスの実装/運用</a>」と題してYAPCでトークして、しかもベストトーク賞3位というかっこいいことをやってのけてくれたことは大変な刺激になりました。</p>
+
+<p>自分が憧れたのはこういう世界だったなーということを思い返している間に、ここ数年のことが思い出されてこういうスライドが出来上がりました。</p>
+
+<p>東京に出てきてからの、この5年間でソーシャルゲーム（主にインフラ）や旅行代理店のサイト（デザインから開発・インフラまで）などもやってきましたが広告というのはなかなかに面白い分野です。</p>
+
+<p>技術的には特異な要素も確かにありますが、とにかく「ふつうのことをふつうにやる」ということに尽きます。</p>
+
+<p>これだけ情報が出そろった今時のWebサービスで未知のトラブルなんてものはそうそうなくて、日々の守りの課題は</p>
+
+<ul>
+<li>手を打たないと危ないのは分かっていたが、手が回らなかった</li>
+<li>まさかウチの規模でその問題に出くわすとは思わなかった</li>
+</ul>
+
+
+<p>とは言っても、そういう課題に本当に直面出来る現場というのはそうそうないはずです。</p>
+
+<p>手を抜くと痛い目を見る、逆に言えばちゃんとやればちゃんと結果が付いてくるのが広告の面白いところだと思います。</p>
+
+<p>あとは、ビジネスとエンジニアの距離がものすごく近いことも大きな特徴ですね。</p>
+
+<p>発表に関して言えば、<a href="https://itunes.apple.com/jp/app/keynote-remote/id300719251?mt=8">Keynote Remote</a>を初めて使ってみたんですが、思った以上に快適でした。</p>
+
+<p>以前は無線マウスを持って、ポチポチクリックしてスライドを進めるとかやってましたが、次のページが確認出来ると捗りますね。あとは発表中にタイマーが使えれば言うことないのだけど、どうにかならないかな…</p>
+
+<p>今回は資料作りもiPhone大活躍でした。 前日の朝の通勤電車でEvernoteに草稿を書いて、帰りの電車でKeynoteにペタペタ貼り付けていって、帰ってからいろいろ整えるという流れ。これが21世紀のソリューションや！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Octopressを入れてみた]]></title>
+    <link href="http://nekoya.github.com/blog/2012/10/02/first/"/>
+    <updated>2012-10-02T09:33:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2012/10/02/first</id>
+    <content type="html"><![CDATA[<p>SL6.2のサーバで環境作ろうとしたら、Rubyがゴネてうまく動かなかったよ…</p>
+
+<p>ひとまず動いたので、こっちで書いてみよう。</p>
+]]></content>
+  </entry>
+  
+</feed>

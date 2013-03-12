@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: redis | blog on github]]></title>
+  <link href="http://nekoya.github.com/blog/categories/redis/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.com/"/>
+  <updated>2013-03-12T11:06:44+09:00</updated>
+  <id>http://nekoya.github.com/</id>
+  <author>
+    <name><![CDATA[nekoya]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[redisのバックアップは慎重に]]></title>
+    <link href="http://nekoya.github.com/blog/2013/02/26/redis-backup/"/>
+    <updated>2013-02-26T23:06:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/02/26/redis-backup</id>
+    <content type="html"><![CDATA[<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<p>皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。</p>
+
+<p>弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。</p>
+
+<p>本番環境でRedisを運用する上で、強く訴えたい注意点は「RDBが壊れることがある」ということです。</p>
+
+<p>「RDBがあるからインスタンスが落ちても平気だぜ」とか思ってると、RDBが壊れてリストア失敗→データ消失ということになりかねません。ファイルにdumpされるからと安心していると痛い目に遭うかも知れません。</p>
+
+<p>（2013/02/27追記）今のところ壊れたのはハード障害が怪しい場面のみです。「RDB壊れるとかRedis使えねー」とかそういう話ではまったくありません。誤解無きよう。壊れる時はRedisじゃなくても壊れます。自分のユースケースではTokyo Cabinet/Tyrantからの乗り換えだったので「RDBの修復自体がサポートされていない」というのが一番の注意点でした（AOFは育ちすぎるのと、I/O発生しすぎで見送り）。</p>
+
+<p>Redisにはredis-check-dump, redis-check-aofというファイルのチェックツールが同梱されています。</p>
+
+<p>redis-check-aofには--fixオプションがあり、ディスクに保存されたAOFログの復旧を試みることが出来ますが、redis-check-dumpにはそういったオプションはありません。ちゃんと準備しておかないと、RDBが壊れていることは確認できても、それを修復することはかなわず途方に暮れることになります。</p>
+
+<p>ふつうに使っていてRDBが壊れることはそうそうないのは確かですが、メモリ故障などのハード障害のあおりを受けてクラッシュすることはあります。ハード障害に対してはレプリケーションは有効な対策ですが、RDB自体のバックアップもきっちり取っておきたいもの。</p>
+
+<p>なので、ごくごく単純ですがRedisサーバでのRDBのバックアップは</p>
+
+<ol>
+<li>RDBファイルの待避</li>
+<li>redis-check-dumpで検査</li>
+<li>bzip2で固める</li>
+<li>バックアップキューに突っ込む</li>
+</ol>
+
+
+<p>という手順で取っています。</p>
+
+<p>キューに登録しておくと、バックアップサーバが後でrsyncしてくれるような簡単なジョブキューの仕組みをRedisのSortedSetを使って作っています。</p>
+
+<p>なお、アプリケーションレベルでのRedisの使い方については<a href="http://www.manning.com/carlson/">Redis in Action</a>が実例豊富でお勧めです。データ型の解説などもじっくりたっぷり解説してあるので、これからRedisを始めようという人はWEB+DBの特集を見た上で、この本を読むのがよいと思います。</p>
+]]></content>
+  </entry>
+  
+</feed>

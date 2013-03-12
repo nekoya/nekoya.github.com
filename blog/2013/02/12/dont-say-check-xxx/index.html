@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ダメなのはcheck_xxxだけではない - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="id:Yamashiro0217さんのcheck_xxx がなんでダメなのか - Yamashiro0217の日記が面白かったので、少し掘り下げてみる。 第一印象は「いくら何でも例が恣意的すぎ。check_XXX言うな言いたいだけちゃうんか」だったが、現実は非情であり、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ダメなのはcheck_xxxだけではない</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-12T08:23:00+09:00" pubdate data-updated="true">Feb 12<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>id:<a href="http://d.hatena.ne.jp/Yamashiro0217/">Yamashiro0217</a>さんの<a href="http://d.hatena.ne.jp/Yamashiro0217/20130210/1360480362">check_xxx がなんでダメなのか - Yamashiro0217の日記</a>が面白かったので、少し掘り下げてみる。</p>
+
+<p>第一印象は「いくら何でも例が恣意的すぎ。check_XXX言うな言いたいだけちゃうんか」だったが、現実は非情であり、こういうコードを押し付けられたこともあるので決して大袈裟ではなかった。</p>
+
+<p>こういう名前が付く場合というのは、往々にしてメソッドの目的が定まっていないことが多い。そこに、is_valid_XXXのような名前を持ち込んで戻り値の型を規定してしまうことは有効なアプローチである。やる人は名前に関わらずどこでもexitするが、それは個別に教育していくしかない。</p>
+
+<p>そんな訳でcheck_XXXは確かに避けたい名前だが、is_valid_x_stateやis_valid_user_about_xもやはりよろしくない。check_user_x_value_and_if_invalid_update_x_and_redirectはネタとしても、その方向性には危険な香りがする。</p>
+
+<p>メソッド名が長くなるのはクラスが自身の責務を外部に放り投げることにつながるからだ。is_valid_user_about_xはその分かりやすい例で、対象となるオブジェクトがUserなのかXなのか分からない。</p>
+
+<p>これは、$user->hasValidX()もしくは$x->isValid()として実装されるべきだろう。メソッド名に対象となりうる物が複数出てきたら、その時点でクラスの責務が揺らいでいるのでリファクタリングした方がよい。</p>
+
+<p>また、メソッド名に具体的な条件を表す文言が出てきた場合は、クラスではなくメソッドが責務を持っている可能性が高いので、これも怪しい匂いである。「メソッド名が処理内容そのままで、何も抽象化されていない」が代表的な症例だろう。</p>
+
+<p>と、ここまで読んで何かおかしいと思ったら、サンプルコードに一つもクラスが無いことに気付いた。オブジェクトが設計されていないので、メソッド名だけを整えたところで根本的な問題が解決しないのだ。</p>
+
+<p>メソッドはオブジェクトの公開インタフェースなので、メソッド自体の名前ももちろん大切だけど、その前提となるオブジェクトのクラス設計の方がもっと大切なので気を付けましょう。クラス設計が不適切だと、名前の付けようもなかったりするし。</p>
+
+<p>元ネタでは簡略化のためにあえてクラスを省略したのかも知れないが、メソッドはオブジェクトと対になって意味を持つものなので、やはり省略すべきではない。</p>
+
+<p>なお、オブジェクトに従属していないPHPの関数はメソッドではなく「サブルーチン」と呼びたい。なので自分には、このサンプルのget_XXXをメソッド名と呼ぶこと自体に違和感がある。</p>
+
+<p>そして、get_user()という名前はサンプルコードにはありがちだが、この名前も闇が深いと思っている。これについてはまた別途取り上げたい。</p>
+
+<p>ちなみに、個人的にはcheck_XXXと聞いて最初に思い浮かぶのはNagiosプラグインなので、boolで成否が返ってくることが期待される。が、Nagiosプラグインもwarn/crit/unknownなど様々な戻り値があるので、確認する対象によっては違う型を返すことがあり、やはり適切でない。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (nekoya)" rel="author">nekoya</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-12T08:23:00+09:00" pubdate data-updated="true">Feb 12<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/dev/'>dev</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/" class="hatena-bookmark-button" data-hatena-bookmark-title="nekoya press" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/" data-via="nekoya" data-counturl="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/08/python27-stream-handler/" title="Previous Post: Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う">&laquo; Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/02/20/what-about-get-user/" title="next Post: get_user()の何がいかんのか">get_user()の何がいかんのか &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
