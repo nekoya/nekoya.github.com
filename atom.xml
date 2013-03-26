@@ -4,7 +4,7 @@
   <title><![CDATA[blog on github]]></title>
   <link href="http://nekoya.github.com/atom.xml" rel="self"/>
   <link href="http://nekoya.github.com/"/>
-  <updated>2013-03-12T11:06:44+09:00</updated>
+  <updated>2013-03-26T15:22:17+09:00</updated>
   <id>http://nekoya.github.com/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[githubでdiff --ignore-space-changeを見る方法]]></title>
+    <link href="http://nekoya.github.com/blog/2013/03/26/github-diff-ignore-space-change/"/>
+    <updated>2013-03-26T15:15:00+09:00</updated>
+    <id>http://nekoya.github.com/blog/2013/03/26/github-diff-ignore-space-change</id>
+    <content type="html"><![CDATA[<p>Python書いてると、モジュールの関数をクラスに抽出するリファクタリングとかで、git diff &#8211;ignore-space-changeする機会が多いですね。</p>
+
+<p>githubでdiffを見る時にも&#8211;ignore-space-change出来たらなぁと思ったら、mizzy（@gosukenator）さんから神の声が！</p>
+
+<blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/nekoya">nekoya</a> ?w=1 とURLにつけるといいみたいですよ <a href="https://t.co/3iuAcB3Stp" title="https://github.com/blog/967-github-secrets">github.com/blog/967-githu…</a></p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/status/316431837444595713">March 26, 2013</a></blockquote>
+
+
+<script async src="http://nekoya.github.com//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>というわけで、githubでdiff画面開いて、URLに?w=1を付ければOKでした。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
