@@ -9,7 +9,7 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="Yokohama.pm #9にて「インターネット広告とPerl、ここ数年の歩み」と題してお話しさせて頂きました。 インターネット広告とPerl、ここ数年の歩み from Ryo Miyake アドテク関係の人はあまりこういった各言語のコミュニティには姿を現さないイメージが強く、 &hellip;">
+  <meta name="description" content="kazeburoさんがCentOS6.2での事例を紹介されていますが、CentOS5系でもkernelを上げればRPS/RFSが使えるようになって、NICの負荷状況が劇的に改善します。 やり方は意外に簡単で、ELRepoからkernel-ml-2.6.35-14.2.el5.elrepo. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +74,94 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/13/centos5-rps-rfs/">CentOS5でもRPS/RFSでNICが捗る話</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-13T15:52:00+09:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://twitter.com/kazeburo">kazeburo</a>さんが<a href="http://blog.nomadscafe.jp/2012/08/centos-62-rpsrfs.html">CentOS6.2での事例</a>を紹介されていますが、CentOS5系でもkernelを上げればRPS/RFSが使えるようになって、NICの負荷状況が劇的に改善します。</p>
+
+<p>やり方は意外に簡単で、<a href="http://elrepo.org/tiki/tiki-index.php">ELRepo</a>から<a href="http://elrepo.org/linux/kernel/el5/x86_64/RPMS/kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm">kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm</a>を落としてきてインストール。</p>
+
+<p>あとは、/boot/grub/menu.lstの設定をdefault=0にしてrebootすればOK。</p>
+
+<pre><code>$ uname -r
+2.6.35-14.2.el5.elrepo
+</code></pre>
+
+<p>ELRepoはNICのドライバなんかもいろいろ提供してくれるし、古いバージョンのRPMを<a href="http://mirror.ventraip.net.au/elrepo/archive/">archive</a>で提供してくれて非常にいいですね（kernelの過去RPMはないのかな）。</p>
+
+<p>RPS/RFSを有効にする設定はCentOS6と同様です。</p>
+
+<pre><code># echo "f" &gt; /sys/class/net/eth0/queues/rx-0/rps_cpus
+# echo 4096 &gt; /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
+# echo 32768 &gt; /proc/sys/net/core/rps_sock_flow_entries
+
+# cat /sys/class/net/eth0/queues/rx-0/rps_cpus
+0f
+</code></pre>
+
+<p>それまで特定のコアだけが他よりも30〜50%ぐらい負荷が高かったのが、各コアにいい具合に分散するようになって、1台で捌けるトラフィックがぐっと多くなりました。</p>
+
+<h2>ip_conntrack_maxと監視系の変更</h2>
+
+<p>kernel 2.6.35を入れることで、それまでの/proc/sys/net/ipv4/ip_conntrack_maxが/proc/sys/net/nf_conntrack_maxに移動します。</p>
+
+<p>この値を見るNagiosプラグインを書いて、NRPE経由で監視してたのが動かなくなったので、プラグインを更新しました。</p>
+
+<ul>
+<li><a href="https://github.com/nekoya/nagios-plugins-ip_conntrack_max">https://github.com/nekoya/nagios-plugins-ip_conntrack_max</a></li>
+</ul>
+
+
+<p>/etc/sysctl.confの設定も変わるのですが、既存のサーバと統一するために</p>
+
+<pre><code>net.ipv4.ip_conntrack_max = 524288
+net.nf_conntrack_max = 524288
+</code></pre>
+
+<p>と両方書いてしまうことにしました。</p>
+
+<p>sysctl -pすると</p>
+
+<pre><code>error: "net.ipv4.ip_conntrack_max" is an unknown key
+</code></pre>
+
+<p>って怒られるけど、実際のところは無視されるだけで特に実害無さそう…</p>
+
+<p>Puppetのテンプレートで真面目に判定すればいいんだろうけど、ひとまずこれで。</p>
+
+<p><a href="http://kau.li/jp">弊社</a>ではLVSをUbuntu、GWをVyattaにして自作サーバでNIC叩き回してがんばっていますが、appサーバはこれでまだ戦えそうです。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
