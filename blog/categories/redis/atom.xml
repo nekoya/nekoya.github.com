@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: redis | blog on github]]></title>
-  <link href="http://nekoya.github.com/blog/categories/redis/atom.xml" rel="self"/>
-  <link href="http://nekoya.github.com/"/>
-  <updated>2013-04-12T10:43:47+09:00</updated>
-  <id>http://nekoya.github.com/</id>
+  <link href="http://nekoya.github.io/blog/categories/redis/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.io/"/>
+  <updated>2013-04-12T15:09:00+09:00</updated>
+  <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[redisのバックアップは慎重に]]></title>
-    <link href="http://nekoya.github.com/blog/2013/02/26/redis-backup/"/>
+    <link href="http://nekoya.github.io/blog/2013/02/26/redis-backup/"/>
     <updated>2013-02-26T23:06:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/02/26/redis-backup</id>
+    <id>http://nekoya.github.io/blog/2013/02/26/redis-backup</id>
     <content type="html"><![CDATA[<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 

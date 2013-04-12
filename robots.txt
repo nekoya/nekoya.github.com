@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://nekoya.github.com/sitemap.xml 
+Sitemap: http://nekoya.github.io/sitemap.xml 

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: unoh | blog on github]]></title>
-  <link href="http://nekoya.github.com/blog/categories/unoh/atom.xml" rel="self"/>
-  <link href="http://nekoya.github.com/"/>
-  <updated>2013-04-12T10:43:47+09:00</updated>
-  <id>http://nekoya.github.com/</id>
+  <link href="http://nekoya.github.io/blog/categories/unoh/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.io/"/>
+  <updated>2013-04-12T15:09:00+09:00</updated>
+  <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[ウノウとZyngaJapanは別の会社だし、ウノウも時期によっていろいろだったよという話]]></title>
-    <link href="http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish/"/>
+    <link href="http://nekoya.github.io/blog/2012/11/20/unoh-will-never-perish/"/>
     <updated>2012-11-20T08:37:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish</id>
+    <id>http://nekoya.github.io/blog/2012/11/20/unoh-will-never-perish</id>
     <content type="html"><![CDATA[<p>この記事は「全くもってAdvent Calendarじゃない」と評判の<a href="http://atnd.org/events/33478">Unoh Advent Calendar</a>に参加しています。一日遅れたけど…</p>
 
 <p>こういう話は内輪の酒の席でいいじゃないのかと思うけど、「ZyngaJapanが閉鎖されるかも（現時点でそのような公式アナウンスはありません）」という話題が持ち上がった時に、目に付いた「ウノウもこれで終わりか」とか「ウノウの人たちどうなるの」みたいな論調には違和感が強いので、あえて過去を振り返ってみることにしました。</p>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: network | blog on github]]></title>
-  <link href="http://nekoya.github.com/blog/categories/network/atom.xml" rel="self"/>
-  <link href="http://nekoya.github.com/"/>
-  <updated>2013-04-12T10:43:47+09:00</updated>
-  <id>http://nekoya.github.com/</id>
+  <link href="http://nekoya.github.io/blog/categories/network/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.io/"/>
+  <updated>2013-04-12T15:09:00+09:00</updated>
+  <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[CentOS5でもRPS/RFSでNICが捗る話]]></title>
-    <link href="http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs/"/>
+    <link href="http://nekoya.github.io/blog/2012/11/13/centos5-rps-rfs/"/>
     <updated>2012-11-13T15:52:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs</id>
+    <id>http://nekoya.github.io/blog/2012/11/13/centos5-rps-rfs</id>
     <content type="html"><![CDATA[<p><a href="http://twitter.com/kazeburo">kazeburo</a>さんが<a href="http://blog.nomadscafe.jp/2012/08/centos-62-rpsrfs.html">CentOS6.2での事例</a>を紹介されていますが、CentOS5系でもkernelを上げればRPS/RFSが使えるようになって、NICの負荷状況が劇的に改善します。</p>
 
 <p>やり方は意外に簡単で、<a href="http://elrepo.org/tiki/tiki-index.php">ELRepo</a>から<a href="http://elrepo.org/linux/kernel/el5/x86_64/RPMS/kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm">kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm</a>を落としてきてインストール。</p>

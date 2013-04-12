@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[blog on github]]></title>
-  <link href="http://nekoya.github.com/atom.xml" rel="self"/>
-  <link href="http://nekoya.github.com/"/>
-  <updated>2013-04-12T10:43:47+09:00</updated>
-  <id>http://nekoya.github.com/</id>
+  <link href="http://nekoya.github.io/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.io/"/>
+  <updated>2013-04-12T15:09:00+09:00</updated>
+  <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[ベンチャーで働くエンジニアに必要な「勇気」]]></title>
-    <link href="http://nekoya.github.com/blog/2013/04/12/pluck/"/>
+    <link href="http://nekoya.github.io/blog/2013/04/12/pluck/"/>
     <updated>2013-04-12T09:59:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/04/12/pluck</id>
+    <id>http://nekoya.github.io/blog/2013/04/12/pluck</id>
     <content type="html"><![CDATA[<h2>「恐怖」を知ること</h2>
 
 <p>35歳が目前に迫りつつある中、ぼちぼちスピリチュアルなことも書いていこうかと思う今日この頃です。</p>
@@ -67,9 +67,9 @@
   
   <entry>
     <title type="html"><![CDATA[UMLも捨てたもんじゃない]]></title>
-    <link href="http://nekoya.github.com/blog/2013/04/01/useful-uml/"/>
+    <link href="http://nekoya.github.io/blog/2013/04/01/useful-uml/"/>
     <updated>2013-04-01T10:30:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/04/01/useful-uml</id>
+    <id>http://nekoya.github.io/blog/2013/04/01/useful-uml</id>
     <content type="html"><![CDATA[<p>UML、最近はあまり名前を聞くこともなくなってきた感があります。</p>
 
 <p>「<a href="http://kohada.2ch.net/test/read.cgi/prog/1314799400/">UMLなんていらない</a>」なんてスレもあったりして、どうにも廃れた物と見る向きもあるようです。</p>
@@ -106,9 +106,9 @@
   
   <entry>
     <title type="html"><![CDATA[githubでdiff --ignore-space-changeを見る方法]]></title>
-    <link href="http://nekoya.github.com/blog/2013/03/26/github-diff-ignore-space-change/"/>
+    <link href="http://nekoya.github.io/blog/2013/03/26/github-diff-ignore-space-change/"/>
     <updated>2013-03-26T15:15:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/03/26/github-diff-ignore-space-change</id>
+    <id>http://nekoya.github.io/blog/2013/03/26/github-diff-ignore-space-change</id>
     <content type="html"><![CDATA[<p>Python書いてると、モジュールの関数をクラスに抽出するリファクタリングとかで、git diff &#8211;ignore-space-changeする機会が多いですね。</p>
 
 <p>githubでdiffを見る時にも&#8211;ignore-space-change出来たらなぁと思ったら、mizzy（@gosukenator）さんから神の声が！</p>
@@ -116,7 +116,7 @@
 <blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/nekoya">nekoya</a> ?w=1 とURLにつけるといいみたいですよ <a href="https://t.co/3iuAcB3Stp" title="https://github.com/blog/967-github-secrets">github.com/blog/967-githu…</a></p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/status/316431837444595713">March 26, 2013</a></blockquote>
 
 
-<script async src="http://nekoya.github.com//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script async src="http://nekoya.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
 <p>というわけで、githubでdiff画面開いて、URLに?w=1を付ければOKでした。</p>
@@ -125,9 +125,9 @@
   
   <entry>
     <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
-    <link href="http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc/"/>
+    <link href="http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc/"/>
     <updated>2013-03-12T09:49:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc</id>
+    <id>http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc</id>
     <content type="html"><![CDATA[<p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
 
 <p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
@@ -199,9 +199,9 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
   
   <entry>
     <title type="html"><![CDATA[redisのバックアップは慎重に]]></title>
-    <link href="http://nekoya.github.com/blog/2013/02/26/redis-backup/"/>
+    <link href="http://nekoya.github.io/blog/2013/02/26/redis-backup/"/>
     <updated>2013-02-26T23:06:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/02/26/redis-backup</id>
+    <id>http://nekoya.github.io/blog/2013/02/26/redis-backup</id>
     <content type="html"><![CDATA[<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 
@@ -241,9 +241,9 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
   
   <entry>
     <title type="html"><![CDATA[get_user()の何がいかんのか]]></title>
-    <link href="http://nekoya.github.com/blog/2013/02/20/what-about-get-user/"/>
+    <link href="http://nekoya.github.io/blog/2013/02/20/what-about-get-user/"/>
     <updated>2013-02-20T08:30:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/02/20/what-about-get-user</id>
+    <id>http://nekoya.github.io/blog/2013/02/20/what-about-get-user</id>
     <content type="html"><![CDATA[<p><a href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/">先のエントリ</a>で以下のように述べた伏線の回収エントリとなります。</p>
 
 <blockquote><p>そして、get_user()という名前はサンプルコードにはありがちだが、この名前も闇が深いと思っている。これについてはまた別途取り上げたい。</p></blockquote>
@@ -313,9 +313,9 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
   
   <entry>
     <title type="html"><![CDATA[ダメなのはcheck_xxxだけではない]]></title>
-    <link href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/"/>
+    <link href="http://nekoya.github.io/blog/2013/02/12/dont-say-check-xxx/"/>
     <updated>2013-02-12T08:23:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx</id>
+    <id>http://nekoya.github.io/blog/2013/02/12/dont-say-check-xxx</id>
     <content type="html"><![CDATA[<p>id:<a href="http://d.hatena.ne.jp/Yamashiro0217/">Yamashiro0217</a>さんの<a href="http://d.hatena.ne.jp/Yamashiro0217/20130210/1360480362">check_xxx がなんでダメなのか - Yamashiro0217の日記</a>が面白かったので、少し掘り下げてみる。</p>
 
 <p>第一印象は「いくら何でも例が恣意的すぎ。check_XXX言うな言いたいだけちゃうんか」だったが、現実は非情であり、こういうコードを押し付けられたこともあるので決して大袈裟ではなかった。</p>
@@ -346,9 +346,9 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
   
   <entry>
     <title type="html"><![CDATA[Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う]]></title>
-    <link href="http://nekoya.github.com/blog/2013/02/08/python27-stream-handler/"/>
+    <link href="http://nekoya.github.io/blog/2013/02/08/python27-stream-handler/"/>
     <updated>2013-02-08T09:12:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/02/08/python27-stream-handler</id>
+    <id>http://nekoya.github.io/blog/2013/02/08/python27-stream-handler</id>
     <content type="html"><![CDATA[<p>CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。</p>
 
 <p>logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。</p>
@@ -396,9 +396,9 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
   
   <entry>
     <title type="html"><![CDATA[さくらのVPSにUbuntuを入れる初期設定手順]]></title>
-    <link href="http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu/"/>
+    <link href="http://nekoya.github.io/blog/2013/01/24/sakura-vps-ubuntu/"/>
     <updated>2013-01-24T10:15:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu</id>
+    <id>http://nekoya.github.io/blog/2013/01/24/sakura-vps-ubuntu</id>
     <content type="html"><![CDATA[<p>さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。</p>
 
 <p>ただ、インストール直後は本当にOSを入れただけの無防備な状態で非常に危険です。</p>
@@ -483,9 +483,9 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
   
   <entry>
     <title type="html"><![CDATA[Pythonのパッケージimportで間接的に参照が生える]]></title>
-    <link href="http://nekoya.github.com/blog/2013/01/18/python-package-import/"/>
+    <link href="http://nekoya.github.io/blog/2013/01/18/python-package-import/"/>
     <updated>2013-01-18T07:25:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2013/01/18/python-package-import</id>
+    <id>http://nekoya.github.io/blog/2013/01/18/python-package-import</id>
     <content type="html"><![CDATA[<p>社内のプロダクト開発がPythonに移行したはいいけど、調査・運用系のスクリプトは変わらずPerlで書いてDevsとOpsの分離が進みそうで老害化著しい今日この頃です。</p>
 
 <p>これじゃいかんと思って、ワンライナー以外はPythonで書くようになりました。pull req送るとダメ出しもらえるのでありがたいです。</p>
@@ -552,9 +552,9 @@ del module
   
   <entry>
     <title type="html"><![CDATA[ウノウとZyngaJapanは別の会社だし、ウノウも時期によっていろいろだったよという話]]></title>
-    <link href="http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish/"/>
+    <link href="http://nekoya.github.io/blog/2012/11/20/unoh-will-never-perish/"/>
     <updated>2012-11-20T08:37:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish</id>
+    <id>http://nekoya.github.io/blog/2012/11/20/unoh-will-never-perish</id>
     <content type="html"><![CDATA[<p>この記事は「全くもってAdvent Calendarじゃない」と評判の<a href="http://atnd.org/events/33478">Unoh Advent Calendar</a>に参加しています。一日遅れたけど…</p>
 
 <p>こういう話は内輪の酒の席でいいじゃないのかと思うけど、「ZyngaJapanが閉鎖されるかも（現時点でそのような公式アナウンスはありません）」という話題が持ち上がった時に、目に付いた「ウノウもこれで終わりか」とか「ウノウの人たちどうなるの」みたいな論調には違和感が強いので、あえて過去を振り返ってみることにしました。</p>
@@ -649,9 +649,9 @@ del module
   
   <entry>
     <title type="html"><![CDATA[CentOS5でもRPS/RFSでNICが捗る話]]></title>
-    <link href="http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs/"/>
+    <link href="http://nekoya.github.io/blog/2012/11/13/centos5-rps-rfs/"/>
     <updated>2012-11-13T15:52:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs</id>
+    <id>http://nekoya.github.io/blog/2012/11/13/centos5-rps-rfs</id>
     <content type="html"><![CDATA[<p><a href="http://twitter.com/kazeburo">kazeburo</a>さんが<a href="http://blog.nomadscafe.jp/2012/08/centos-62-rpsrfs.html">CentOS6.2での事例</a>を紹介されていますが、CentOS5系でもkernelを上げればRPS/RFSが使えるようになって、NICの負荷状況が劇的に改善します。</p>
 
 <p>やり方は意外に簡単で、<a href="http://elrepo.org/tiki/tiki-index.php">ELRepo</a>から<a href="http://elrepo.org/linux/kernel/el5/x86_64/RPMS/kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm">kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm</a>を落としてきてインストール。</p>
@@ -710,9 +710,9 @@ net.nf_conntrack_max = 524288
   
   <entry>
     <title type="html"><![CDATA[Yokohama.pm#9でトークしてきました]]></title>
-    <link href="http://nekoya.github.com/blog/2012/10/30/yokohamapm9/"/>
+    <link href="http://nekoya.github.io/blog/2012/10/30/yokohamapm9/"/>
     <updated>2012-10-30T02:04:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2012/10/30/yokohamapm9</id>
+    <id>http://nekoya.github.io/blog/2012/10/30/yokohamapm9</id>
     <content type="html"><![CDATA[<p><a href="http://yokohama.pm.org/2012/09/yokohamapm-9.html">Yokohama.pm #9</a>にて「インターネット広告とPerl、ここ数年の歩み」と題してお話しさせて頂きました。</p>
 
 <iframe src="http://www.slideshare.net/slideshow/embed_code/14813377" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
@@ -754,9 +754,9 @@ net.nf_conntrack_max = 524288
   
   <entry>
     <title type="html"><![CDATA[Octopressを入れてみた]]></title>
-    <link href="http://nekoya.github.com/blog/2012/10/02/first/"/>
+    <link href="http://nekoya.github.io/blog/2012/10/02/first/"/>
     <updated>2012-10-02T09:33:00+09:00</updated>
-    <id>http://nekoya.github.com/blog/2012/10/02/first</id>
+    <id>http://nekoya.github.io/blog/2012/10/02/first</id>
     <content type="html"><![CDATA[<p>SL6.2のサーバで環境作ろうとしたら、Rubyがゴネてうまく動かなかったよ…</p>
 
 <p>ひとまず動いたので、こっちで書いてみよう。</p>
