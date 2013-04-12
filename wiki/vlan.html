@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>vlan - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="Vlan タグVLANの設定と確認 登録 1
+# vconfig add eth0 10 削除 1
+# vconfig rem eth0.10 確認 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+# cat /proc/net/vlan/config &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/vlan.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Vlan</h1>
+  </header>
+  
+  <h2>タグVLANの設定と確認</h2>
+
+<p>登録</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># vconfig add eth0 10</span></code></pre></td></tr></table></div></figure>
+
+
+<p>削除</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># vconfig rem eth0.10</span></code></pre></td></tr></table></div></figure>
+
+
+<p>確認</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># cat /proc/net/vlan/config
+</span><span class='line'>VLAN Dev name    | VLAN ID
+</span><span class='line'>Name-Type: VLAN_NAME_TYPE_RAW_PLUS_VID_NO_PAD
+</span><span class='line'>eth0.10        | 10  | eth0
+</span><span class='line'>
+</span><span class='line'># cat /proc/net/vlan/eth0.10 
+</span><span class='line'>eth0.10  VID: 10         REORDER_HDR: 1  dev-&gt;priv_flags: 81
+</span><span class='line'>         total frames received            0
+</span><span class='line'>          total bytes received            0
+</span><span class='line'>      Broadcast/Multicast Rcvd            0
+</span><span class='line'>
+</span><span class='line'>      total frames transmitted           33
+</span><span class='line'>       total bytes transmitted         8168
+</span><span class='line'>            total headroom inc            0
+</span><span class='line'>           total encap on xmit           33
+</span><span class='line'>Device: eth0
+</span><span class='line'>INGRESS priority mappings: 0:0  1:0  2:0  3:0  4:0  5:0  6:0 7:0
+</span><span class='line'>EGRESSS priority Mappings:</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>設定ファイル</h2>
+
+<h3>/etc/sysconfig/network</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>VLAN=yes
+</span><span class='line'>VLAN_NAME_TYPE=DEV_PLUS_VID_NO_PAD</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>/etc/sysconfig/network-scripts/ifcfg-eth0.10</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DEVICE=eth0.10
+</span><span class='line'>ONBOOT=yes
+</span><span class='line'>BOOTPROTO=static
+</span><span class='line'>IPADDR=10.2.2.1</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>VLAN_NAME_TYPEの詳細</h2>
+
+<table>
+<thead>
+<tr>
+<th>VLAN_NAME_TYPE       </th>
+<th> デバイス名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VLAN_PLUS_VID        </td>
+<td> vlan0100</td>
+</tr>
+<tr>
+<td>VLAN_PLUS_VID_NO_PAD </td>
+<td> vlan100</td>
+</tr>
+<tr>
+<td>DEV_PLUS_VID         </td>
+<td> eth0.0100</td>
+</tr>
+<tr>
+<td>DEV_PLUS_VID_NO_PAD  </td>
+<td> eth0.100</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>VLAN_PLUS_VID*を使用する場合、/etc/sysconfig/network-scripts/vlan100などに</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>PHYSDEV=eth0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のように物理NIC名を記述する必要がある。分かりにくいので使わない方が無難か。</p>
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

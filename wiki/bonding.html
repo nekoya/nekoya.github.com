@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>bonding - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="Bonding 参考URL VMwarePlayer＋CentOS4.4でbonding - Do You PHP はてな
+OSS Message Pedia -mid:50908
+イーサネットパラメータ
+bondingの設定 - CentOS 5（RHEL5もたぶんok） | データセンター &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/bonding.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Bonding</h1>
+  </header>
+  
+  <h2>参考URL</h2>
+
+<ul>
+<li><a href="http://d.hatena.ne.jp/shimooka/20070307/1173240112">VMwarePlayer＋CentOS4.4でbonding - Do You PHP はてな</a></li>
+<li><a href="http://ossmpedia.org/messages/linux/2.6.9-34.EL/50908.ja">OSS Message Pedia -mid:50908</a></li>
+<li><a href="http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/ja/ref-guide/s1-modules-ethernet.html">イーサネットパラメータ</a></li>
+<li><a href="http://blog.dc-d.jp/archives/290.html">bondingの設定 - CentOS 5（RHEL5もたぶんok） | データセンター ダイレクト ブログ</a></li>
+</ul>
+
+
+<h2>bondingモード</h2>
+
+<p>http://www.server-memo.net/linux-setting/bonding より</p>
+
+<h3>0: load balancing (round-robin):ラウンドロビン方式。</h3>
+
+<p>使用できるスレーブデバイスから順にデータの送受信を行い、負荷分散と冗長化に対応します。</p>
+
+<h3>1: fault-tolerance (active-backup):アクティブ・バックアップ方式。</h3>
+
+<p>1つのスレーブがアクティブでありそのスレーブに障害が起きたとき自動的に他のスレーブを使用し、冗長化に対応</p>
+
+<h3>2: load balancing (xor):XOR方式。</h3>
+
+<p>同じ送信先のMACアドレス対して同じスレーブを使用し、負荷分散と冗長化に対応</p>
+
+<h3>3: fault-tolerance (broadcast):</h3>
+
+<p>全部のスレーブデバイスでデータの送信を行います。</p>
+
+<h3>4: IEEE 802.3ad Dynamic link aggregation:IEEE 802.3ad ダイナミックリンク集合方式。</h3>
+
+<p>IEEE 802.3adに対応しているスイッチを用いて、Speed(通信速度100M/1Gb等）とDuplex(全／半二重設定)が同じグループを作って、全てのスレーブデバイスでデータの送受信をします。（やったことないので、よく分りませんが・・・）</p>
+
+<h3>5: transmit load balancing:</h3>
+
+<p>送信時のみ負荷分散を行い受信時は冗長化(MACアドレスを引き継ぐ)</p>
+
+<h3>6: adaptive load balancing:アクティブロードバランシング方式。</h3>
+
+<p>送受信共に負荷分散を行う</p>
+
+<h2>設定</h2>
+
+<h3>/etc/modprobe.d/bonding</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>alias bond0 bonding
+</span><span class='line'>options bonding mode=1 miimon=200</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ifcfg-bond0</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DEVICE=bond0
+</span><span class='line'>BOOTPROTO=static
+</span><span class='line'>IPADDR=192.168.116.22
+</span><span class='line'>GATEWAY=192.168.116.2
+</span><span class='line'>NETMASK=255.255.255.0
+</span><span class='line'>ONBOOT=yes</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ifcfg-eth0</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DEVICE=eth0
+</span><span class='line'>ONBOOT=yes
+</span><span class='line'>BOOTPROTO=none
+</span><span class='line'>MASTER=bond0
+</span><span class='line'>SLAVE=yes
+</span><span class='line'>USERCTL=no</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ifcfg-eth1</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DEVICE=eth1
+</span><span class='line'>ONBOOT=yes
+</span><span class='line'>BOOTPROTO=none
+</span><span class='line'>MASTER=bond0
+</span><span class='line'>SLAVE=yes
+</span><span class='line'>USERCTL=no</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>確認</h2>
+
+<p>/proc/net/bonding/bond0</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Ethernet Channel Bonding Driver: v2.6.3 (June 8, 2005)
+</span><span class='line'>
+</span><span class='line'>Bonding Mode: load balancing (round-robin)
+</span><span class='line'>MII Status: up
+</span><span class='line'>MII Polling Interval (ms): 100
+</span><span class='line'>Up Delay (ms): 0
+</span><span class='line'>Down Delay (ms): 0
+</span><span class='line'>
+</span><span class='line'>Slave Interface: eth0
+</span><span class='line'>MII Status: up
+</span><span class='line'>Link Failure Count: 0
+</span><span class='line'>Permanent HW addr: XX:XX:XX:XX:XX:XX
+</span><span class='line'>
+</span><span class='line'>Slave Interface: eth1
+</span><span class='line'>MII Status: up
+</span><span class='line'>Link Failure Count: 0
+</span><span class='line'>Permanent HW addr: XX:XX:XX:XX:XX:XX</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>modprobe更新</h2>
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

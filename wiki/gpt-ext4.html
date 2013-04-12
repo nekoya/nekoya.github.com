@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CentOS5系で3TB HDDをext4で使う - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="CentOS5系で3TB HDDをext4で使う 基本方針としてシステムはSSDに入れて、HDDは起動ディスクには使わない。なので、MBR周りの問題は取り扱わない。 e4fsprogsを入れる。 1
+$ sudo yum install e4fsprogs partedでパーティションを切る。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/gpt-ext4.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">CentOS5系で3TB HDDをext4で使う</h1>
+  </header>
+  
+  <p>基本方針としてシステムはSSDに入れて、HDDは起動ディスクには使わない。なので、MBR周りの問題は取り扱わない。</p>
+
+<p>e4fsprogsを入れる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo yum install e4fsprogs</span></code></pre></td></tr></table></div></figure>
+
+
+<p>partedでパーティションを切る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo /sbin/parted /dev/sdb
+</span><span class='line'>--- snip ---
+</span><span class='line'>(parted) mklabel
+</span><span class='line'>警告: The existing disk label on /dev/sdb will be destroyed and all data on this disk will be lost. Do you want to continue?
+</span><span class='line'>はい(Y)/Yes/いいえ(N)/No? y
+</span><span class='line'>新しいディスクラベル?  [gpt]?
+</span><span class='line'>(parted) mkpart
+</span><span class='line'>パーティションの名前?  []? logs
+</span><span class='line'>ファイルシステムの種類?  [ext2]? ext4
+</span><span class='line'>parted: invalid token: ext4
+</span><span class='line'>ファイルシステムの種類?  [ext2]? ext3
+</span><span class='line'>開始? 0
+</span><span class='line'>終了? -0
+</span><span class='line'>(parted) print
+</span><span class='line'>
+</span><span class='line'>モデル: ATA ST3000DM001-1CH1 (scsi)
+</span><span class='line'>ディスク /dev/sdb: 3001GB
+</span><span class='line'>セクタサイズ (論理/物理): 512B/512B
+</span><span class='line'>パーティションテーブル: gpt
+</span><span class='line'>
+</span><span class='line'>番号  開始    終了    サイズ  ファイルシステム  名前  フラグ
+</span><span class='line'> 1    17.4kB  3001GB  3001GB                    logs</span></code></pre></td></tr></table></div></figure>
+
+
+<p>partedがext4を受け付けてくれない。OS標準サポートでないとダメなのかも。</p>
+
+<p>mkfsさえ通せば問題なさそうなので、このままいく。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo /sbin/mkfs.ext4 /dev/sdb1
+</span><span class='line'>mke4fs 1.41.12 (17-May-2010)
+</span><span class='line'>Filesystem label=
+</span><span class='line'>OS type: Linux
+</span><span class='line'>Block size=4096 (log=2)
+</span><span class='line'>Fragment size=4096 (log=2)
+</span><span class='line'>Stride=0 blocks, Stripe width=0 blocks
+</span><span class='line'>183148544 inodes, 732566637 blocks
+</span><span class='line'>36628331 blocks (5.00%) reserved for the super user
+</span><span class='line'>First data block=0
+</span><span class='line'>Maximum filesystem blocks=4294967296
+</span><span class='line'>22357 block groups
+</span><span class='line'>32768 blocks per group, 32768 fragments per group
+</span><span class='line'>8192 inodes per group
+</span><span class='line'>Superblock backups stored on blocks:
+</span><span class='line'>        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+</span><span class='line'>        4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
+</span><span class='line'>        102400000, 214990848, 512000000, 550731776, 644972544
+</span><span class='line'>
+</span><span class='line'>Writing inode tables: done
+</span><span class='line'>Creating journal (32768 blocks): done
+</span><span class='line'>Writing superblocks and filesystem accounting information: done
+</span><span class='line'>
+</span><span class='line'>This filesystem will be automatically checked every 24 mounts or
+</span><span class='line'>180 days, whichever comes first.  Use tune4fs -c or -i to override.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>partedで見るとext3扱いになっている。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo /sbin/parted -l
+</span><span class='line'>
+</span><span class='line'>モデル: ATA ADATA SSD S510 1 (scsi)
+</span><span class='line'>ディスク /dev/sda: 120GB
+</span><span class='line'>セクタサイズ (論理/物理): 512B/512B
+</span><span class='line'>パーティションテーブル: msdos
+</span><span class='line'>
+</span><span class='line'>番号  開始    終了    サイズ  タイプ      ファイルシステム  フラグ
+</span><span class='line'> 1    32.3kB  82.3MB  82.2MB  プライマリ  ext3              boot
+</span><span class='line'> 2    82.3MB  120GB   120GB   プライマリ                    lvm
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>モデル: ATA ST3000DM001-1CH1 (scsi)
+</span><span class='line'>ディスク /dev/sdb: 3001GB
+</span><span class='line'>セクタサイズ (論理/物理): 512B/512B
+</span><span class='line'>パーティションテーブル: gpt
+</span><span class='line'>
+</span><span class='line'>番号  開始    終了    サイズ  ファイルシステム  名前  フラグ
+</span><span class='line'> 1    17.4kB  3001GB  3001GB  ext3              logs
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>エラー: /dev/md0 を開けません。ディスクラベルが認識できません。</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ext4でmountすると、ちゃんと認識されているように見える。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo mount -t ext4 /dev/sdb1 /logs
+</span><span class='line'>$ mount
+</span><span class='line'>/dev/mapper/VolGroup00-LogVol00 on / type ext3 (rw)
+</span><span class='line'>proc on /proc type proc (rw)
+</span><span class='line'>sysfs on /sys type sysfs (rw)
+</span><span class='line'>devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+</span><span class='line'>/dev/sda1 on /boot type ext3 (rw)
+</span><span class='line'>tmpfs on /dev/shm type tmpfs (rw)
+</span><span class='line'>none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
+</span><span class='line'>/dev/sdb1 on /logs type ext4 (rw)</span></code></pre></td></tr></table></div></figure>
+
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

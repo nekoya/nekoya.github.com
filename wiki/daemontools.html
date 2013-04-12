@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>daemontools - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="Daemontools what? http://quox.org/tips/server/daemontools.html が分かりやすい setup yum repoにdamontools-toasterでRPMを置いてるので、それを入れる
+以下のURLにinitスクリプトがあるので、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/daemontools.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Daemontools</h1>
+  </header>
+  
+  <h2>what?</h2>
+
+<p>http://quox.org/tips/server/daemontools.html が分かりやすい</p>
+
+<h2>setup</h2>
+
+<ul>
+<li><p>yum repoにdamontools-toasterでRPMを置いてるので、それを入れる</p></li>
+<li><p>以下のURLにinitスクリプトがあるので、これを利用する</p></li>
+<li>http://www.emaillab.org/djb/daemontools/daemontools-howto.html#chap2sec2</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>wget http://www.emaillab.org/djb/daemontools/svscan
+</span><span class='line'>chmod +x svscan
+</span><span class='line'>sudo mv svscan /etc/init.d
+</span><span class='line'>sudo /sbin/chkconfig --add svscan
+</span><span class='line'>sudo /etc/init.d/svscan start</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>安定して稼働するのを確認したらchkconfigをonに</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo /sbin/chkconfig svscan on</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>svc</h2>
+
+<ul>
+<li>serviceの制御コマンド</li>
+</ul>
+
+
+<p>再起動（TERM）</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo svc -t /service/{service}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>HUP</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo svc -h /service/{service}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>止める</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo svc -d /service/{service}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上げる</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo svc -u /service/{service}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>svstat</h2>
+
+<ul>
+<li>サービスの状態を確認するコマンド</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo svstat /service/{service}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>daemontools + uWSGI</h2>
+
+<p>run</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/bin/sh
+</span><span class='line'>exec 2&gt;&1
+</span><span class='line'>source /var/sites/lism.in/python/bin/activate
+</span><span class='line'>exec envdir /service/hello/env \
+</span><span class='line'>  setuidgid ryo \
+</span><span class='line'>  /var/sites/lism.in/python/bin/uwsgi -M --log-master -H /var/sites/lism.in/python --socket :3000 --file /var/sites/lism.in/hello.py --callable app --processes 4 --stats :1717</span></code></pre></td></tr></table></div></figure>
+
+
+<p>log/run</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/bin/sh
+</span><span class='line'>exec /usr/bin/setuidgid ryo /usr/bin/multilog t s16777215 n100 ./main</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>作業手順</h2>
+
+<p>ディレクトリ構成は以下のとおり。</p>
+
+<ul>
+<li>/service/foo/&#8221;&#8217;run&#8221;&#8217; : 起動スクリプト</li>
+<li>/service/foo/env : 環境変数ファイル用ディレクトリ</li>
+<li>/service/foo/log : multilog用ディレクトリ</li>
+<li>/service/foo/log/&#8221;&#8217;run&#8221;&#8217; : multilog起動スクリプト</li>
+<li>/service/foo/log/main : ログディレクトリ</li>
+</ul>
+
+
+<p>1.監視対象外のディレクトリで作業
+  ※最初に隠しディレクトリとして作成すると監視対象からはずれる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mkdir -p /service/.foo/env
+</span><span class='line'>sudo mkdir -p /service/.foo/log/main
+</span><span class='line'>sudo touch /service/.foo/run
+</span><span class='line'>sudo touch /service/.foo/log/run
+</span><span class='line'>sudo chmod +x /service/.foo/run
+</span><span class='line'>sudo chmod +x /service/.foo/log/run</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2.runスクリプトの編集</p>
+
+<p>runとlog/runをそれぞれ編集。
+内容は上記の「[wiki:tech/daemontools#daemontoolsuWSGI daemontools + uWSGI]」を参照。</p>
+
+<p>3.監視対象下におく</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mv /service/.foo /service/foo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>4.監視状態を以下で確認</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo svstat /service/foo</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>uwsgiプロセスの終了?監視対象外化</h2>
+
+<p>uwsgiはTERMを送ってもまた立ち上がってくるため、
+down → INT → exit → 隠しディレクトリ化
+という手順を踏まなくてはいけない。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /service/foo
+</span><span class='line'>svc -d ./foo && svc -i ./foo && svc -x ./foo && mv ./foo .foo</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>トラブルシューティング</h2>
+
+<ul>
+<li>http://www.unixuser.org/~euske/doc/daemontools/myfaq/faq-3.html</li>
+</ul>
+
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

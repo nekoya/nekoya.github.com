@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ssh-agent - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="Ssh-agent 基本的な使い方 まず、 1
+$ ssh-agent bash のようにしてagent付きのシェルを起動（単にssh-agentだけでも起動するけど、常用していないなら上記がお勧め）します。 agentが起動している時に、 1
+$ ssh-add -l すると、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/ssh-agent.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Ssh-agent</h1>
+  </header>
+  
+  <h2>基本的な使い方</h2>
+
+<p>まず、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh-agent bash</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のようにしてagent付きのシェルを起動（単にssh-agentだけでも起動するけど、常用していないなら上記がお勧め）します。</p>
+
+<p>agentが起動している時に、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh-add -l</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、agentが持っている秘密鍵の一覧が表示されます。</p>
+
+<p>agentに鍵を登録するには、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh-add .ssh/id_rsa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のようにします。この時、鍵のパスフレーズの入力を求められるので入れます。</p>
+
+<p>これで、以後はこの鍵を使用する時にパスフレーズを入力する必要がなくなります。</p>
+
+<h2>agent転送</h2>
+
+<p>agentが動いている状態で、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh -A example.com</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のように、sshコマンドに-Aを付けるとagent転送が行われます。ログインしたサーバで</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh-add -l</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、秘密鍵が転送されていることが確認できます。ログインするサーバではssh-agentを起動している必要はありません。-Aを付ける以外は通常の利用と変わりません。</p>
+
+<p>ここから別のサーバに更にagent転送するには、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ssh -A s2.example.com</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と、先程と同様に-Aを付けてsshで入ればOKです。最初の起点になるマシン（クライアントPCを想定）でssh-agentを起動してやれば、後はその情報を引き回すことが出来ます。</p>
+
+<h2>screenとの併用</h2>
+
+<p>ssh-agentは環境変数に情報を保存するので、screenを使ってるとdetachしたら転送したagentが使えない問題が発生します。</p>
+
+<p>ググるといろいろ解決策は出てくるけど、今のところこれを.zshrcとかに書いて解決してます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>agent="$HOME/.ssh-agent-`hostname`"
+</span><span class='line'>if [ -S "$agent" ]; then
+</span><span class='line'>    export SSH_AUTH_SOCK=$agent
+</span><span class='line'>elif [ ! -S "$SSH_AUTH_SOCK" ]; then
+</span><span class='line'>    export SSH_AUTH_SOCK=$agent
+</span><span class='line'>elif [ ! -L "$SSH_AUTH_SOCK" ]; then
+</span><span class='line'>    ln -snf "$SSH_AUTH_SOCK" $agent && export SSH_AUTH_SOCK=$agent
+</span><span class='line'>fi</span></code></pre></td></tr></table></div></figure>
+
+
+<p>homeディレクトリにホスト名ごとのsymlinkを作るので、/homeをNFSで共有とかしてる場合も使える。</p>
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

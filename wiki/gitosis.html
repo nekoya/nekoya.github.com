@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>gitosis - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="Gitosis setup (repository server) EPELに上がってるので、yumで簡単に入る。 1
+$ sudo yum install gitosis インストールすると、gitosisユーザが出来ている。 1
+2
+$ tail -1 /etc/passwd
+gitosis &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/gitosis.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Gitosis</h1>
+  </header>
+  
+  <h2>setup (repository server)</h2>
+
+<p>EPELに上がってるので、yumで簡単に入る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo yum install gitosis</span></code></pre></td></tr></table></div></figure>
+
+
+<p>インストールすると、gitosisユーザが出来ている。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ tail -1 /etc/passwd
+</span><span class='line'>gitosis:x:102:106:git repository hosting:/var/lib/gitosis:/bin/sh</span></code></pre></td></tr></table></div></figure>
+
+
+<p>gitosis権限で初期化する。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo -H -u gitosis gitosis-init &lt; ~/.ssh/id_rsa.pub
+</span><span class='line'>Initialized empty Git repository in ./
+</span><span class='line'>Reinitialized existing Git repository in ./</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo ls -la /var/lib/gitosis/
+</span><span class='line'>合計 28
+</span><span class='line'>drwxr-xr-x  5 gitosis gitosis 4096  3月 23 18:23 .
+</span><span class='line'>drwxr-xr-x 25 root    root    4096  3月 23 18:11 ..
+</span><span class='line'>lrwxrwxrwx  1 gitosis gitosis   60  3月 23 18:23 .gitosis.conf -&gt; /var/lib/gitosis/repositories/gitosis-admin.git/gitosis.conf
+</span><span class='line'>drwx------  2 gitosis gitosis 4096  3月 23 18:23 .ssh
+</span><span class='line'>drwxr-xr-x  2 gitosis gitosis 4096  3月 23 18:23 gitosis
+</span><span class='line'>drwxr-xr-x  3 gitosis gitosis 4096  3月 23 18:23 repositories</span></code></pre></td></tr></table></div></figure>
+
+
+<p>/var/lib/gitosis/repositories/にgitosisのリポジトリが出来ている。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo ls -l /var/lib/gitosis/repositories/
+</span><span class='line'>合計 4
+</span><span class='line'>drwxr-x--- 8 gitosis gitosis 4096  3月 23 18:23 gitosis-admin.git</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このリポジトリを更新することで、gitosisの設定を変更出来る。gitosisその物もgitで管理されているということ。</p>
+
+<h2>initial settings (local machine)</h2>
+
+<p>上記手順で作成したgitosisのリポジトリを持ってくる。${REPO_SERVER}にリポジトリのあるサーバ名が入っているものとする。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone gitosis@${REPO_SERVER}:gitosis-admin.git</span></code></pre></td></tr></table></div></figure>
+
+
+<p>gitosis.confを編集したり、keydir/に公開鍵を追加することでリポジトリへのアクセス権限を設定できる。</p>
+
+<p>gitosis.confに以下のように記述すると、nekoyaとguestがmyappリポジトリにアクセス可能になる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[group developers]
+</span><span class='line'>writable = myapp
+</span><span class='line'>members = nekoya guest</span></code></pre></td></tr></table></div></figure>
+
+
+<p>myappリポジトリは/var/lib/gitosis/repositories/に配置されるが、自動生成はされない。最初は明示的にpushしてやる必要がある。</p>
+
+<h2>tips</h2>
+
+<h3>readonly</h3>
+
+<p>writableの代わりにreadonlyを使うと、commitは出来ないがリポジトリを取得するユーザを作れる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[group developers]
+</span><span class='line'>writable = myapp
+</span><span class='line'>members = nekoya
+</span><span class='line'>
+</span><span class='line'>[group guests]
+</span><span class='line'>writable = myapp
+</span><span class='line'>members = guest</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のようにすると、guestはmyappをclone可能だがpushは出来ない。</p>
+
+<h3>members</h3>
+
+<p>membersは@で別のグループに属するmemberを参照出来る。gitosisを入れると、/usr/share/doc/gitosis-0.2/example.confとかに設定のサンプルが入るのでそこを参照のこと。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[group quux]
+</span><span class='line'>members = jdoe wsmith @anothergroup
+</span><span class='line'>writable = foo bar baz/thud
+</span><span class='line'>readonly = xyzzy
+</span><span class='line'>
+</span><span class='line'>## You can use groups just to avoid listing users multiple times. Note
+</span><span class='line'>## no writable= or readonly= lines.
+</span><span class='line'>[group anothergroup]
+</span><span class='line'>members = alice bill</span></code></pre></td></tr></table></div></figure>
+
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

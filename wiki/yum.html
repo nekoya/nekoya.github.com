@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>yum - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="Yum plugins yum-priorities 1
+sudo yum install yum-priorities http://wiki.centos.org/PackageManagement/Yum/Priorities &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/yum.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Yum</h1>
+  </header>
+  
+  <h2>plugins</h2>
+
+<h3>yum-priorities</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo yum install yum-priorities</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>http://wiki.centos.org/PackageManagement/Yum/Priorities</li>
+<li>複数のyumリポジトリに同名のパッケージがあった時の優先度を指定するプラグイン</li>
+<li>サードパーティのパッケージは公式よりも優先度を低くする</li>
+</ul>
+
+
+<p>yumの設定ファイルに</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>priority=N</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で優先度を1?99で指定。値が大きい物ほど優先度が低く設定される。デフォルトは99。</p>
+
+<h3>yum-versionlock</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo yum install yum-versionlock</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>/etc/yum/pluginconf.d/versionlock.conf</li>
+<li>/etc/yum/pluginconf.d/versionlock.list</li>
+<li>listファイルにバージョン固定したいパッケージの名前を書く</li>
+<li>バージョンまで指定する必要があるので以下のように</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rpm -q kernel-xen &gt;&gt; /etc/yum/pluginconf.d/versionlock.list</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>tips</h2>
+
+<h3>cache clear</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo yum clean expire-cache</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>独自yumリポジトリ</h2>
+
+<ul>
+<li><p><a href="https://gist.github.com/3736672">wiki/RPM</a>も参考に</p></li>
+<li><p>各自の開発環境でbuildする</p></li>
+<li><p>パッケージ毎にディレクトリを作って、その中でbuildする</p></li>
+<li><p>一箇所にまとめると、どのファイルがどのパッケージ由来か分からなくなる</p></li>
+<li><p>RPMは/path/to/tokyocabinet/RPMS/x86_64/tokyocabinet-1.4.42-1.x86_64.rpmのようなファイル名になる</p></li>
+<li>パッケージ毎に別のディレクトリになる</li>
+<li><p>そのままだとcreaterepo出来ない</p></li>
+<li><p>これをhttpで参照出来るところに一括転送してcreaterepoするスクリプトを用意します</p></li>
+<li><p>sync_repo.plとかで設置予定</p></li>
+<li><p>以下の手順では、~/rpms/を作業ディレクトリにするものと仮定</p></li>
+</ul>
+
+
+<h3>開発環境構築</h3>
+
+<ul>
+<li><p>自分の開発環境でRPMの作成からyumリポジトリへの取り込みまでテストする</p></li>
+<li><p>build用パッケージを入れる</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo yum install rpm-devel createrepo</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>以下の内容で~/.rpmmacrosを作成</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>%_topdir ~/rpms/
+</span><span class='line'>%_smp_mflags  -j4
+</span><span class='line'>%__arch_install_post /usr/lib/rpm/check-buildroot
+</span><span class='line'>%debug_package %{nil}</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><p>rpmsリポジトリをgit cloneする</p></li>
+<li><p>以下の内容で/etc/yum.repos.d/myproj.repoを作成</p></li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[myproj-x86_64]
+</span><span class='line'>name=myproj-x86_64
+</span><span class='line'>baseurl=file:///var/www/yum.myproj.org/RPMS/x86_64
+</span><span class='line'>enabled=1
+</span><span class='line'>gpgcheck=0
+</span><span class='line'>priority=1
+</span><span class='line'>
+</span><span class='line'>[myproj-noarch]
+</span><span class='line'>name=myproj-noarch
+</span><span class='line'>baseurl=file:///var/www/yum.myproj.org/RPMS/noarch
+</span><span class='line'>enabled=1
+</span><span class='line'>gpgcheck=0
+</span><span class='line'>priority=1</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>リポジトリ用のディレクトリを作る</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mkdir -p /var/www/yum.myproj.org
+</span><span class='line'>sudo chown {youname}:{yourgroup} /var/www/yum.myproj.org</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>build手順</h3>
+
+<ul>
+<li><p>{package}, {yourname}は適宜読み替えて実行のこと</p></li>
+<li><p>パッケージのディレクトリを作る</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd ~/rpms
+</span><span class='line'>mkdir {package}
+</span><span class='line'>cd tokyocabinet
+</span><span class='line'>mkdir BUILD RPMS SOURCES SPECS SRPMS</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>~/.rpmmacrosの1行目を以下のように編集</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>%_topdir /home/{yourname}/rpms/tokyocabinet</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>~とか$HOMEは使えないので、自分のhomeディレクトリをフルパスで書く</li>
+<li>build対象のパッケージのディレクトリをその都度指定する必要がある</li>
+<li><p>正直あまりうまいやり方ではないが今のところいい方法が浮かばない</p></li>
+<li><p>ソース、SPECを用意する</p></li>
+<li>ソースは~/rpms/{package}/SOURCES/に配置</li>
+<li>SPECファイルは~/rpms/{package}/SPECS/に配置</li>
+<li><p>あとは普通にRPMを作るのと同じなので省略</p></li>
+<li><p>rpmbuildする</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rpmbuild -ba SPECS/{package}.spec</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>RPMSとSRPMSにそれぞれパッケージが作成される</li>
+<li><p>sudoせずにユーザ権限でbulidすること!!</p></li>
+<li><p>repo_sync.plでローカルのyumリポジトリに転送</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd ..
+</span><span class='line'>perl repo_sync.pl</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>作成したパッケージをインストールしてテストする</li>
+<li>キャッシュの関係で出てこない場合は以下のようにして強制クリア</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo yum clean expire-cache
+</span><span class='line'>sudo yum check-update</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>check-updateはyum installとかしたら自動で実行されるのでやらなくてもいい</li>
+</ul>
+
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

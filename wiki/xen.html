@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>xen - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="Xen Dom0作成 1
+sudo yum install xen /etc/grub.confを変更
+- Xenカーネルを使用するようdefault値を変更
+- Dom0のメモリ使用量を固定 1
+kernel /xen.gz-2.6.18-164.6.1.el5 dom0_mem=512M 1 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.com/wiki/xen.html">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Xen</h1>
+  </header>
+  
+  <h2>Dom0作成</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo yum install xen</span></code></pre></td></tr></table></div></figure>
+
+
+<p>/etc/grub.confを変更
+- Xenカーネルを使用するようdefault値を変更
+- Dom0のメモリ使用量を固定</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>kernel /xen.gz-2.6.18-164.6.1.el5 dom0_mem=512M</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo reboot</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>DomU作成</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo virt-install --name=x1 \
+</span><span class='line'>--uuid=`uuidgen` \
+</span><span class='line'>--ram=1024 \
+</span><span class='line'>--file=/dev/mapper/vg0-x1 \
+</span><span class='line'>--vcpus=1 \
+</span><span class='line'>--nographics \
+</span><span class='line'>--paravirt \
+</span><span class='line'>--location=http://192.168.10.110/iso \
+</span><span class='line'>--extra-args='ks=http://192.168.10.110/xen-ks.cfg'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>イメージで作ったらインストールが凄く重い。vmstatでwaが常に98～100。
+LVM上に直接作ったら速かった。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo xm list
+</span><span class='line'>sudo xm create x1
+</span><span class='line'>sudo xm console x1
+</span><span class='line'>^C-]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>あるいは、koanでサクっと</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo koan --server cobbler --virt --virt-path /opt/xen/ --system [vmname] --virt-name [vmname] --nogfx</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>S=x1 && sudo koan --server cobbler --virt --virt-path /opt/xen/ --system ${S} --virt-name ${S} --nogfx</span></code></pre></td></tr></table></div></figure>
+
+
+<p>SSDを使うとイメージファイルでも十分速く、運用がしやすい感がある。koanで作るとsparseファイルになるので注意（オプション不明）。</p>
+
+<h2>domUの容量を増やす（lvm）</h2>
+
+<p>dom0</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo lvextend -L+20G /dev/vg0/op-disk0
+</span><span class='line'>sudo fdisk -l /dev/vg0/op-disk0
+</span><span class='line'>sudo fdisk /dev/vg0/op-disk0
+</span><span class='line'># パーティション確認
+</span><span class='line'>p
+</span><span class='line'># パーティション削除
+</span><span class='line'>d
+</span><span class='line'>2
+</span><span class='line'># 作り直す
+</span><span class='line'>n
+</span><span class='line'>p
+</span><span class='line'>2
+</span><span class='line'># パーティションタイプをLVMに変更
+</span><span class='line'>t
+</span><span class='line'>2
+</span><span class='line'>8e
+</span><span class='line'>w</span></code></pre></td></tr></table></div></figure>
+
+
+<p>domUをrebootして、容量が増えているのを確認</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo fdisk -l /dev/xvda2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>fdiskで表示された容量に拡張</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo pvresize --setphysicalvolumesize 42.8G /dev/xvda2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>vgsで表示された空き容量分を追加（全部は使えない）</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo vgs
+</span><span class='line'>sudo lvresize -L+20G /dev/vg0/root</span></code></pre></td></tr></table></div></figure>
+
+
+<p>resize2fsして追加分が有効になっているのを確認</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo resize2fs /dev/vg0/root
+</span><span class='line'>df -h</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>domUの容量を増やす（イメージファイル）</h2>
+
+<p>いろいろなアプローチがあるが、以下の方針を採用する。
+- 仮想ディスクの拡張ではなくイメージファイルを増やす
+- 追加したディスクをdomU上のLVMに追加</p>
+
+<p>理由としては、既存のデータ領域への影響を排除することと、Xen特有の作業を減らすため。</p>
+
+<p>追加用の新しいイメージファイルを作る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>dd if=/dev/zero bs=1M count=10240 &gt; x1-disk1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>/etc/xen/x1のdiskリストを更新</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>disk = [
+</span><span class='line'>"file:/opt/xen/x1-disk0,xvda,w",
+</span><span class='line'>"file:/opt/xen/x1-disk1,xvdb,w",
+</span><span class='line'>]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>domUを起動、以下はdomUで操作</p>
+
+<p>fdiskで/dev/xvdb1を作る</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo /sbin/fdisk /dev/xvdb</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[root@nekoya ~]# sudo fdisk -l /dev/xvdb
+</span><span class='line'>
+</span><span class='line'>Disk /dev/xvdb: 10.7 GB, 10737418240 bytes
+</span><span class='line'>255 heads, 63 sectors/track, 1305 cylinders
+</span><span class='line'>Units = シリンダ数 of 16065 * 512 = 8225280 bytes
+</span><span class='line'>
+</span><span class='line'>デバイス Boot      Start         End      Blocks   Id  System
+</span><span class='line'>/dev/xvdb1               1        1305    10482381   8e  Linux LVM</span></code></pre></td></tr></table></div></figure>
+
+
+<p>PVを作って、VGに追加する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo pvcreate /dev/xvdb1
+</span><span class='line'>sudo /usr/sbin/vgextend VolGroup00 /dev/xvdb1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>LVを拡張する。lvextendに指定する容量は追加分ではなく、追加後の総容量。使える容量は適当に調整する。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[root@nekoya ~]# sudo /usr/sbin/lvextend -L 27.5G /dev/VolGroup00/LogVol00
+</span><span class='line'> Extending logical volume LogVol00 to 27.50 GB
+</span><span class='line'>
+</span><span class='line'>[root@nekoya ~]# sudo /sbin/resize2fs /dev/VolGroup00/LogVol00
+</span><span class='line'>resize2fs 1.39 (29-May-2006)
+</span><span class='line'>Filesystem at /dev/VolGroup00/LogVol00 is mounted on /; on-line resizing required
+</span><span class='line'>Performing an on-line resize of /dev/VolGroup00/LogVol00 to 7208960 (4k) blocks.
+</span><span class='line'>The filesystem on /dev/VolGroup00/LogVol00 is now 7208960 blocks long.</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>8個以上のDom-Uを作る</h2>
+
+<p>CentOSのデフォルトがloopback8つなのが理由。</p>
+
+<p>/etc/modprobe.confに追記</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>options loop max_loop=16</span></code></pre></td></tr></table></div></figure>
+
+
+  
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
