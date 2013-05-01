@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ubuntu | blog on github]]></title>
   <link href="http://nekoya.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-05-01T10:41:32+09:00</updated>
+  <updated>2013-05-01T11:04:29+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -15,7 +15,7 @@
   
   <entry>
     <title type="html"><![CDATA[さくらのVPSにUbuntuを入れる初期設定手順]]></title>
-    <link href="http://nekoya.github.io/blog/2013/01/24/sakura-vps-ubuntu"/>
+    <link href="http://nekoya.github.io/blog/2013/01/24/sakura-vps-ubuntu/"/>
     <updated>2013-01-24T10:15:00+09:00</updated>
     <id>http://nekoya.github.io/blog/2013/01/24/sakura-vps-ubuntu</id>
     <content type="html"><![CDATA[<p>さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。</p>

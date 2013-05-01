@@ -4,7 +4,7 @@
   <title><![CDATA[Category: perl | blog on github]]></title>
   <link href="http://nekoya.github.io/blog/categories/perl/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-05-01T10:41:32+09:00</updated>
+  <updated>2013-05-01T11:04:29+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -15,7 +15,7 @@
   
   <entry>
     <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
-    <link href="http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc"/>
+    <link href="http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc/"/>
     <updated>2013-03-12T09:49:00+09:00</updated>
     <id>http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc</id>
     <content type="html"><![CDATA[<p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
