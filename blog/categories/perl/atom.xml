@@ -4,7 +4,7 @@
   <title><![CDATA[Category: perl | blog on github]]></title>
   <link href="http://nekoya.github.io/blog/categories/perl/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-05-01T11:27:05+09:00</updated>
+  <updated>2013-05-01T11:27:15+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -24,11 +24,64 @@
 
 <p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
 
-<p>{% gist 5088592 publish_hex_key.pl %}</p>
+<p><div><script src='https://gist.github.com/5088592.js?file=publish_hex_key.pl'></script>
+<noscript><pre><code>use strict;
+use warnings;
+
+# http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password
+
+use Crypt::CBC;
+
+my $key = shift or die '[usage] hex_key.pl key';
+
+my $cipher = Crypt::CBC-&gt;new({
+        'key'            =&gt; $key,
+        'cipher'         =&gt; 'Blowfish',
+        'iv'             =&gt; '12345678',
+        'regenerate_key' =&gt; 1,
+        'padding'        =&gt; 'standard',
+        'prepend_iv'     =&gt; 0,
+    });
+
+$cipher-&gt;encrypt('ShutTheFuckUpAndWriteSomeCode');
+print unpack('H*', $cipher-&gt;key), &quot;\n&quot;;</code></pre></noscript></div>
+</p>
 
 <p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
 
-<p>{% gist 5088592 decrypt.py %}</p>
+<p><div><script src='https://gist.github.com/5088592.js?file=decrypt.py'></script>
+<noscript><pre><code>import base64
+from Crypto.Cipher import Blowfish
+from binascii import unhexlify
+from struct import pack
+
+key = unhexlify('144a6b229633360207ff9c79016fc49426f1814727b663bc39df05df9a1892073e2812df9492c1e952aac68d1ddfefba635d3a33aba21535')  # &quot;thisiskey&quot;
+iv = '123abc45'
+
+
+def enc(str):
+    plen = Blowfish.block_size - len(str) % Blowfish.block_size
+    padding = [plen] * plen
+    pad_str = str + pack('b' * plen, *padding)
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    return base64.urlsafe_b64encode(cipher.encrypt(pad_str))
+
+
+def dec(str):
+    plen = 4 - len(str) &amp; 3
+    pad_str = str + '=' * plen
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    dec = cipher.decrypt(base64.urlsafe_b64decode(pad_str))
+    num_padding = ord(dec[-1])
+    return dec[:(-1 * num_padding)]
+
+assert enc('1234567') == '7Zbfy4S_B28='
+assert enc('12345678') == '_V5IPxYq4omALzIyl10aMw=='
+
+assert enc('hello world') == 'V6r02_ivXP2ChJ0DGd_7aw=='
+assert dec('V6r02_ivXP2ChJ0DGd_7aw==') == 'hello world'
+assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V6r02_ivXP2ChJ0DGd_7aw==') == dec('V6r02_ivXP2ChJ0DGd_7aw===')</code></pre></noscript></div>
+</p>
 
 <p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>
 ]]></content>
