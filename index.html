@@ -9,7 +9,8 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="「恐怖」を知ること 35歳が目前に迫りつつある中、ぼちぼちスピリチュアルなことも書いていこうかと思う今日この頃です。 これまで十数年、小さな会社やフリーランス、大企業（はすぐ辞めたけど）を渡り歩いてきて改めてベンチャーの面白さを実感しています。 様々な要素がありますが、その最たる物は「 &hellip;">
+  <meta name="description" content="PerlでいうところのTest::TCP相当のことをPythonでやるライブラリをPyPIに上げました。ようやくPyPIデビューです。 https://github.com/nekoya/python-tcptest
+https://pypi.python.org/pypi/tcptest &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,58 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/27/python-tcptest/">PythonでTest::TCP的なことをするライブラリをPyPIに上げました</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-27T16:25:00+09:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Perlでいうところの<a href="http://search.cpan.org/~tokuhirom/Test-TCP-1.27/lib/Test/TCP.pm">Test::TCP</a>相当のことをPythonでやるライブラリをPyPIに上げました。ようやくPyPIデビューです。</p>
+
+<ul>
+<li><a href="https://github.com/nekoya/python-tcptest">https://github.com/nekoya/python-tcptest</a></li>
+<li><a href="https://pypi.python.org/pypi/tcptest">https://pypi.python.org/pypi/tcptest</a></li>
+</ul>
+
+
+<p>PyPIにアップロードすること自体は参考資料もたくさんあり難しくないのですが、どういう名前付けをすべきかなど運営上のルールが今ひとつ分からず、まだ戸惑っている面があります。大文字小文字とか-_.のどれで区切るのかとか。あと、bdistとかbdist_eggはPure Pythonのライブラリだと不要だと思うけどよく分からない。</p>
+
+<p>tcptestパッケージにはTest::TCP本体だけでなく、memcachedとredisのテストサーバ実装も含まれています。</p>
+
+<p>社内では以前からこの仕組みを使ってテストを書いていたのですが、自社のconfig系のライブラリとの結合を排除して、再構成したものになります。今回こうして公開するにあたって、関数名をオリジナルのPerl版に近付けたり、TestServerの実装を全面的に見直したりしました。</p>
+
+<p>なお、今回のtcptestは最初test.tcpという名前空間を使おうとしたのですが、Python標準のtestパッケージと干渉することが判明したので衝突回避のためこの名前になりました。</p>
+
+<p>自社プロダクト間の名前空間であれば、pkgutil.extend_pathを使って回避するのですが、標準ライブラリはともかくとして、PyPIのライブラリ同士での衝突はどう回避してるんだろう。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -784,102 +837,6 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
 <p>外からrootと適当なユーザ名（user等）で入れないのを確認してから、自分のアカウントでSSH接続する。</p>
 
 <p>これで最低限の安全性を確保したサーバが出来るので、あとはふつうに使う。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/18/python-package-import/">Pythonのパッケージimportで間接的に参照が生える</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-18T07:25:00+09:00" pubdate data-updated="true">Jan 18<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>社内のプロダクト開発がPythonに移行したはいいけど、調査・運用系のスクリプトは変わらずPerlで書いてDevsとOpsの分離が進みそうで老害化著しい今日この頃です。</p>
-
-<p>これじゃいかんと思って、ワンライナー以外はPythonで書くようになりました。pull req送るとダメ出しもらえるのでありがたいです。</p>
-
-<p>そんなPythonでパッケージをimportしたりfrom〜importしたりすると、自分のイメージと違う動作をすることがあって新鮮だったのでメモ。</p>
-
-<p>（2013/01/19 barとbazが紛らわしいのでs/baz/hoge/gしました）</p>
-
-<p>main.py</p>
-
-<pre><code>import foo.bar
-print foo.hoge.var
-</code></pre>
-
-<p>foo/__init__.py</p>
-
-<p>foo/bar.py</p>
-
-<pre><code>from foo.hoge import var
-</code></pre>
-
-<p>foo/hoge.py</p>
-
-<pre><code>var = 'DEAAAAAAAATH'
-</code></pre>
-
-<p>これでmain.pyを実行すると</p>
-
-<pre><code>$ python main.py
-DEAAAAAAAATH
-</code></pre>
-
-<p>main.pyではfoo.hogeをimportしていないのに、参照できる。Python 2.6.5, 2.7.1で確認。</p>
-
-<ul>
-<li>foo.barが走った時点でfooの名前空間にhogeが取り込まれる</li>
-<li>foo.barをimportするとfoo.barだけでなく、fooへの参照も取り込まれる</li>
-<li>foo以下のパッケージをimportするとfoo.hoge.varにアクセス可能</li>
-</ul>
-
-
-<p>ということか。</p>
-
-<p>以下追記（2013/01/19）</p>
-
-<p><a href="http://twitter.com/hiratara">@hiratara</a>さんとお話ししたので、少し補足。</p>
-
-<p>（2013/01/22 リンク追加）<a href="https://www.facebook.com/hiratara/posts/10152460490030164">https://www.facebook.com/hiratara/posts/10152460490030164</a></p>
-
-<p>『初めてのPython』によると、from module import name1は</p>
-
-<pre><code>import module
-name1 = module.name1
-del module
-</code></pre>
-
-<p>と理屈の上ではほぼ同じ意味を持ちます、というような記述があって、パッケージでないモジュールでは実際そういう動作をするので「fromで指定したモジュールへの参照は保持されない」と思っていました。</p>
-
-<p>上記のサンプルでは、foo.hogeはどこからも直接importはされず、foo.bar内でfrom〜importの形で参照されているだけなので、foo.hogeへの参照が残ると思っていなかったのです。「ほぼ」であって同一でないのはこういうところなのか、と。</p>
-
-<p>確かにdel foo.hoge的なことをしてしまうと、問題が起こりうるしそこを厳密に管理するのは大変すぎるのでこうなっているのは合理的だけど、今まで考えてなかったなぁというのがこちらのエントリでございます。</p>
 </div>
   
   

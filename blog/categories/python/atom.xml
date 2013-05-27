@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | blog on github]]></title>
   <link href="http://nekoya.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-05-06T14:56:32+09:00</updated>
+  <updated>2013-05-27T16:35:21+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[PythonでTest::TCP的なことをするライブラリをPyPIに上げました]]></title>
+    <link href="http://nekoya.github.io/blog/2013/05/27/python-tcptest/"/>
+    <updated>2013-05-27T16:25:00+09:00</updated>
+    <id>http://nekoya.github.io/blog/2013/05/27/python-tcptest</id>
+    <content type="html"><![CDATA[<p>Perlでいうところの<a href="http://search.cpan.org/~tokuhirom/Test-TCP-1.27/lib/Test/TCP.pm">Test::TCP</a>相当のことをPythonでやるライブラリをPyPIに上げました。ようやくPyPIデビューです。</p>
+
+<ul>
+<li><a href="https://github.com/nekoya/python-tcptest">https://github.com/nekoya/python-tcptest</a></li>
+<li><a href="https://pypi.python.org/pypi/tcptest">https://pypi.python.org/pypi/tcptest</a></li>
+</ul>
+
+
+<p>PyPIにアップロードすること自体は参考資料もたくさんあり難しくないのですが、どういう名前付けをすべきかなど運営上のルールが今ひとつ分からず、まだ戸惑っている面があります。大文字小文字とか-_.のどれで区切るのかとか。あと、bdistとかbdist_eggはPure Pythonのライブラリだと不要だと思うけどよく分からない。</p>
+
+<p>tcptestパッケージにはTest::TCP本体だけでなく、memcachedとredisのテストサーバ実装も含まれています。</p>
+
+<p>社内では以前からこの仕組みを使ってテストを書いていたのですが、自社のconfig系のライブラリとの結合を排除して、再構成したものになります。今回こうして公開するにあたって、関数名をオリジナルのPerl版に近付けたり、TestServerの実装を全面的に見直したりしました。</p>
+
+<p>なお、今回のtcptestは最初test.tcpという名前空間を使おうとしたのですが、Python標準のtestパッケージと干渉することが判明したので衝突回避のためこの名前になりました。</p>
+
+<p>自社プロダクト間の名前空間であれば、pkgutil.extend_pathを使って回避するのですが、標準ライブラリはともかくとして、PyPIのライブラリ同士での衝突はどう回避してるんだろう。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
