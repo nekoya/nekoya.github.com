@@ -4,7 +4,7 @@
   <title><![CDATA[blog on github]]></title>
   <link href="http://nekoya.github.io/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-05-27T16:35:21+09:00</updated>
+  <updated>2013-05-27T21:47:31+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -26,11 +26,13 @@
 </ul>
 
 
-<p>PyPIにアップロードすること自体は参考資料もたくさんあり難しくないのですが、どういう名前付けをすべきかなど運営上のルールが今ひとつ分からず、まだ戸惑っている面があります。大文字小文字とか-_.のどれで区切るのかとか。あと、bdistとかbdist_eggはPure Pythonのライブラリだと不要だと思うけどよく分からない。</p>
-
-<p>tcptestパッケージにはTest::TCP本体だけでなく、memcachedとredisのテストサーバ実装も含まれています。</p>
+<p>Test::TCPはPerlでテスト時に一時的にサーバを起動したりする処理の基盤となるライブラリです。同等のことをPythonでやるのに適当なものが見当たらなかったので自分で書いたという経緯になります。</p>
 
 <p>社内では以前からこの仕組みを使ってテストを書いていたのですが、自社のconfig系のライブラリとの結合を排除して、再構成したものになります。今回こうして公開するにあたって、関数名をオリジナルのPerl版に近付けたり、TestServerの実装を全面的に見直したりしました。</p>
+
+<p>tcptestパッケージにはTest::TCP本体だけでなく、memcachedとredisのテストサーバ実装も含まれています。Perlでは<a href="http://search.cpan.org/~dmaki/Test-Memcached-0.00004/lib/Test/Memcached.pm">Test::Memcached</a>や<a href="http://search.cpan.org/~typester/Test-RedisServer-0.12/lib/Test/RedisServer.pm">Test::RedisServer</a>のように別のライブラリとしてリリースされていますが、名前空間がバラバラになるのも微妙な気がしたので同一のパッケージにまとめました。</p>
+
+<p>PyPIにアップロードすること自体は参考資料もたくさんあり難しくないのですが、どういう名前付けをすべきかなど運営上のルールが今ひとつ分からず、まだ戸惑っている面があります。大文字小文字とか-_.のどれで区切るのかとか。あと、bdistとかbdist_eggはPure Pythonのライブラリだと不要だと思うけどよく分からない。</p>
 
 <p>なお、今回のtcptestは最初test.tcpという名前空間を使おうとしたのですが、Python標準のtestパッケージと干渉することが判明したので衝突回避のためこの名前になりました。</p>
 
