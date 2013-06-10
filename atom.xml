@@ -4,7 +4,7 @@
   <title><![CDATA[blog on github]]></title>
   <link href="http://nekoya.github.io/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-05-27T21:49:49+09:00</updated>
+  <updated>2013-06-10T11:04:04+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -12,6 +12,101 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[本当は怖いstrptimeと%Y%m%dの関係]]></title>
+    <link href="http://nekoya.github.io/blog/2013/06/10/strptime-ymd/"/>
+    <updated>2013-06-10T10:33:00+09:00</updated>
+    <id>http://nekoya.github.io/blog/2013/06/10/strptime-ymd</id>
+    <content type="html"><![CDATA[<p>「%Y%m%d」をstrptimeで処理すると曖昧になることを今更ながらに知りました。</p>
+
+<p>社内で「201312」を渡すとキモいという話が出て、</p>
+
+<blockquote class="twitter-tweet"><p>Pythonでdatetime.datetime.strptime(&#8216;201312&#8217;, &#8216;%Y%m%d&#8217;)がエラーにならず1月2日として成立するの具合悪いと思うの</p>&mdash; nekoya (@nekoya) <a href="https://twitter.com/nekoya/status/342897090780876800">June 7, 2013</a></blockquote>
+
+
+<script async src="http://nekoya.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>ってPostしたら<a href="http://twitter.com/hiratara/">@hiratara</a>さんが「2013129と2013130もキモいぞ」と教えてくれました。</p>
+
+<p>普段は%Y-%-%dを使うんだけど、URLに日付を埋め込む場合はデリミタ無しの方が自然だなーと思ったらご覧の有様だよ。</p>
+
+<p>Python2.7.1</p>
+
+<pre><code>&gt;&gt; datetime.strptime('201312', '%Y%m%d')
+datetime.datetime(2013, 1, 2, 0, 0)
+&gt;&gt; datetime.strptime('2013129', '%Y%m%d')
+datetime.datetime(2013, 12, 9, 0, 0)
+&gt;&gt; datetime.strptime('2013130', '%Y%m%d')
+datetime.datetime(2013, 1, 30, 0, 0)
+</code></pre>
+
+<p>なお、Pythonだけでなく他の言語でも見事にバラバラでﾜﾛﾀ。それぞれ最新版じゃないけど、そう変わらない気がする。</p>
+
+<p>Perl5.12.2 Time::Piece</p>
+
+<pre><code>$ perl -MTime::Piece -le 'print localtime-&gt;strptime("201312", "%Y%m%d")'
+Sun Dec  1 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013129", "%Y%m%d")'
+Mon Dec  9 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013130", "%Y%m%d")'
+Error parsing time at /Users/ryo/perl5/perlbrew/perls/perl-5.12.2/lib/5.12.2/darwin-2level/Time/Piece.pm line 469.
+</code></pre>
+
+<p>PHP5.3.15</p>
+
+<pre><code>$ php -r 'var_dump(new DateTime("201312"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-06-10 20:13:12"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013129"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-09 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013130"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-10 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+</code></pre>
+
+<p>Ruby1.9.3p194</p>
+
+<pre><code>% irb
+irb(main):001:0&gt; require 'date'
+=&gt; true
+irb(main):002:0&gt; Date.strptime('201312', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):2:in `strptime'
+        from (irb):2
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+irb(main):003:0&gt; Date.strptime('2013129', '%Y%m%d').to_s
+=&gt; "2013-12-09"
+irb(main):004:0&gt; Date.strptime('2013130', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):4:in `strptime'
+        from (irb):4
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+</code></pre>
+
+<p>%Y%m%dを取る場合は、strptime任せにせず自分でフォーマットのチェックもしておかないと危険ですね。もしくは、おとなしくデリミタ挟むか。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[PythonでTest::TCP的なことをするライブラリをPyPIに上げました]]></title>

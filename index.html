@@ -9,8 +9,7 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="PerlでいうところのTest::TCP相当のことをPythonでやるライブラリをPyPIに上げました。ようやくPyPIデビューです。 https://github.com/nekoya/python-tcptest
-https://pypi.python.org/pypi/tcptest &hellip;">
+  <meta name="description" content="「%Y%m%d」をstrptimeで処理すると曖昧になることを今更ながらに知りました。 社内で「201312」を渡すとキモいという話が出て、 Pythonでdatetime.datetime.strptime(&#8216;201312&#8217;, &#8216;%Y%m%d&#8217;) &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +77,128 @@ https://pypi.python.org/pypi/tcptest &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/10/strptime-ymd/">本当は怖いstrptimeと%Y%m%dの関係</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-10T10:33:00+09:00" pubdate data-updated="true">Jun 10<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>「%Y%m%d」をstrptimeで処理すると曖昧になることを今更ながらに知りました。</p>
+
+<p>社内で「201312」を渡すとキモいという話が出て、</p>
+
+<blockquote class="twitter-tweet"><p>Pythonでdatetime.datetime.strptime(&#8216;201312&#8217;, &#8216;%Y%m%d&#8217;)がエラーにならず1月2日として成立するの具合悪いと思うの</p>&mdash; nekoya (@nekoya) <a href="https://twitter.com/nekoya/status/342897090780876800">June 7, 2013</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>ってPostしたら<a href="http://twitter.com/hiratara/">@hiratara</a>さんが「2013129と2013130もキモいぞ」と教えてくれました。</p>
+
+<p>普段は%Y-%-%dを使うんだけど、URLに日付を埋め込む場合はデリミタ無しの方が自然だなーと思ったらご覧の有様だよ。</p>
+
+<p>Python2.7.1</p>
+
+<pre><code>&gt;&gt; datetime.strptime('201312', '%Y%m%d')
+datetime.datetime(2013, 1, 2, 0, 0)
+&gt;&gt; datetime.strptime('2013129', '%Y%m%d')
+datetime.datetime(2013, 12, 9, 0, 0)
+&gt;&gt; datetime.strptime('2013130', '%Y%m%d')
+datetime.datetime(2013, 1, 30, 0, 0)
+</code></pre>
+
+<p>なお、Pythonだけでなく他の言語でも見事にバラバラでﾜﾛﾀ。それぞれ最新版じゃないけど、そう変わらない気がする。</p>
+
+<p>Perl5.12.2 Time::Piece</p>
+
+<pre><code>$ perl -MTime::Piece -le 'print localtime-&gt;strptime("201312", "%Y%m%d")'
+Sun Dec  1 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013129", "%Y%m%d")'
+Mon Dec  9 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013130", "%Y%m%d")'
+Error parsing time at /Users/ryo/perl5/perlbrew/perls/perl-5.12.2/lib/5.12.2/darwin-2level/Time/Piece.pm line 469.
+</code></pre>
+
+<p>PHP5.3.15</p>
+
+<pre><code>$ php -r 'var_dump(new DateTime("201312"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-06-10 20:13:12"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013129"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-09 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013130"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-10 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+</code></pre>
+
+<p>Ruby1.9.3p194</p>
+
+<pre><code>% irb
+irb(main):001:0&gt; require 'date'
+=&gt; true
+irb(main):002:0&gt; Date.strptime('201312', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):2:in `strptime'
+        from (irb):2
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+irb(main):003:0&gt; Date.strptime('2013129', '%Y%m%d').to_s
+=&gt; "2013-12-09"
+irb(main):004:0&gt; Date.strptime('2013130', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):4:in `strptime'
+        from (irb):4
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+</code></pre>
+
+<p>%Y%m%dを取る場合は、strptime任せにせず自分でフォーマットのチェックもしておかないと危険ですね。もしくは、おとなしくデリミタ挟むか。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -725,120 +846,6 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
 <p>とキーワード引数で渡すのをやめれば動くんだけど、こういう「短縮名じゃない方がいいよね」みたいな深い意味のなさそうな変更をあっさり入れられると萎える…</p>
 
 <p>それとも2.6.5と2.7.3の間にはそういう変更を入れても問題ないとされるぐらいの隔たりがあるのだろうか。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/24/sakura-vps-ubuntu/">さくらのVPSにUbuntuを入れる初期設定手順</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-24T10:15:00+09:00" pubdate data-updated="true">Jan 24<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。</p>
-
-<p>ただ、インストール直後は本当にOSを入れただけの無防備な状態で非常に危険です。</p>
-
-<p>最低限の設定を定型化しておかないと怖いので、以下メモ。</p>
-
-<p>手順はUbuntu12.04LTSを前提にしていますが、特別なことはしていないので多少の違いは問題ないはず。</p>
-
-<h2>OSインストール直後の安全確保</h2>
-
-<p>インストール自体はマニュアルに沿ってやればOK。</p>
-
-<p>ただし、パスワードは万が一抜かれてもいいように、普段使っていない捨てパスワードを使う。</p>
-
-<p>起動したら急いでufwを使ってiptablesの設定を入れる。まずは全部閉じる。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo ufw enable
-</span><span class='line'>sudo ufw default DENY</span></code></pre></td></tr></table></div></figure>
-
-
-<p>念のためiptablesの設定を見ておく。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo iptables -L</span></code></pre></td></tr></table></div></figure>
-
-
-<p>いろいろ出てきたら個別のルールは精査しなくてもとりあえずはOK。</p>
-
-<p>外からのアクセスを遮断したら、その時点で不審なログが無いことを確認する。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo less /var/log/auth.log</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>SSHの設定</h2>
-
-<p>ひとまず安全が確保されたので、ここからは落ち着いて作業できる。</p>
-
-<p>~/.ssh/が無いので作るところから。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir .ssh
-</span><span class='line'>chmod 700 .ssh</span></code></pre></td></tr></table></div></figure>
-
-
-<p>リモートコンソールのコピペボタンを使って、~/.ssh/authorized_keysを作る。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cat &gt; .ssh/authorized_keys
-</span><span class='line'>chmod 600 .ssh/authorized_keys</span></code></pre></td></tr></table></div></figure>
-
-
-<p>パーミッションは644とかでも怒られなかったが、落ち着かないので600にしておく。</p>
-
-<p>SSHの設定もデフォルトのままなので、rootログインとパスワード認証をつぶす。</p>
-
-<p>リモートコンソールでのコピペが結構面倒なので、viで直接編集した方が早いかも。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
-</span><span class='line'>sudo sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-</span><span class='line'>sudo /etc/init.d/ssh reload</span></code></pre></td></tr></table></div></figure>
-
-
-<p>外からのSSH接続を許可する。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo ufw allow ssh</span></code></pre></td></tr></table></div></figure>
-
-
-<p>外からrootと適当なユーザ名（user等）で入れないのを確認してから、自分のアカウントでSSH接続する。</p>
-
-<p>これで最低限の安全性を確保したサーバが出来るので、あとはふつうに使う。</p>
 </div>
   
   
