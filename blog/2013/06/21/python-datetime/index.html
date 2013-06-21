@@ -1,24 +1,109 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: python | blog on github]]></title>
-  <link href="http://nekoya.github.io/blog/categories/python/atom.xml" rel="self"/>
-  <link href="http://nekoya.github.io/"/>
-  <updated>2013-06-21T11:10:30+09:00</updated>
-  <id>http://nekoya.github.io/</id>
-  <author>
-    <name><![CDATA[nekoya]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Pythonの日付処理とTimeZone - nekoya press</title>
+  <meta name="author" content="nekoya">
 
   
-  <entry>
-    <title type="html"><![CDATA[Pythonの日付処理とTimeZone]]></title>
-    <link href="http://nekoya.github.io/blog/2013/06/21/python-datetime/"/>
-    <updated>2013-06-21T10:04:00+09:00</updated>
-    <id>http://nekoya.github.io/blog/2013/06/21/python-datetime</id>
-    <content type="html"><![CDATA[<p>日付周りの処理というのはとても難しい問題で、特にTimeZoneが絡むと基本的に大変なことになります。</p>
+  <meta name="description" content="日付周りの処理というのはとても難しい問題で、特にTimeZoneが絡むと基本的に大変なことになります。 Pythonは標準で用意されているdatetimeモジュールが高機能なので、それを使っておけば間違いない感があって、そういう意味では安心感があります。 とは言え、その扱いにはやはり注意が必要で、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.io/blog/2013/06/21/python-datetime">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="http://twitter.com/nekoya">@nekoya</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="http://d.hatena.ne.jp/studio-m">d.hatena</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Pythonの日付処理とTimeZone</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-21T10:04:00+09:00" pubdate data-updated="true">Jun 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>日付周りの処理というのはとても難しい問題で、特にTimeZoneが絡むと基本的に大変なことになります。</p>
 
 <p>Pythonは標準で用意されているdatetimeモジュールが高機能なので、それを使っておけば間違いない感があって、そういう意味では安心感があります。</p>
 
@@ -262,227 +347,103 @@ datetime.datetime(2012, 6, 18, 12, 31, 7, tzinfo=&lt;UTC&gt;)
 <p>本稿での検証に使ったベンチマークスクリプトは<a href="https://gist.github.com/nekoya/5819512">https://gist.github.com/nekoya/5819512</a>にまとめておきました。</p>
 
 <p>1.4GHzのCore2Duoを積んだMacBookAirだと結構な差が付いたけど、SandyBridge Core i7-2600 @3.4GHzで走らせたら3倍ぐらい速くなってあまり気にならなくなってしまった。</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[PythonでTest::TCP的なことをするライブラリをPyPIに上げました]]></title>
-    <link href="http://nekoya.github.io/blog/2013/05/27/python-tcptest/"/>
-    <updated>2013-05-27T16:25:00+09:00</updated>
-    <id>http://nekoya.github.io/blog/2013/05/27/python-tcptest</id>
-    <content type="html"><![CDATA[<p>Perlでいうところの<a href="http://search.cpan.org/~tokuhirom/Test-TCP-1.27/lib/Test/TCP.pm">Test::TCP</a>相当のことをPythonでやるライブラリをPyPIに上げました。ようやくPyPIデビューです。</p>
 
-<ul>
-<li><a href="https://github.com/nekoya/python-tcptest">https://github.com/nekoya/python-tcptest</a></li>
-<li><a href="https://pypi.python.org/pypi/tcptest">https://pypi.python.org/pypi/tcptest</a></li>
-</ul>
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (nekoya)" rel="author">nekoya</a></span></span>
+
+      
 
 
-<p>Test::TCPはPerlでテスト時に一時的にサーバを起動したりする処理の基盤となるライブラリです。同等のことをPythonでやるのに適当なものが見当たらなかったので自分で書いたという経緯です。</p>
 
-<p>社内では以前からこの仕組みを使ってテストを書いていたのですが、自社のconfig系のライブラリとの結合を排除して、再構成したものになります。今回こうして公開するにあたって、関数名をオリジナルのPerl版に近付けたり、TestServerの実装を全面的に見直したりしました。</p>
 
-<p>tcptestパッケージにはTest::TCP本体だけでなく、memcachedとredisのテストサーバ実装も含まれています。Perlでは<a href="http://search.cpan.org/~dmaki/Test-Memcached-0.00004/lib/Test/Memcached.pm">Test::Memcached</a>や<a href="http://search.cpan.org/~typester/Test-RedisServer-0.12/lib/Test/RedisServer.pm">Test::RedisServer</a>のように別のライブラリとしてリリースされていますが、名前空間がバラバラになるのも微妙な気がしたので同一のパッケージにまとめました。</p>
 
-<p>PyPIにアップロードすること自体は参考資料もたくさんあり難しくないのですが、どういう名前付けをすべきかなど運営上のルールが今ひとつ分からず、まだ戸惑っている面があります。大文字小文字とか-_.のどれで区切るのかとか。あと、bdistとかbdist_eggはPure Pythonのライブラリだと不要だと思うけどよく分からない。</p>
 
-<p>なお、今回のtcptestは最初test.tcpという名前空間を使おうとしたのですが、Python標準のtestパッケージと干渉することが判明したので衝突回避のためこの名前になりました。</p>
 
-<p>自社プロダクト間の名前空間であれば、pkgutil.extend_pathを使って回避するのですが、標準ライブラリはともかくとして、PyPIのライブラリ同士での衝突はどう回避してるんだろう。</p>
-]]></content>
-  </entry>
+
   
-  <entry>
-    <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
-    <link href="http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc/"/>
-    <updated>2013-03-12T09:49:00+09:00</updated>
-    <id>http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc</id>
-    <content type="html"><![CDATA[<p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
 
-<p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
 
-<p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
+<time datetime="2013-06-21T10:04:00+09:00" pubdate data-updated="true">Jun 21<span>st</span>, 2013</time>
+      
 
-<p><div><script src='https://gist.github.com/5088592.js?file=publish_hex_key.pl'></script>
-<noscript><pre><code>use strict;
-use warnings;
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
 
-# http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password
 
-use Crypt::CBC;
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://b.hatena.ne.jp/entry/http://nekoya.github.io/blog/2013/06/21/python-datetime/" class="hatena-bookmark-button" data-hatena-bookmark-title="nekoya press" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://nekoya.github.io/blog/2013/06/21/python-datetime/" data-via="nekoya" data-counturl="http://nekoya.github.io/blog/2013/06/21/python-datetime/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-href="http://nekoya.github.io/blog/2013/06/21/python-datetime" data-send="false" data-width="450" data-show-faces="false"></div>
+  
+</div>
 
-my $key = shift or die '[usage] hex_key.pl key';
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/10/strptime-ymd/" title="Previous Post: 本当は怖いstrptimeと%Y%m%dの関係">&laquo; 本当は怖いstrptimeと%Y%m%dの関係</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-my $cipher = Crypt::CBC-&gt;new({
-        'key'            =&gt; $key,
-        'cipher'         =&gt; 'Blowfish',
-        'iv'             =&gt; '12345678',
-        'regenerate_key' =&gt; 1,
-        'padding'        =&gt; 'standard',
-        'prepend_iv'     =&gt; 0,
-    });
+</div>
 
-$cipher-&gt;encrypt('ShutTheFuckUpAndWriteSomeCode');
-print unpack('H*', $cipher-&gt;key), &quot;\n&quot;;</code></pre></noscript></div>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
-<p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
-
-<p><div><script src='https://gist.github.com/5088592.js?file=decrypt.py'></script>
-<noscript><pre><code>import base64
-from Crypto.Cipher import Blowfish
-from binascii import unhexlify
-from struct import pack
-
-key = unhexlify('144a6b229633360207ff9c79016fc49426f1814727b663bc39df05df9a1892073e2812df9492c1e952aac68d1ddfefba635d3a33aba21535')  # &quot;thisiskey&quot;
-iv = '123abc45'
-
-
-def enc(str):
-    plen = Blowfish.block_size - len(str) % Blowfish.block_size
-    padding = [plen] * plen
-    pad_str = str + pack('b' * plen, *padding)
-    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
-    return base64.urlsafe_b64encode(cipher.encrypt(pad_str))
-
-
-def dec(str):
-    plen = 4 - len(str) &amp; 3
-    pad_str = str + '=' * plen
-    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
-    dec = cipher.decrypt(base64.urlsafe_b64decode(pad_str))
-    num_padding = ord(dec[-1])
-    return dec[:(-1 * num_padding)]
-
-assert enc('1234567') == '7Zbfy4S_B28='
-assert enc('12345678') == '_V5IPxYq4omALzIyl10aMw=='
-
-assert enc('hello world') == 'V6r02_ivXP2ChJ0DGd_7aw=='
-assert dec('V6r02_ivXP2ChJ0DGd_7aw==') == 'hello world'
-assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V6r02_ivXP2ChJ0DGd_7aw==') == dec('V6r02_ivXP2ChJ0DGd_7aw===')</code></pre></noscript></div>
-</p>
-
-<p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>
-]]></content>
-  </entry>
+</footer>
   
-  <entry>
-    <title type="html"><![CDATA[Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う]]></title>
-    <link href="http://nekoya.github.io/blog/2013/02/08/python27-stream-handler/"/>
-    <updated>2013-02-08T09:12:00+09:00</updated>
-    <id>http://nekoya.github.io/blog/2013/02/08/python27-stream-handler</id>
-    <content type="html"><![CDATA[<p>CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。</p>
-
-<p>logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。</p>
-
-<ul>
-<li><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler">http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler</a></li>
-<li><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler">http://docs.python.org/2.7/library/logging.handlers.html#streamhandler</a></li>
-</ul>
 
 
-<p>Python2.6で</p>
 
-<pre><code>handler = logging.StreamHandler(strm=stream)
-</code></pre>
-
-<p>と書いていたところが、2.7では</p>
-
-<pre><code>handler = logging.StreamHandler(stream=stream)
-</code></pre>
-
-<p>と書かないと動かなくなっています。StreamHandlerの<strong>init</strong>()では、</p>
-
-<pre><code>def __init__(self, stream=None):
-    """
-    Initialize the handler.
-
-    If stream is not specified, sys.stderr is used.
-    """
-    Handler.__init__(self)
-    if stream is None:
-        stream = sys.stderr
-    self.stream = stream
-</code></pre>
-
-<p>として受け取っているだけで他の引数もないので、単に</p>
-
-<pre><code>handler = logging.StreamHandler(stream)
-</code></pre>
-
-<p>とキーワード引数で渡すのをやめれば動くんだけど、こういう「短縮名じゃない方がいいよね」みたいな深い意味のなさそうな変更をあっさり入れられると萎える…</p>
-
-<p>それとも2.6.5と2.7.3の間にはそういう変更を入れても問題ないとされるぐらいの隔たりがあるのだろうか。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Pythonのパッケージimportで間接的に参照が生える]]></title>
-    <link href="http://nekoya.github.io/blog/2013/01/18/python-package-import/"/>
-    <updated>2013-01-18T07:25:00+09:00</updated>
-    <id>http://nekoya.github.io/blog/2013/01/18/python-package-import</id>
-    <content type="html"><![CDATA[<p>社内のプロダクト開発がPythonに移行したはいいけど、調査・運用系のスクリプトは変わらずPerlで書いてDevsとOpsの分離が進みそうで老害化著しい今日この頃です。</p>
-
-<p>これじゃいかんと思って、ワンライナー以外はPythonで書くようになりました。pull req送るとダメ出しもらえるのでありがたいです。</p>
-
-<p>そんなPythonでパッケージをimportしたりfrom〜importしたりすると、自分のイメージと違う動作をすることがあって新鮮だったのでメモ。</p>
-
-<p>（2013/01/19 barとbazが紛らわしいのでs/baz/hoge/gしました）</p>
-
-<p>main.py</p>
-
-<pre><code>import foo.bar
-print foo.hoge.var
-</code></pre>
-
-<p>foo/__init__.py</p>
-
-<p>foo/bar.py</p>
-
-<pre><code>from foo.hoge import var
-</code></pre>
-
-<p>foo/hoge.py</p>
-
-<pre><code>var = 'DEAAAAAAAATH'
-</code></pre>
-
-<p>これでmain.pyを実行すると</p>
-
-<pre><code>$ python main.py
-DEAAAAAAAATH
-</code></pre>
-
-<p>main.pyではfoo.hogeをimportしていないのに、参照できる。Python 2.6.5, 2.7.1で確認。</p>
-
-<ul>
-<li>foo.barが走った時点でfooの名前空間にhogeが取り込まれる</li>
-<li>foo.barをimportするとfoo.barだけでなく、fooへの参照も取り込まれる</li>
-<li>foo以下のパッケージをimportするとfoo.hoge.varにアクセス可能</li>
-</ul>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 
-<p>ということか。</p>
 
-<p>以下追記（2013/01/19）</p>
 
-<p><a href="http://twitter.com/hiratara">@hiratara</a>さんとお話ししたので、少し補足。</p>
 
-<p>（2013/01/22 リンク追加）<a href="https://www.facebook.com/hiratara/posts/10152460490030164">https://www.facebook.com/hiratara/posts/10152460490030164</a></p>
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
 
-<p>『初めてのPython』によると、from module import name1は</p>
 
-<pre><code>import module
-name1 = module.name1
-del module
-</code></pre>
 
-<p>と理屈の上ではほぼ同じ意味を持ちます、というような記述があって、パッケージでないモジュールでは実際そういう動作をするので「fromで指定したモジュールへの参照は保持されない」と思っていました。</p>
 
-<p>上記のサンプルでは、foo.hogeはどこからも直接importはされず、foo.bar内でfrom〜importの形で参照されているだけなので、foo.hogeへの参照が残ると思っていなかったのです。「ほぼ」であって同一でないのはこういうところなのか、と。</p>
 
-<p>確かにdel foo.hoge的なことをしてしまうと、問題が起こりうるしそこを厳密に管理するのは大変すぎるのでこうなっているのは合理的だけど、今まで考えてなかったなぁというのがこちらのエントリでございます。</p>
-]]></content>
-  </entry>
-  
-</feed>
+</body>
+</html>

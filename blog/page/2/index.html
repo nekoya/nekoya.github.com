@@ -9,7 +9,7 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。 ただ、インストール直後は本当にOSを入れただけの無防備な状態で非常に危険です。 最低限の設定を定型化しておかないと怖いので、以下メモ。 手順はUbuntu12.04LTSを前提にしていますが、 &hellip;">
+  <meta name="description" content="CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。 logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。 http://docs.python.org/2.6/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,83 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/08/python27-stream-handler/">Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-08T09:12:00+09:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。</p>
+
+<p>logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。</p>
+
+<ul>
+<li><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler">http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler</a></li>
+<li><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler">http://docs.python.org/2.7/library/logging.handlers.html#streamhandler</a></li>
+</ul>
+
+
+<p>Python2.6で</p>
+
+<pre><code>handler = logging.StreamHandler(strm=stream)
+</code></pre>
+
+<p>と書いていたところが、2.7では</p>
+
+<pre><code>handler = logging.StreamHandler(stream=stream)
+</code></pre>
+
+<p>と書かないと動かなくなっています。StreamHandlerの<strong>init</strong>()では、</p>
+
+<pre><code>def __init__(self, stream=None):
+    """
+    Initialize the handler.
+
+    If stream is not specified, sys.stderr is used.
+    """
+    Handler.__init__(self)
+    if stream is None:
+        stream = sys.stderr
+    self.stream = stream
+</code></pre>
+
+<p>として受け取っているだけで他の引数もないので、単に</p>
+
+<pre><code>handler = logging.StreamHandler(stream)
+</code></pre>
+
+<p>とキーワード引数で渡すのをやめれば動くんだけど、こういう「短縮名じゃない方がいいよね」みたいな深い意味のなさそうな変更をあっさり入れられると萎える…</p>
+
+<p>それとも2.6.5と2.7.3の間にはそういう変更を入れても問題ないとされるぐらいの隔たりがあるのだろうか。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
