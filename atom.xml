@@ -4,7 +4,7 @@
   <title><![CDATA[blog on github]]></title>
   <link href="http://nekoya.github.io/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-07-02T15:07:30+09:00</updated>
+  <updated>2013-07-02T15:28:10+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -25,6 +25,8 @@
 
 <script async src="http://nekoya.github.io//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+
+<p><a href="https://twitter.com/jun66j5">@jun66j5</a>さんありがとうございました。</p>
 
 <p>このへんの背景は<a href="http://pytz.sourceforge.net/">pytzのサイト</a>にありますが、そもそもサマータイムに馴染みがないのでどうあるべきかがしっくりきません。</p>
 
