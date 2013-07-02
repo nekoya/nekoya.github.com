@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Pythonのdatetimeで夏時間を扱う - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="「Pythonの日付処理とTimeZone」を書いた後、Twitterで指摘をもらっていたのを遅ればせながら検証したので、改めてエントリを起こしてみました。 Pythonの日付処理とTimeZone http://t.co/KK1B5Fot0V datetime を tzinfo &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="http://twitter.com/nekoya">@nekoya</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="http://d.hatena.ne.jp/studio-m">d.hatena</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Pythonのdatetimeで夏時間を扱う</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-02T15:07:00+09:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>「<a href="http://nekoya.github.io/blog/2013/06/21/python-datetime/">Pythonの日付処理とTimeZone</a>」を書いた後、Twitterで指摘をもらっていたのを遅ればせながら検証したので、改めてエントリを起こしてみました。</p>
+
+<blockquote class="twitter-tweet"><p>Pythonの日付処理とTimeZone <a href="http://t.co/KK1B5Fot0V">http://t.co/KK1B5Fot0V</a> datetime を tzinfo 付きで生成する場合は pytz.tzinfo.normalize しないと DST 境界を超えるところで存在しない時刻を作りますよ</p>&mdash; Jun Omae⁽⁶⁶ʲ⁵⁾ (@jun66j5) <a href="https://twitter.com/jun66j5/statuses/348421676503011328">June 22, 2013</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>このへんの背景は<a href="http://pytz.sourceforge.net/">pytzのサイト</a>にありますが、そもそもサマータイムに馴染みがないのでどうあるべきかがしっくりきません。</p>
+
+<h2>標準時と夏時間の切り替わり</h2>
+
+<p>ここでは、ニューヨークが属するTimeZoneを例に話を進めます。まずは基本的な用語の整理から。</p>
+
+<ul>
+<li><a href="http://ja.wikipedia.org/wiki/%E5%A4%8F%E6%99%82%E9%96%93">DST</a> … daylight saving time、夏時間（サマータイム）のこと</li>
+<li><a href="http://ja.wikipedia.org/wiki/%E6%9D%B1%E9%83%A8%E6%A8%99%E6%BA%96%E6%99%82">EST</a> … 東部標準時、UTCより5時間遅れ（-05:00）</li>
+<li><a href="http://ja.wikipedia.org/wiki/%E6%9D%B1%E9%83%A8%E5%A4%8F%E6%99%82%E9%96%93">EDT</a> … 東部夏時間、UTCより4時間遅れ（-04:00）</li>
+</ul>
+
+
+<p>とりあえずWikipediaにリンクしときましたが、他にも「<a href="http://www.time-j.net/">Time-j.net 世界時計 - 世界の時間と時差</a>」というサイトの「<a href="http://www.time-j.net/WorldTime/Location/America/New_York">アメリカ / ニューヨークの時差と現在時刻</a>」がいろいろ参考になりました。</p>
+
+<p>2013年は3月10日の午前2時から11月3日の午前2時までが夏時間らしいです。と一口に言っても、夏時間に突入すると同時に現時刻の定義が変わるし、標準時に戻った時も現時刻の定義が変わるのでややこしいんですよね。</p>
+
+<p>正確には「標準時（EST）の3/10 02:00から」「夏時間（EDT）の11/3 02:00まで」が夏時間の適用期間で、その時刻を迎えた時に切り替わるのでこういうことになるようです。</p>
+
+<pre><code>from datetime import datetime
+import pytz
+
+fmt = '%Y-%m-%d %H:%M:%S %z(%Z)'
+
+def dump(year, mon, day, hour, min, sec):
+    dt = datetime(year, mon, day, hour, min, sec, tzinfo=pytz.utc)
+    print dt.astimezone(ny).strftime(fmt)
+
+ny = pytz.timezone('America/New_York')
+
+dump(2013, 3, 10, 6, 59, 59)  # 2013-03-10 01:59:59 -0500(EST)
+dump(2013, 3, 10, 7, 0, 0)    # 2013-03-10 03:00:00 -0400(EDT)
+dump(2013, 11, 3, 5, 59, 59)  # 2013-11-03 01:59:59 -0400(EDT)
+dump(2013, 11, 3, 6, 0, 0)    # 2013-11-03 01:00:00 -0500(EST)
+</code></pre>
+
+<p>2013年3月10日の午前2時という時間は消し飛び、夏時間に突入したという結果だけが残る。と考えれば覚えやすいのではないでしょうか。</p>
+
+<h2>datetimeオブジェクトの作り方</h2>
+
+<p>夏時間に該当するdatetimeオブジェクトを作る時、コンストラクタにtzinfoを渡すとこうなります。</p>
+
+<pre><code>&gt;&gt;&gt; from datetime import datetime
+&gt;&gt;&gt; import pytz
+&gt;&gt;&gt; ny_tz = pytz.timezone('America/New_York')
+&gt;&gt;&gt; datetime(2013, 4, 10, 8, 0, tzinfo=ny_tz).strftime(fmt)
+'2013-04-10 08:00:00 EST(-0500)'
+</code></pre>
+
+<p>ESTなので夏時間になっていません。これは、pytz.timezone()を単体で呼んだだけでは夏時間の判定ができないため、</p>
+
+<ol>
+<li>とりあえずESTのtzinfoを返す</li>
+<li>datetimeは渡されたtzinfoを単純に取り込む</li>
+</ol>
+
+
+<p>という動作をして、こういう結果を返してしまうものと思われます。</p>
+
+<pre><code>&gt;&gt;&gt; ny_tz.localize(datetime(2013, 4, 10, 8, 0)).strftime(fmt)
+'2013-04-10 08:00:00 EDT(-0400)'
+</code></pre>
+
+<p>こちらは日付が確定した後にTimeZone情報を与えているので、夏時間に属するawareなdatetimeオブジェクトが取れています。</p>
+
+<pre><code>def localize(dt):
+    print ny_tz.localize(dt).strftime(fmt)
+
+localize(datetime(2013, 3, 10, 1, 59, 59))  # 2013-03-10 01:59:59 EST(-0500)
+localize(datetime(2013, 3, 10, 2, 0, 0))    # 2013-03-10 02:00:00 EST(-0500)
+localize(datetime(2013, 3, 10, 2, 59, 59))  # 2013-03-10 02:59:59 EST(-0500)
+localize(datetime(2013, 3, 10, 3, 0, 0))    # 2013-03-10 03:00:00 EDT(-0400)
+</code></pre>
+
+<p>2時になったらキング・クリムゾン発動するんじゃないの…</p>
+
+<pre><code>def normalize(dt):
+    print ny_tz.normalize(ny_tz.localize(dt)).strftime(fmt)
+
+normalize(datetime(2013, 3, 10, 1, 59, 59))  # 2013-03-10 01:59:59 EST(-0500)
+normalize(datetime(2013, 3, 10, 2, 0, 0))    # 2013-03-10 03:00:00 EDT(-0400)
+normalize(datetime(2013, 3, 10, 2, 59, 59))  # 2013-03-10 03:59:59 EDT(-0400)
+normalize(datetime(2013, 3, 10, 3, 0, 0))    # 2013-03-10 03:00:00 EDT(-0400)
+</code></pre>
+
+<p>こちらは2時台も補正されました。ただし、3/10 02:00〜02:59は存在しない時間なので、02:00は03:00と同時刻として処理されます。</p>
+
+<pre><code>&gt;&gt;&gt; ny_tz.localize(datetime(2013, 3, 10, 2, 0, 0)).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 7, 0, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; ny_tz.localize(datetime(2013, 3, 10, 3, 0, 0)).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 7, 0, tzinfo=&lt;UTC&gt;)
+</code></pre>
+
+<p>いずれもUTCに変換してしまえば補正されます。UTCではなくJSTにしても同様ですが、TimeZoneの変換をするなら基準はUTCに置いた方が混乱が少ないでしょう。</p>
+
+<p>ただし、この場合でもコンストラクタにtzinfoを渡してしまうと、</p>
+
+<pre><code>&gt;&gt;&gt; datetime(2013, 3, 10, 2, 0, tzinfo=ny_tz).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 7, 0, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; datetime(2013, 3, 10, 3, 0, tzinfo=ny_tz).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 8, 0, tzinfo=&lt;UTC&gt;)
+</code></pre>
+
+<p>このように、後者もESTをベースとして処理されてしまいます。pytzの公式にもあるように、datetimeの実装が今の仕様である以上どうにもならないようです。</p>
+
+<p>夏時間を考慮してdatetimeオブジェクトを作る場合は、以下を基本方針とするのがいいでしょう。</p>
+
+<ul>
+<li>コンストラクタにはtzinfoを渡さず、naiveなdatetimeオブジェクトをlocalizeする</li>
+<li>存在しない時刻が渡る可能性がある時はnormalizeするかUTCに変換する</li>
+</ul>
+
+
+<h2>timedeltaによる演算と夏時間</h2>
+
+<p>tzinfoが夏時間を考慮してくれない問題は、datetimeオブジェクトを作る時だけでなく、timedeltaによる演算時も同様です。</p>
+
+<pre><code>from datetime import timedelta
+
+def offset(seconds):
+    dt = ny_tz.localize(datetime(2013, 3, 10, 1, 59, 59))
+    dt += timedelta(seconds=seconds)
+    print dt.strftime(fmt)
+
+offset(0)     # 2013-03-10 01:59:59 EST(-0500)
+offset(1)     # 2013-03-10 02:00:00 EST(-0500)
+offset(3600)  # 2013-03-10 02:59:59 EST(-0500)
+offset(3601)  # 2013-03-10 03:00:00 EST(-0500)
+</code></pre>
+
+<p>夏時間に突入しても、TimeZoneはESTのままです。</p>
+
+<pre><code>def offset_n(seconds):
+    dt = ny_tz.localize(datetime(2013, 3, 10, 1, 59, 59))
+    dt += timedelta(seconds=seconds)
+    print ny_tz.normalize(dt).strftime(fmt)
+
+offset_n(0)     # 2013-03-10 01:59:59 EST(-0500)
+offset_n(1)     # 2013-03-10 03:00:00 EDT(-0400)
+offset_n(3600)  # 2013-03-10 03:59:59 EDT(-0400)
+offset_n(3601)  # 2013-03-10 04:00:00 EDT(-0400)
+</code></pre>
+
+<p>normalizeしてやると、補正されてEDTになります。</p>
+
+<p>ただ、夏時間のように時間の定義が途中で変わるような条件で演算するのはあまりに複雑なので、事前にUTCに変換してしまった方が安全でしょう。</p>
+
+<pre><code>&gt;&gt;&gt; datetime(2013, 3, 10, 6, 59, 59, tzinfo=pytz.utc).astimezone(ny_tz).strftime(fmt)
+'2013-03-10 01:59:59 EST(-0500)'
+&gt;&gt;&gt; datetime(2013, 3, 10, 7, 0, 0, tzinfo=pytz.utc).astimezone(ny_tz).strftime(fmt)
+'2013-03-10 03:00:00 EDT(-0400)'
+</code></pre>
+
+<p>astimezoneで変換した場合はnormalizeは不要なので、夏時間を意識する必要はありません。</p>
+
+<p>特にテストを書く場合に、夏時間とその期間外でUTCからの時差が変わってテストケースに影響が出るのは好ましくないと考えます。</p>
+
+<p>本件に限らず複数のTimeZoneを扱う場合は、「内部ではUTCで保持し、出力する段階でlocaltimeに変換する」のが間違いが起きにくいでしょう。文字コードで「内部ではUnicodeで保持し、出力する段階でUTF-8等に変換する」というのと同じですね。</p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>夏時間がある場合はコンストラクタにtzinfoを渡さない</li>
+<li>時刻を扱う場合は内部ではUTCで持つと混乱が少ない（はず）</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (nekoya)" rel="author">nekoya</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-02T15:07:00+09:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://b.hatena.ne.jp/entry/http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/" class="hatena-bookmark-button" data-hatena-bookmark-title="nekoya press" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/" data-via="nekoya" data-counturl="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst" data-send="false" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/21/python-datetime/" title="Previous Post: Pythonの日付処理とTimeZone">&laquo; Pythonの日付処理とTimeZone</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
