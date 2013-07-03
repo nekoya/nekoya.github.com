@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>MySQL-python1.2.4でdatetimeから文字列の変換方法が変わった件 - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="MySQL-python（MySQLdb）を上げたら、今まで通ってたテストでwarningが出るようになりました。 MySQLdb/times.pyで以前は def format_TIMESTAMP(d): return d.strftime("%Y-%m-%d %H:%M:%S") &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.io/blog/2013/07/03/mysql-python-datetime-format/">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="http://twitter.com/nekoya">@nekoya</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="http://d.hatena.ne.jp/studio-m">d.hatena</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">MySQL-python1.2.4でdatetimeから文字列の変換方法が変わった件</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-03T10:32:00+09:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>MySQL-python（MySQLdb）を上げたら、今まで通ってたテストでwarningが出るようになりました。</p>
+
+<p><a href="https://github.com/farcepest/MySQLdb1/blob/MySQLdb-1.2.4/MySQLdb/times.py">MySQLdb/times.py</a>で以前は</p>
+
+<pre><code>def format_TIMESTAMP(d):
+    return d.strftime("%Y-%m-%d %H:%M:%S")
+</code></pre>
+
+<p>こうなっていたものが、</p>
+
+<pre><code>def format_TIMESTAMP(d):
+    return d.isoformat(" ")
+</code></pre>
+
+<p>こうなったのが原因らしいのだけど、<a href="https://github.com/farcepest/MySQLdb1/blob/MySQLdb-1.2.4/HISTORY">Changelog</a>を見てもそれらしい表記がないので少し経緯を追ってみました。</p>
+
+<p>この変更で何が問題になったかというと、</p>
+
+<pre><code>&gt;&gt; import datetime, pytz
+&gt;&gt;&gt; datetime.datetime.now(pytz.utc).isoformat(' ')  # aware
+'2013-06-27 01:50:16.156481+00:00'
+&gt;&gt;&gt; datetime.datetime.now().isoformat(' ')  # naive
+'2013-06-27 10:48:30.696072'
+</code></pre>
+
+<p>のように、microsecondや時差を含んだ文字列がSQLに渡って「Warning: Incorrect datetime value: &#8216;2013-06-27 01:50:16.156481+00:00&#8217; for column 〜」という警告が出るようになりました。</p>
+
+<p>履歴を追っていくと、<a href="http://sourceforge.net/p/mysql-python/svn/659/">http://sourceforge.net/p/mysql-python/svn/659/</a> で</p>
+
+<blockquote><p>Use isoformat() instead of strftime() to avoid year limitations of the latter. Fixes #3296395</p></blockquote>
+
+<p>とあって、1900年以前の日付を扱えるようにこの変更を加えたことが分かります。strftime(3)の仕様的にそうなってたけど、そこの制限を外したぜってことらしいです。だけど、この#3296395ってどこのことだ…</p>
+
+<p>該当するチケットは <a href="http://sourceforge.net/p/mysql-python/bugs/311/">#311 executing a datetime column update with year &lt; 1900 fails</a> っぽいけど、BTS移行とかしたんでしょうか。</p>
+
+<p>最初はMySQL5.6でdatetime型がミリ秒対応したらしい（検証してない）ので、それに合わせた施策かなーと思ったらそんなことはなかった。</p>
+
+<p>他にもmicrosecond周りでは <a href="http://sourceforge.net/p/mysql-python/bugs/325/">#325 Datetime fields with microsecond shows as None</a> みたいなチケットが今も動いていたりして、なかなか予断を許さない印象を受けます。</p>
+
+<p>DBのライブラリがdatetimeオブジェクトを適切に扱ってくれるのは素敵だと思ってたけど、なかなか難しいですね。取り急ぎの対処法としては、</p>
+
+<ul>
+<li>microsecondやtzinfoを含まないdatetimeオブジェクトだけを扱う</li>
+<li>事前に自分で文字列にして渡す</li>
+</ul>
+
+
+<p>のいずれかにわけで、自分のユースケースだとコネクション管理と<a href="http://search.cpan.org/~tokuhirom/SQL-Maker-1.12/lib/SQL/Maker.pm">SQL::Maker</a>の簡易版みたいなことをするラッパーを通しているので、そこで時前でstrftimeして乗り切る感じになりました。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (nekoya)" rel="author">nekoya</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-03T10:32:00+09:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://b.hatena.ne.jp/entry/http://nekoya.github.io/blog/2013/07/03/mysql-python-datetime-format/" class="hatena-bookmark-button" data-hatena-bookmark-title="nekoya press" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://nekoya.github.io/blog/2013/07/03/mysql-python-datetime-format/" data-via="nekoya" data-counturl="http://nekoya.github.io/blog/2013/07/03/mysql-python-datetime-format/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-href="http://nekoya.github.io/blog/2013/07/03/mysql-python-datetime-format" data-send="false" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/07/02/python-aware-datetime-dst/" title="Previous Post: Pythonのdatetimeで夏時間を扱う">&laquo; Pythonのdatetimeで夏時間を扱う</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

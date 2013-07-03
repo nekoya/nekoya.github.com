@@ -9,7 +9,7 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="「Pythonの日付処理とTimeZone」を書いた後、Twitterで指摘をもらっていたのを遅ればせながら検証したので、改めてエントリを起こしてみました。 Pythonの日付処理とTimeZone http://t.co/KK1B5Fot0V datetime を tzinfo &hellip;">
+  <meta name="description" content="MySQL-python（MySQLdb）を上げたら、今まで通ってたテストでwarningが出るようになりました。 MySQLdb/times.pyで以前は def format_TIMESTAMP(d): return d.strftime("%Y-%m-%d %H:%M:%S") &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,89 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/03/mysql-python-datetime-format/">MySQL-python1.2.4でdatetimeから文字列の変換方法が変わった件</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-03T10:32:00+09:00" pubdate data-updated="true">Jul 3<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>MySQL-python（MySQLdb）を上げたら、今まで通ってたテストでwarningが出るようになりました。</p>
+
+<p><a href="https://github.com/farcepest/MySQLdb1/blob/MySQLdb-1.2.4/MySQLdb/times.py">MySQLdb/times.py</a>で以前は</p>
+
+<pre><code>def format_TIMESTAMP(d):
+    return d.strftime("%Y-%m-%d %H:%M:%S")
+</code></pre>
+
+<p>こうなっていたものが、</p>
+
+<pre><code>def format_TIMESTAMP(d):
+    return d.isoformat(" ")
+</code></pre>
+
+<p>こうなったのが原因らしいのだけど、<a href="https://github.com/farcepest/MySQLdb1/blob/MySQLdb-1.2.4/HISTORY">Changelog</a>を見てもそれらしい表記がないので少し経緯を追ってみました。</p>
+
+<p>この変更で何が問題になったかというと、</p>
+
+<pre><code>&gt;&gt; import datetime, pytz
+&gt;&gt;&gt; datetime.datetime.now(pytz.utc).isoformat(' ')  # aware
+'2013-06-27 01:50:16.156481+00:00'
+&gt;&gt;&gt; datetime.datetime.now().isoformat(' ')  # naive
+'2013-06-27 10:48:30.696072'
+</code></pre>
+
+<p>のように、microsecondや時差を含んだ文字列がSQLに渡って「Warning: Incorrect datetime value: &#8216;2013-06-27 01:50:16.156481+00:00&#8217; for column 〜」という警告が出るようになりました。</p>
+
+<p>履歴を追っていくと、<a href="http://sourceforge.net/p/mysql-python/svn/659/">http://sourceforge.net/p/mysql-python/svn/659/</a> で</p>
+
+<blockquote><p>Use isoformat() instead of strftime() to avoid year limitations of the latter. Fixes #3296395</p></blockquote>
+
+<p>とあって、1900年以前の日付を扱えるようにこの変更を加えたことが分かります。strftime(3)の仕様的にそうなってたけど、そこの制限を外したぜってことらしいです。だけど、この#3296395ってどこのことだ…</p>
+
+<p>該当するチケットは <a href="http://sourceforge.net/p/mysql-python/bugs/311/">#311 executing a datetime column update with year &lt; 1900 fails</a> っぽいけど、BTS移行とかしたんでしょうか。</p>
+
+<p>最初はMySQL5.6でdatetime型がミリ秒対応したらしい（検証してない）ので、それに合わせた施策かなーと思ったらそんなことはなかった。</p>
+
+<p>他にもmicrosecond周りでは <a href="http://sourceforge.net/p/mysql-python/bugs/325/">#325 Datetime fields with microsecond shows as None</a> みたいなチケットが今も動いていたりして、なかなか予断を許さない印象を受けます。</p>
+
+<p>DBのライブラリがdatetimeオブジェクトを適切に扱ってくれるのは素敵だと思ってたけど、なかなか難しいですね。取り急ぎの対処法としては、</p>
+
+<ul>
+<li>microsecondやtzinfoを含まないdatetimeオブジェクトだけを扱う</li>
+<li>事前に自分で文字列にして渡す</li>
+</ul>
+
+
+<p>のいずれかにわけで、自分のユースケースだとコネクション管理と<a href="http://search.cpan.org/~tokuhirom/SQL-Maker-1.12/lib/SQL/Maker.pm">SQL::Maker</a>の簡易版みたいなことをするラッパーを通しているので、そこで時前でstrftimeして乗り切る感じになりました。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1100,105 +1183,6 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
 <p>キューに登録しておくと、バックアップサーバが後でrsyncしてくれるような簡単なジョブキューの仕組みをRedisのSortedSetを使って作っています。</p>
 
 <p>なお、アプリケーションレベルでのRedisの使い方については<a href="http://www.manning.com/carlson/">Redis in Action</a>が実例豊富でお勧めです。データ型の解説などもじっくりたっぷり解説してあるので、これからRedisを始めようという人はWEB+DBの特集を見た上で、この本を読むのがよいと思います。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/20/what-about-get-user/">Get_user()の何がいかんのか</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-20T08:30:00+09:00" pubdate data-updated="true">Feb 20<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/">先のエントリ</a>で以下のように述べた伏線の回収エントリとなります。</p>
-
-<blockquote><p>そして、get_user()という名前はサンプルコードにはありがちだが、この名前も闇が深いと思っている。これについてはまた別途取り上げたい。</p></blockquote>
-
-<p>このメソッドを構成する単語であるget, userともに問題があると考えており、それぞれについて見ていきます。</p>
-
-<h2>Userとは具体的に何か</h2>
-
-<p>これはよくある話で、まず自問すべきは「そのUserの定義を教えてください」である。</p>
-
-<p>多くの業務システムではユーザ（アクタ）が複数存在しており、単に「ユーザ」と言った場合に指す対象が文脈によって異なることが多い。</p>
-
-<p>これに対しては、Employee, Staff, Administrator, Visitor, Sponsorなど別の具体的な単語に置き換えられないかを検討することになる。</p>
-
-<p>「ユーザ」が一意なシステムであればUserと名付けるのも妥当だろう（SNSなどが該当するだろうか）。</p>
-
-<p>userについては、より具象化した名前が見付からないかよく検討しましょう、という話で簡単に終わる。</p>
-
-<h2>get_XXX()という名前</h2>
-
-<p>このgetという名前についてはここ数年に渡って思うところがあり、もやもやしていたが、この話題を通してある程度は自分のスタンスが見えてきた。</p>
-
-<p>個人的な経験から、近年のプログラム言語はメソッドとプロパティ（メンバ変数）の境界線が曖昧になる方向に進んでいると感じている。</p>
-
-<p>具体的には、PerlでMoose系モジュールによるlazyとdefaultを使ったアクセサと初期値の定義や、Pythonの@propertyがそう感じるに至った体験である。また、JavaScriptでもクロージャを使うことで似たような感覚に陥ることがある。</p>
-
-<p>ここから生まれた疑問が「メソッドや関数への参照を変数に格納可能な言語において、その内容が現物の値そのものなのか、何らかの処理の結果なのかを区別することに意味はあるのか」というものだ。</p>
-
-<p>書籍『リーダブルコード』では、</p>
-
-<blockquote><p>多くのプログラマは、getで始まるメソッドはメンバの値を返すだけのアクセサ」であるという規約に慣れ親しんでいる。この規約を守らなければ誤解を招く可能性がある。</p></blockquote>
-
-<p>として、get*()にコストの高い処理を組み込むことを戒め、</p>
-
-<blockquote><p>コストの高さが事前にわかるように、このメソッドはcoputeMean()などの名前に変えるべきだろう（あるいは、コストの高くない実装に変えるべきだろう）。</p></blockquote>
-
-<p>と書いている。この論には大筋では同意なのだが、「そもそもgetを付ける必然性はあるのか」という疑念がついて回る。</p>
-
-<p>setterについては言語仕様も含めて一概には言えないが、少なくともgetterはプロパティへのアクセスと区別する必要はないとの思いが日に日に強くなっている。</p>
-
-<p>また、呼び出しのコストについては名前の如何に関わらず、呼び出し元がそこを意識するべきではないとも思う。</p>
-
-<p>少し理想論も入ってくるが、外部に公開しているインタフェースは呼び出し元がその内部の実装を意識することなく利用されるべきであると考えている。非機能要件が機能を制限すべきでない、とも言い換えられる。</p>
-
-<p>現実的には呼び出しコストを完全に無視できないケースは多々あるが、それが命名規則に影響を与えることには違和感がある。</p>
-
-<p>例えば、キャッシュを導入すればそれまで毎回大きなコストがかかっていた処理が、最初の1回だけ高コストで、その後は軽い処理になる。</p>
-
-<p>その計算をアクセサが呼ばれた瞬間でなく、オブジェクトが生成されたタイミングで行えば、メソッドそのものは重い処理ではなくなる。</p>
-
-<p>更には、事前にその集計結果をKVS等に格納することになれば、オブジェクト生成も含めて呼び出しコストの問題は無視できるレベルになるだろう。</p>
-
-<p>このような対策が考えられる問題に対して、命名が影響を受けることには疑問がある。</p>
-
-<p>コストの問題は命名とは別のものとして、別途計測やチューニングの対象とすべきではないか。高コストであっても呼び出し頻度が低ければ問題にならないことも多いだろうし、頻度が高いのであれば、名前で警告するよりもコスト軽減に目を向けた方が実りが多いように思う。</p>
-
-<h2>3行まとめ</h2>
-
-<ul>
-<li>抽象化されたサンプルの名前に引きずられるな</li>
-<li>アクセサとプロパティの違いは明確にしなくていい</li>
-<li>命名と処理コストは別問題として扱え</li>
-</ul>
-
 </div>
   
   
