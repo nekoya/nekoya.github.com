@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | blog on github]]></title>
   <link href="http://nekoya.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-07-03T11:56:53+09:00</updated>
+  <updated>2013-07-05T12:47:19+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -12,6 +12,52 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない]]></title>
+    <link href="http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/"/>
+    <updated>2013-07-05T12:24:00+09:00</updated>
+    <id>http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst</id>
+    <content type="html"><![CDATA[<p>Pythonでnaiveなdatetimeオブジェクトにtzinfoを付けてawareにするには、<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.astimezone">公式</a>には</p>
+
+<blockquote><p>単にタイムゾーンオブジェクト tz を datetime オブジェクト dt に追加したいだけで、日付や時刻データメンバへの調整を行わないのなら、 dt.replace(tzinfo=tz) を使ってください。</p></blockquote>
+
+<p>こう書かれているのですが、どうもこの方法は夏時間の扱い以外にも問題があるようです。</p>
+
+<pre><code>&gt;&gt;&gt; import datetime, pytz
+&gt;&gt;&gt; jst = pytz.timezone('Asia/Tokyo')
+&gt;&gt;&gt; datetime.datetime.now(jst)
+datetime.datetime(2013, 7, 5, 12, 23, 1, 962735, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+&gt;&gt;&gt; datetime.datetime.now().replace(tzinfo=jst)
+datetime.datetime(2013, 7, 5, 12, 23, 9, 143578, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' CJT+9:00:00 STD&gt;)
+</code></pre>
+
+<p>replaceでtzinfoを付与すると、JSTではなくCJTとなります。CentOS5.8 + Python2.6.5とSnowLeopard + Python2.7.1で同じ結果になりました。</p>
+
+<ul>
+<li><a href="http://www.atmarkit.co.jp/ait/articles/0505/27/news116_3.html">SQLクリニック（4）：日付データ演算の達人技を伝授する 【第3話】 (3/3) - ＠IT</a></li>
+</ul>
+
+
+<blockquote><p>実は、日本にも複数のタイムゾーンが存在したことが過去にあるようです。それまでJSTとされていたタイムゾーンがこのときCJTとなりました。「Central Japan Time」の略称で、日本中央時間（もしくは中央日本時間）です。</p></blockquote>
+
+<p>少なくとも2013年にCJTを使うことはなさそうなので、これは嬉しくないですね。</p>
+
+<pre><code>&gt;&gt;&gt; jst.localize(datetime.datetime.now())
+datetime.datetime(2013, 7, 5, 12, 23, 19, 647283, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+</code></pre>
+
+<p>夏時間に対処した時と同じように、localizeしてやれば問題なくJSTが返ってきます。とりあえずlocalizeしておけば安心、なのかな。</p>
+
+<h2>関連エントリ</h2>
+
+<ul>
+<li><a href="http://nekoya.github.io/blog/2013/06/21/python-datetime/">Pythonの日付処理とTimeZone</a></li>
+<li><a href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/">Pythonのdatetimeで夏時間を扱う</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[MySQL-python1.2.4でdatetimeから文字列の変換方法が変わった件]]></title>
@@ -531,80 +577,6 @@ datetime.datetime(2012, 6, 18, 12, 31, 7, tzinfo=&lt;UTC&gt;)
 <p>なお、今回のtcptestは最初test.tcpという名前空間を使おうとしたのですが、Python標準のtestパッケージと干渉することが判明したので衝突回避のためこの名前になりました。</p>
 
 <p>自社プロダクト間の名前空間であれば、pkgutil.extend_pathを使って回避するのですが、標準ライブラリはともかくとして、PyPIのライブラリ同士での衝突はどう回避してるんだろう。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする]]></title>
-    <link href="http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc/"/>
-    <updated>2013-03-12T09:49:00+09:00</updated>
-    <id>http://nekoya.github.io/blog/2013/03/12/python-crypt-cbc</id>
-    <content type="html"><![CDATA[<p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
-
-<p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
-
-<p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
-
-<p><div><script src='https://gist.github.com/5088592.js?file=publish_hex_key.pl'></script>
-<noscript><pre><code>use strict;
-use warnings;
-
-# http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password
-
-use Crypt::CBC;
-
-my $key = shift or die '[usage] hex_key.pl key';
-
-my $cipher = Crypt::CBC-&gt;new({
-        'key'            =&gt; $key,
-        'cipher'         =&gt; 'Blowfish',
-        'iv'             =&gt; '12345678',
-        'regenerate_key' =&gt; 1,
-        'padding'        =&gt; 'standard',
-        'prepend_iv'     =&gt; 0,
-    });
-
-$cipher-&gt;encrypt('ShutTheFuckUpAndWriteSomeCode');
-print unpack('H*', $cipher-&gt;key), &quot;\n&quot;;</code></pre></noscript></div>
-</p>
-
-<p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
-
-<p><div><script src='https://gist.github.com/5088592.js?file=decrypt.py'></script>
-<noscript><pre><code>import base64
-from Crypto.Cipher import Blowfish
-from binascii import unhexlify
-from struct import pack
-
-key = unhexlify('144a6b229633360207ff9c79016fc49426f1814727b663bc39df05df9a1892073e2812df9492c1e952aac68d1ddfefba635d3a33aba21535')  # &quot;thisiskey&quot;
-iv = '123abc45'
-
-
-def enc(str):
-    plen = Blowfish.block_size - len(str) % Blowfish.block_size
-    padding = [plen] * plen
-    pad_str = str + pack('b' * plen, *padding)
-    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
-    return base64.urlsafe_b64encode(cipher.encrypt(pad_str))
-
-
-def dec(str):
-    plen = 4 - len(str) &amp; 3
-    pad_str = str + '=' * plen
-    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
-    dec = cipher.decrypt(base64.urlsafe_b64decode(pad_str))
-    num_padding = ord(dec[-1])
-    return dec[:(-1 * num_padding)]
-
-assert enc('1234567') == '7Zbfy4S_B28='
-assert enc('12345678') == '_V5IPxYq4omALzIyl10aMw=='
-
-assert enc('hello world') == 'V6r02_ivXP2ChJ0DGd_7aw=='
-assert dec('V6r02_ivXP2ChJ0DGd_7aw==') == 'hello world'
-assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V6r02_ivXP2ChJ0DGd_7aw==') == dec('V6r02_ivXP2ChJ0DGd_7aw===')</code></pre></noscript></div>
-</p>
-
-<p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>
 ]]></content>
   </entry>
   

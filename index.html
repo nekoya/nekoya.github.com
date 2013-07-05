@@ -9,7 +9,7 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="MySQL-python（MySQLdb）を上げたら、今まで通ってたテストでwarningが出るようになりました。 MySQLdb/times.pyで以前は def format_TIMESTAMP(d): return d.strftime("%Y-%m-%d %H:%M:%S") &hellip;">
+  <meta name="description" content="Pythonでnaiveなdatetimeオブジェクトにtzinfoを付けてawareにするには、公式には 単にタイムゾーンオブジェクト tz を datetime オブジェクト dt に追加したいだけで、日付や時刻データメンバへの調整を行わないのなら、 dt.replace(tzinfo=tz &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,79 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/05/python-datetime-with-jst/">Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-05T12:24:00+09:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Pythonでnaiveなdatetimeオブジェクトにtzinfoを付けてawareにするには、<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.astimezone">公式</a>には</p>
+
+<blockquote><p>単にタイムゾーンオブジェクト tz を datetime オブジェクト dt に追加したいだけで、日付や時刻データメンバへの調整を行わないのなら、 dt.replace(tzinfo=tz) を使ってください。</p></blockquote>
+
+<p>こう書かれているのですが、どうもこの方法は夏時間の扱い以外にも問題があるようです。</p>
+
+<pre><code>&gt;&gt;&gt; import datetime, pytz
+&gt;&gt;&gt; jst = pytz.timezone('Asia/Tokyo')
+&gt;&gt;&gt; datetime.datetime.now(jst)
+datetime.datetime(2013, 7, 5, 12, 23, 1, 962735, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+&gt;&gt;&gt; datetime.datetime.now().replace(tzinfo=jst)
+datetime.datetime(2013, 7, 5, 12, 23, 9, 143578, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' CJT+9:00:00 STD&gt;)
+</code></pre>
+
+<p>replaceでtzinfoを付与すると、JSTではなくCJTとなります。CentOS5.8 + Python2.6.5とSnowLeopard + Python2.7.1で同じ結果になりました。</p>
+
+<ul>
+<li><a href="http://www.atmarkit.co.jp/ait/articles/0505/27/news116_3.html">SQLクリニック（4）：日付データ演算の達人技を伝授する 【第3話】 (3/3) - ＠IT</a></li>
+</ul>
+
+
+<blockquote><p>実は、日本にも複数のタイムゾーンが存在したことが過去にあるようです。それまでJSTとされていたタイムゾーンがこのときCJTとなりました。「Central Japan Time」の略称で、日本中央時間（もしくは中央日本時間）です。</p></blockquote>
+
+<p>少なくとも2013年にCJTを使うことはなさそうなので、これは嬉しくないですね。</p>
+
+<pre><code>&gt;&gt;&gt; jst.localize(datetime.datetime.now())
+datetime.datetime(2013, 7, 5, 12, 23, 19, 647283, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+</code></pre>
+
+<p>夏時間に対処した時と同じように、localizeしてやれば問題なくJSTが返ってきます。とりあえずlocalizeしておけば安心、なのかな。</p>
+
+<h2>関連エントリ</h2>
+
+<ul>
+<li><a href="http://nekoya.github.io/blog/2013/06/21/python-datetime/">Pythonの日付処理とTimeZone</a></li>
+<li><a href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/">Pythonのdatetimeで夏時間を扱う</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1116,75 +1189,6 @@ assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V
 
 
 <p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/26/redis-backup/">Redisのバックアップは慎重に</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-26T23:06:00+09:00" pubdate data-updated="true">Feb 26<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<p>皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。</p>
-
-<p>弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。</p>
-
-<p>本番環境でRedisを運用する上で、強く訴えたい注意点は「RDBが壊れることがある」ということです。</p>
-
-<p>「RDBがあるからインスタンスが落ちても平気だぜ」とか思ってると、RDBが壊れてリストア失敗→データ消失ということになりかねません。ファイルにdumpされるからと安心していると痛い目に遭うかも知れません。</p>
-
-<p>（2013/02/27追記）今のところ壊れたのはハード障害が怪しい場面のみです。「RDB壊れるとかRedis使えねー」とかそういう話ではまったくありません。誤解無きよう。壊れる時はRedisじゃなくても壊れます。自分のユースケースではTokyo Cabinet/Tyrantからの乗り換えだったので「RDBの修復自体がサポートされていない」というのが一番の注意点でした（AOFは育ちすぎるのと、I/O発生しすぎで見送り）。</p>
-
-<p>Redisにはredis-check-dump, redis-check-aofというファイルのチェックツールが同梱されています。</p>
-
-<p>redis-check-aofには&#8211;fixオプションがあり、ディスクに保存されたAOFログの復旧を試みることが出来ますが、redis-check-dumpにはそういったオプションはありません。ちゃんと準備しておかないと、RDBが壊れていることは確認できても、それを修復することはかなわず途方に暮れることになります。</p>
-
-<p>ふつうに使っていてRDBが壊れることはそうそうないのは確かですが、メモリ故障などのハード障害のあおりを受けてクラッシュすることはあります。ハード障害に対してはレプリケーションは有効な対策ですが、RDB自体のバックアップもきっちり取っておきたいもの。</p>
-
-<p>なので、ごくごく単純ですがRedisサーバでのRDBのバックアップは</p>
-
-<ol>
-<li>RDBファイルの待避</li>
-<li>redis-check-dumpで検査</li>
-<li>bzip2で固める</li>
-<li>バックアップキューに突っ込む</li>
-</ol>
-
-
-<p>という手順で取っています。</p>
-
-<p>キューに登録しておくと、バックアップサーバが後でrsyncしてくれるような簡単なジョブキューの仕組みをRedisのSortedSetを使って作っています。</p>
-
-<p>なお、アプリケーションレベルでのRedisの使い方については<a href="http://www.manning.com/carlson/">Redis in Action</a>が実例豊富でお勧めです。データ型の解説などもじっくりたっぷり解説してあるので、これからRedisを始めようという人はWEB+DBの特集を見た上で、この本を読むのがよいと思います。</p>
 </div>
   
   

@@ -4,7 +4,7 @@
   <title><![CDATA[blog on github]]></title>
   <link href="http://nekoya.github.io/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-07-03T11:56:53+09:00</updated>
+  <updated>2013-07-05T12:47:19+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -12,6 +12,52 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない]]></title>
+    <link href="http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/"/>
+    <updated>2013-07-05T12:24:00+09:00</updated>
+    <id>http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst</id>
+    <content type="html"><![CDATA[<p>Pythonでnaiveなdatetimeオブジェクトにtzinfoを付けてawareにするには、<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.astimezone">公式</a>には</p>
+
+<blockquote><p>単にタイムゾーンオブジェクト tz を datetime オブジェクト dt に追加したいだけで、日付や時刻データメンバへの調整を行わないのなら、 dt.replace(tzinfo=tz) を使ってください。</p></blockquote>
+
+<p>こう書かれているのですが、どうもこの方法は夏時間の扱い以外にも問題があるようです。</p>
+
+<pre><code>&gt;&gt;&gt; import datetime, pytz
+&gt;&gt;&gt; jst = pytz.timezone('Asia/Tokyo')
+&gt;&gt;&gt; datetime.datetime.now(jst)
+datetime.datetime(2013, 7, 5, 12, 23, 1, 962735, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+&gt;&gt;&gt; datetime.datetime.now().replace(tzinfo=jst)
+datetime.datetime(2013, 7, 5, 12, 23, 9, 143578, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' CJT+9:00:00 STD&gt;)
+</code></pre>
+
+<p>replaceでtzinfoを付与すると、JSTではなくCJTとなります。CentOS5.8 + Python2.6.5とSnowLeopard + Python2.7.1で同じ結果になりました。</p>
+
+<ul>
+<li><a href="http://www.atmarkit.co.jp/ait/articles/0505/27/news116_3.html">SQLクリニック（4）：日付データ演算の達人技を伝授する 【第3話】 (3/3) - ＠IT</a></li>
+</ul>
+
+
+<blockquote><p>実は、日本にも複数のタイムゾーンが存在したことが過去にあるようです。それまでJSTとされていたタイムゾーンがこのときCJTとなりました。「Central Japan Time」の略称で、日本中央時間（もしくは中央日本時間）です。</p></blockquote>
+
+<p>少なくとも2013年にCJTを使うことはなさそうなので、これは嬉しくないですね。</p>
+
+<pre><code>&gt;&gt;&gt; jst.localize(datetime.datetime.now())
+datetime.datetime(2013, 7, 5, 12, 23, 19, 647283, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+</code></pre>
+
+<p>夏時間に対処した時と同じように、localizeしてやれば問題なくJSTが返ってきます。とりあえずlocalizeしておけば安心、なのかな。</p>
+
+<h2>関連エントリ</h2>
+
+<ul>
+<li><a href="http://nekoya.github.io/blog/2013/06/21/python-datetime/">Pythonの日付処理とTimeZone</a></li>
+<li><a href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/">Pythonのdatetimeで夏時間を扱う</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[MySQL-python1.2.4でdatetimeから文字列の変換方法が変わった件]]></title>
