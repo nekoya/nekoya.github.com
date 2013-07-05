@@ -4,7 +4,7 @@
   <title><![CDATA[blog on github]]></title>
   <link href="http://nekoya.github.io/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-07-05T12:47:19+09:00</updated>
+  <updated>2013-07-05T13:05:12+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -353,16 +353,16 @@ datetime.datetime(2013, 5, 16, 0, 0, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' CJT+9:00:
 
 <h3>naiveとawareの変換、あるいはTimeZone変更</h3>
 
-<p>naiveとawareの変換は、公式にあるようにreplaceを使います。naiveなdatetimeオブジェクトとawareなそれでは比較や演算が出来ないので、意外と使う場面はあります。</p>
+<p>naiveとawareの変換は、<del>公式にあるようにreplaceを使います</del>。naiveなdatetimeオブジェクトとawareなそれでは比較や演算が出来ないので、意外と使う場面はあります。</p>
 
-<blockquote><p>単にタイムゾーンオブジェクト tz を datetime オブジェクト dt に追加したいだけで、日付や時刻データへの調整を行わないのなら、dt.replace(tzinfo=tz) を使ってください。単に aware な datetime オブジェクト dt からタイムゾーンオブジェクトを除去したいだけで、日付や時刻データの変換を行わないのなら、dt.replace(tzinfo=None) を使ってください。</p></blockquote>
+<p>（2013/07/05修正）replaceするとJSTがCJTと認識される問題があったので、naive→awareの変換にはlocalizeを使用します → <a href="http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/">Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない</a></p>
 
 <p>naive→aware</p>
 
 <pre><code>&gt;&gt;&gt; now = datetime.now()
 &gt;&gt;&gt; now
 datetime.datetime(2013, 6, 18, 2, 15, 2, 485439)
-&gt;&gt;&gt; now.replace(tzinfo=pytz.utc)
+&gt;&gt;&gt; pytz.utc.localize(now)
 datetime.datetime(2013, 6, 18, 2, 15, 2, 485439, tzinfo=&lt;UTC&gt;)
 </code></pre>
 
