@@ -4,7 +4,7 @@
   <title><![CDATA[Category: dev | blog on github]]></title>
   <link href="http://nekoya.github.io/blog/categories/dev/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-07-09T10:57:51+09:00</updated>
+  <updated>2013-07-09T11:07:15+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -94,9 +94,11 @@ analyzer.target_time = datetime.datetime(2013, 7, 8, 22, 43, 11)
 
 <p>このようにtarget_timeを変更するだけで自由にテストが書けます。</p>
 
-<p>テストで現時刻を扱うためのライブラリも各言語で色々あります。Perlの<a href="http://search.cpan.org/~ddick/Test-MockTime-0.12/lib/Test/MockTime.pod">Test::MockTime</a>や、Rubyの<a href="http://rubygems.org/gems/timecop">timecop</a>、Pythonだとそのものズバリは知らないけど<a href="http://www.voidspace.org.uk/python/mock/">mock</a>でmonkey patchを当てることが出来ます。</p>
+<p>（追記）テストで現時刻を扱うためのライブラリも各言語で色々あります。Perlの<a href="http://search.cpan.org/~ddick/Test-MockTime-0.12/lib/Test/MockTime.pod">Test::MockTime</a>や、Rubyの<a href="http://rubygems.org/gems/timecop">timecop</a>、Pythonだとそのものズバリは知らないけど<a href="http://www.voidspace.org.uk/python/mock/">mock</a>でmonkey patchを当てることが出来ます。</p>
 
-<p>しかし、こうしたライブラリによるサポートはテスタビリティが確保できない既存のモジュールをメンテナンスする時に使うのが適切だと考えます。最初から入れ替え可能な設計になっていればテストに限らず拡張に対して開かれた形になるので、その方が理想的でしょう。</p>
+<p>これはこれで有効な手立てですが、こうしたライブラリに頼らずとも一貫した現時刻を扱えた方がいいでしょう。テストだけであればそうした回避策も有効ですが、最初からその部分が入れ替え可能な設計にしておいた方がより堅いアプローチだと考えます。</p>
+
+<p>また、そういったライブラリでパッチを当ててテストを通した場合、そのテスト内では現時刻が固定されるため、先に挙げた問題を含んだコードがそのまま生き延びてしまうリスクが高まります。</p>
 
 <h2>現時刻をどこで取るべきか</h2>
 
