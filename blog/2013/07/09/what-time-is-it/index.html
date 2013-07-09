@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>コード内で「現時刻」を気軽に取得してはいけない - nekoya press</title>
+  <meta name="author" content="nekoya">
+
+  
+  <meta name="description" content="日付を扱う処理についていろいろまとめたついでに、わりと簡単なことだけど知らないと落とし穴にハマる系のネタを。 日頃いろいろな処理を書いていて、現時刻を扱うこともは少なくないはずです。ですが、これを適当にやっていると困ることが多々あります。 実行中に「現時刻」を元にした処理が食い違う &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nekoya.github.io/blog/2013/07/09/what-time-is-it/">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="blog on github" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35230565-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>blog on github</h1>
+  
+    <h2><a href="/">nekoya press</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nekoya.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="http://twitter.com/nekoya">@nekoya</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="http://d.hatena.ne.jp/studio-m">d.hatena</a></li>
+  <!-- <li><a href="/wiki/">Wiki</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">コード内で「現時刻」を気軽に取得してはいけない</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-09T01:20:00+09:00" pubdate data-updated="true">Jul 9<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>日付を扱う処理についていろいろまとめたついでに、わりと簡単なことだけど知らないと落とし穴にハマる系のネタを。</p>
+
+<p>日頃いろいろな処理を書いていて、現時刻を扱うこともは少なくないはずです。ですが、これを適当にやっていると困ることが多々あります。</p>
+
+<h2>実行中に「現時刻」を元にした処理が食い違う</h2>
+
+<p>例えばこんなコード。ログ集計とかやってるイメージです。</p>
+
+<pre><code>class Analyzer(object):
+    def analyze(self):
+        logfile = datetime.datetime.now().strftime('my_log_file.%H')
+        self.save(self.analyze_logfile(logfile))
+
+    def save(self, result):
+        now = datetime.datetime.now()
+        self.result[now.hour] = result
+</code></pre>
+
+<p>analyze_logsの実行にやたら時間がかかったり、やんごとない事情で14:57とかに実行して15:02に集計が終わった場合などに悲劇が起きます。</p>
+
+<p>ここまで問題が明らかな場合に限らず、現時刻をその都度取得していると、そのスクリプトにとって「今」がいつを指し示すのかが曖昧になってしまいます。</p>
+
+<p>この意識が薄いままコードを書く習慣が身についてしまうと、いざという時に上記のような問題を抱えたコードを書いてしまいがちなので気を付けたいところです。</p>
+
+<p>この問題に対しては、例えば</p>
+
+<pre><code>    def __init__(self):
+        self.target_time = datetime.datetime.now()
+</code></pre>
+
+<p>のように、最初に現時刻を取得しておいて、他の箇所ではこの時刻を使って処理します。</p>
+
+<p>この時に現時刻を保存する変数名は、そのままnowとしても構いませんが、その時の処理に応じた適切な名前を付けましょう。上記の例では集計の対象時刻なのでtarget_timeとしています。</p>
+
+<p>それが本当に「現時刻」である必要があるのか、それともたまたま現時刻を元にしているだけで、格納された値には別の意味があるのかの見極めは、設計にも大きな意味を持ちます。</p>
+
+<p>ちなみに、話を分かりやすくするために省略しましたが、本当にログ集計を書く場合は対象時刻は現在ではなくローテート済みの「前の時間」なのでそのへんは調整が必要です。</p>
+
+<h2>再試行したい時に手が出せない</h2>
+
+<p>先のようなログ集計が代表例になります。特定の時間に対する処理をやり直したいとき、現時刻を取得するコードがあちこちにあると改修は大仕事になります。</p>
+
+<p>先のように、現時刻を取得する処理が独立していればオプションで変更可能に拡張することもできるし、いざという時は直接コードを書き換えて緊急回避することだって可能です。</p>
+
+<h2>後から「あの時の処理」を追うのが難しい</h2>
+
+<p>特定の条件を満たしたプレイヤーにレアアイテムを配布する、というユースケースを想定します。</p>
+
+<p>DBにアイテムのレコードをINSERTして、そのレコードには付与時刻のカラムがあったとしましょう。</p>
+
+<p>例えば500件ずつBULK INSERTしたとして、付与時刻をINSERT文を発行する度に現時刻から取っていたら、一度のバッチで複数の「付与時刻」が記録されることになります。</p>
+
+<p>後から「あの時にアイテム付与したユーザのidを全部くれ」と言われた時に、DBから取ってくる付与時刻は一定の期間で範囲検索することになります。また、その指定する範囲に漏れがないことを確実に保証するのは意外と厄介です。</p>
+
+<p>「DBに入ったその瞬間がいつか」を記録したいという場面もあるかも知れませんが、それよりもひとつの意味を持つ処理単位で時刻が統一されていた方が便利なケースが多いのではないでしょうか。</p>
+
+<p>どうせレプリケーションの遅延やらキャッシュやらでconsistencyを保証することが不可能なことも多いはずですし。</p>
+
+<h2>テスタビリティが落ちる</h2>
+
+<p>これは本質的な問題ではないと考える向きもあるかも知れませんが、重要なことだと考えています。</p>
+
+<p>テストを書こうという意志を持っているのに、現時刻を扱うノウハウを持っていないために回りくどいコードを書いてしまったり、この部分のほころびが他にも波及してカバレッジが下がってしまったりという事例を見ています。</p>
+
+<p>そういうことがあると「テスト書くの面倒だからTDDやりたくない」みたいな意識が生まれてしまいがちです。これは大変もったいないことです。</p>
+
+<p>また「テストが書きにくい（書けない）」というのは、言い換えれば設計がよくないという見方もできます。そういうアプローチや考え方を採用するかは別にして、ノウハウとして持っておいて選択肢を増やすことは悪くないでしよう。</p>
+
+<p>ここも先の構成であれば、テストコードで</p>
+
+<pre><code>analyzer = Analyzer()
+analyzer.target_time = datetime.datetime(2013, 7, 8, 22, 43, 11)
+</code></pre>
+
+<p>このようにtarget_timeを変更するだけで自由にテストが書けます。</p>
+
+<h2>現時刻をどこで取るべきか</h2>
+
+<p>簡単なアプリケーションであれば、上記のようにコンストラクタで現時刻を取れば解決するかも知れませんが、実際に書くアプリケーションの大半は一つのクラスで完結するものではないでしょう。じゃあ、どうするか。</p>
+
+<p>原則として、現時刻を取得するのは「外部からの入力を受け取る部分」です。Facadeになるオブジェクトだけが現時刻を取得し、そこから呼ばれるドメイン層のオブジェクトは時刻を受け取るだけにするのが自分のパターンです。</p>
+
+<p>具体的には、バッチであればCLIからパラメータ等を受け取るオブジェクト、WebアプリケーションであればRequestやContextに相当するオブジェクトがその役割を担います。</p>
+
+<p>こうすることで「前はこのクラスで現時刻を取ってたが、その上に別のクラスが挟まったので、ここで現時刻を取っているのは具合が悪い」みたいな問題を回避することができます。</p>
+
+<h2>まとめ</h2>
+
+<ul>
+<li>現時刻をあちこちで取るな</li>
+<li>入り口で取って使い回せ</li>
+<li>nowという名前が適切か考えろ</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (nekoya)" rel="author">nekoya</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-09T01:20:00+09:00" pubdate data-updated="true">Jul 9<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/dev/'>dev</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://b.hatena.ne.jp/entry/http://nekoya.github.io/blog/2013/07/09/what-time-is-it/" class="hatena-bookmark-button" data-hatena-bookmark-title="nekoya press" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://nekoya.github.io/blog/2013/07/09/what-time-is-it/" data-via="nekoya" data-counturl="http://nekoya.github.io/blog/2013/07/09/what-time-is-it/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-href="http://nekoya.github.io/blog/2013/07/09/what-time-is-it" data-send="false" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/07/05/python-datetime-with-jst/" title="Previous Post: Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない">&laquo; Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekoya -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

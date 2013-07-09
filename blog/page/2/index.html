@@ -9,7 +9,7 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。 弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。 本番環境でRedisを運用する上で、強く訴えたい注意点は「 &hellip;">
+  <meta name="description" content="ここ数年はPerlで暗号を扱う時はMcryptを使っていますが、少し前の時代だとCrypt::CBCを使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。 Crypt:: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,107 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/12/python-crypt-cbc/">PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-12T09:49:00+09:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
+
+<p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
+
+<p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
+
+<div><script src='https://gist.github.com/5088592.js?file=publish_hex_key.pl'></script>
+<noscript><pre><code>use strict;
+use warnings;
+
+# http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password
+
+use Crypt::CBC;
+
+my $key = shift or die '[usage] hex_key.pl key';
+
+my $cipher = Crypt::CBC-&gt;new({
+        'key'            =&gt; $key,
+        'cipher'         =&gt; 'Blowfish',
+        'iv'             =&gt; '12345678',
+        'regenerate_key' =&gt; 1,
+        'padding'        =&gt; 'standard',
+        'prepend_iv'     =&gt; 0,
+    });
+
+$cipher-&gt;encrypt('ShutTheFuckUpAndWriteSomeCode');
+print unpack('H*', $cipher-&gt;key), &quot;\n&quot;;</code></pre></noscript></div>
+
+
+<p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
+
+<div><script src='https://gist.github.com/5088592.js?file=decrypt.py'></script>
+<noscript><pre><code>import base64
+from Crypto.Cipher import Blowfish
+from binascii import unhexlify
+from struct import pack
+
+key = unhexlify('144a6b229633360207ff9c79016fc49426f1814727b663bc39df05df9a1892073e2812df9492c1e952aac68d1ddfefba635d3a33aba21535')  # &quot;thisiskey&quot;
+iv = '123abc45'
+
+
+def enc(str):
+    plen = Blowfish.block_size - len(str) % Blowfish.block_size
+    padding = [plen] * plen
+    pad_str = str + pack('b' * plen, *padding)
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    return base64.urlsafe_b64encode(cipher.encrypt(pad_str))
+
+
+def dec(str):
+    plen = 4 - len(str) &amp; 3
+    pad_str = str + '=' * plen
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    dec = cipher.decrypt(base64.urlsafe_b64decode(pad_str))
+    num_padding = ord(dec[-1])
+    return dec[:(-1 * num_padding)]
+
+assert enc('1234567') == '7Zbfy4S_B28='
+assert enc('12345678') == '_V5IPxYq4omALzIyl10aMw=='
+
+assert enc('hello world') == 'V6r02_ivXP2ChJ0DGd_7aw=='
+assert dec('V6r02_ivXP2ChJ0DGd_7aw==') == 'hello world'
+assert dec('V6r02_ivXP2ChJ0DGd_7aw') == dec('V6r02_ivXP2ChJ0DGd_7aw=') == dec('V6r02_ivXP2ChJ0DGd_7aw==') == dec('V6r02_ivXP2ChJ0DGd_7aw===')</code></pre></noscript></div>
+
+
+<p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -876,45 +977,9 @@ net.nf_conntrack_max = 524288
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/02/first/">Octopressを入れてみた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-02T09:33:00+09:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>SL6.2のサーバで環境作ろうとしたら、Rubyがゴネてうまく動かなかったよ…</p>
-
-<p>ひとまず動いたので、こっちで書いてみよう。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
