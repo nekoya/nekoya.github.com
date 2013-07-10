@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: etc | blog on github]]></title>
+  <link href="http://nekoya.github.io/blog/categories/etc/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.io/"/>
+  <updated>2013-07-10T11:17:52+09:00</updated>
+  <id>http://nekoya.github.io/</id>
+  <author>
+    <name><![CDATA[nekoya]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[情報をまとめるスタンス]]></title>
+    <link href="http://nekoya.github.io/blog/2013/07/10/background-of-last-post/"/>
+    <updated>2013-07-10T09:36:00+09:00</updated>
+    <id>http://nekoya.github.io/blog/2013/07/10/background-of-last-post</id>
+    <content type="html"><![CDATA[<p>昨日、「<a href="http://nekoya.github.io/blog/2013/07/09/what-time-is-it/">コード内で「現時刻」を気軽に取得してはいけない</a>」を上げたらえらいアクセスを頂いて驚いた次第でございます。</p>
+
+<p>書いている内容自体は普段からやっていることなので、特に大きなハズレはないと思っていますし、内容的にも一定の評価を頂いたようなので書いて良かったなと。</p>
+
+<p>ですが、タイトルやまとめ方にやや釣り臭い部分があったのも事実で、そのあたりはもうちょっとまとめ方があったかなぁという感もあります。</p>
+
+<p>元々は社内のコードレビューコメントとして書いていて、途中で「これブログにまとめようか」と思い直して肉付けして上げたもので、そういうコードに対して「現時刻を気軽に取ると落とし穴があるよ」と言いたいためのエントリでした。</p>
+
+<p>なので、ああいうスタンスになったこと自体は自分の中では納得しているのですが、一般化して上げるにはやや雑だったのも確かです。</p>
+
+<p>適応範囲の広い問題に対して、特定のケースを挙げて「とにかくここに気を付けろ」とやるのは具体的な問題が見えやすいし、その時に目の前にある課題への対応として有効です。</p>
+
+<p>そういうまとめ方をしたおかげで多くの人に見て頂けた側面もあるはずなので、それはそれで一つのやり方として有効だというのは実感しています。にしても昨日のはあんなに見て頂けるとは思っていませんでしたが…</p>
+
+<p>ただ、そういったアプローチはやりすぎると「恣意的なまとめで人を煽る」みたいなことにもなりかねないので、気を付けないといかんなぁと自戒することしきりです。</p>
+
+<p>こういう時に冷静なツッコミを頂けるのは大変ありがたいことです。皆様ありがとうございました。</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -9,7 +9,7 @@
   <meta name="author" content="nekoya">
 
   
-  <meta name="description" content="日付を扱う処理についていろいろまとめたついでに、わりと簡単なことだけど知らないと落とし穴にハマる系のネタを。 日頃いろいろな処理を書いていて、現時刻を扱うこともは少なくないはずです。ですが、これを適当にやっていると困ることが多々あります。 実行中に「現時刻」を元にした処理が食い違う &hellip;">
+  <meta name="description" content="昨日、「コード内で「現時刻」を気軽に取得してはいけない」を上げたらえらいアクセスを頂いて驚いた次第でございます。 書いている内容自体は普段からやっていることなので、特に大きなハズレはないと思っていますし、内容的にも一定の評価を頂いたようなので書いて良かったなと。 ですが、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,58 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/10/background-of-last-post/">情報をまとめるスタンス</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-10T09:36:00+09:00" pubdate data-updated="true">Jul 10<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>昨日、「<a href="http://nekoya.github.io/blog/2013/07/09/what-time-is-it/">コード内で「現時刻」を気軽に取得してはいけない</a>」を上げたらえらいアクセスを頂いて驚いた次第でございます。</p>
+
+<p>書いている内容自体は普段からやっていることなので、特に大きなハズレはないと思っていますし、内容的にも一定の評価を頂いたようなので書いて良かったなと。</p>
+
+<p>ですが、タイトルやまとめ方にやや釣り臭い部分があったのも事実で、そのあたりはもうちょっとまとめ方があったかなぁという感もあります。</p>
+
+<p>元々は社内のコードレビューコメントとして書いていて、途中で「これブログにまとめようか」と思い直して肉付けして上げたもので、そういうコードに対して「現時刻を気軽に取ると落とし穴があるよ」と言いたいためのエントリでした。</p>
+
+<p>なので、ああいうスタンスになったこと自体は自分の中では納得しているのですが、一般化して上げるにはやや雑だったのも確かです。</p>
+
+<p>適応範囲の広い問題に対して、特定のケースを挙げて「とにかくここに気を付けろ」とやるのは具体的な問題が見えやすいし、その時に目の前にある課題への対応として有効です。</p>
+
+<p>そういうまとめ方をしたおかげで多くの人に見て頂けた側面もあるはずなので、それはそれで一つのやり方として有効だというのは実感しています。にしても昨日のはあんなに見て頂けるとは思っていませんでしたが…</p>
+
+<p>ただ、そういったアプローチはやりすぎると「恣意的なまとめで人を煽る」みたいなことにもなりかねないので、気を付けないといかんなぁと自戒することしきりです。</p>
+
+<p>こういう時に冷静なツッコミを頂けるのは大変ありがたいことです。皆様ありがとうございました。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1177,52 +1229,6 @@ ArgumentError: invalid date
 <p>面接の時にもこのあたりの質問をするべきか、最近はそんなに重視されないのか迷ったこともありましたが、一頃話題になった<a href="http://www.crackingthecodinginterview.com/content/cracking-coding-interview">Cracing The Coding Interview</a>を読むと、多くの企業が採用に際してオブジェクト指向設計についての技術的な質問項目を設けているというエピソードがあり、それ以来迷うことなく、面接時に積極的にこの手の質問を振るようにしています。</p>
 
 <p>あまり細かい部分を追いかける必要はないし、使えば皆が幸せになれるとか言うつもりもないけど、このへんのテーマは知識として身につけておくとお得なので是非。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/26/github-diff-ignore-space-change/">Githubでdiff &#8211;ignore-space-changeを見る方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-26T15:15:00+09:00" pubdate data-updated="true">Mar 26<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Python書いてると、モジュールの関数をクラスに抽出するリファクタリングとかで、git diff &#8211;ignore-space-changeする機会が多いですね。</p>
-
-<p>githubでdiffを見る時にも&#8211;ignore-space-change出来たらなぁと思ったら、mizzy（@gosukenator）さんから神の声が！</p>
-
-<blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/nekoya">nekoya</a> ?w=1 とURLにつけるといいみたいですよ <a href="https://t.co/3iuAcB3Stp" title="https://github.com/blog/967-github-secrets">github.com/blog/967-githu…</a></p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/status/316431837444595713">March 26, 2013</a></blockquote>
-
-
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-<p>というわけで、githubでdiff画面開いて、URLに?w=1を付ければOKでした。</p>
 </div>
   
   
