@@ -4,7 +4,7 @@
   <title><![CDATA[blog on github]]></title>
   <link href="http://nekoya.github.io/atom.xml" rel="self"/>
   <link href="http://nekoya.github.io/"/>
-  <updated>2013-07-10T11:17:52+09:00</updated>
+  <updated>2013-07-11T18:33:46+09:00</updated>
   <id>http://nekoya.github.io/</id>
   <author>
     <name><![CDATA[nekoya]]></name>
@@ -12,6 +12,34 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[猫ふんじゃったに見るシステム開発の悲哀]]></title>
+    <link href="http://nekoya.github.io/blog/2013/07/11/neko-to-computer/"/>
+    <updated>2013-07-11T18:30:00+09:00</updated>
+    <id>http://nekoya.github.io/blog/2013/07/11/neko-to-computer</id>
+    <content type="html"><![CDATA[<p><a href="https://twitter.com/kokorohamoe">@kokorohamoe</a>さんのエントリがとても面白かったので紹介。</p>
+
+<ul>
+<li><a href="http://revilog.com/2013/07/10197.html">プログラマの生産性は２０倍違うという表現は誤り、プログラムはピアノだと思えば良い。　猫ふんじゃったならだれでも引ける。</a></li>
+</ul>
+
+
+<blockquote><p>猫ふんじゃったならだれでも引ける。だけれども、そのレベルの人を５００人集めても、ショパンは引けない。</p></blockquote>
+
+<p>この例えは穏便に、かつ適切に実情を表していて、積極的に日常で使ってきたいですね。</p>
+
+<p>けど、きっとこんなこと言うオッサンが出てくるんだぜ…</p>
+
+<p>「1小節だけならどうにかなるだろ。500人に1小節ずつ弾かせて後で編集でつないでよ」</p>
+
+<p>「難しいところも右手だけ、左手だけなら以下略」</p>
+
+<p>「大丈夫、ちょっとぐらい間違えたって分かりゃしないって」</p>
+
+<p>「そこだけ外注に出して弾いてもらえばいいんじゃないの。あとは猫が踏めりゃどうにかなるって」</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[情報をまとめるスタンス]]></title>
@@ -1441,67 +1469,6 @@ del module
 <li>ZyngaJapanはZyngaJapanとして頑張ったのだから評価されるべき</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CentOS5でもRPS/RFSでNICが捗る話]]></title>
-    <link href="http://nekoya.github.io/blog/2012/11/13/centos5-rps-rfs/"/>
-    <updated>2012-11-13T15:52:00+09:00</updated>
-    <id>http://nekoya.github.io/blog/2012/11/13/centos5-rps-rfs</id>
-    <content type="html"><![CDATA[<p><a href="http://twitter.com/kazeburo">kazeburo</a>さんが<a href="http://blog.nomadscafe.jp/2012/08/centos-62-rpsrfs.html">CentOS6.2での事例</a>を紹介されていますが、CentOS5系でもkernelを上げればRPS/RFSが使えるようになって、NICの負荷状況が劇的に改善します。</p>
-
-<p>やり方は意外に簡単で、<a href="http://elrepo.org/tiki/tiki-index.php">ELRepo</a>から<a href="http://elrepo.org/linux/kernel/el5/x86_64/RPMS/kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm">kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm</a>を落としてきてインストール。</p>
-
-<p>あとは、/boot/grub/menu.lstの設定をdefault=0にしてrebootすればOK。</p>
-
-<pre><code>$ uname -r
-2.6.35-14.2.el5.elrepo
-</code></pre>
-
-<p>ELRepoはNICのドライバなんかもいろいろ提供してくれるし、古いバージョンのRPMを<a href="http://mirror.ventraip.net.au/elrepo/archive/">archive</a>で提供してくれて非常にいいですね（kernelの過去RPMはないのかな）。</p>
-
-<p>RPS/RFSを有効にする設定はCentOS6と同様です。</p>
-
-<pre><code># echo "f" &gt; /sys/class/net/eth0/queues/rx-0/rps_cpus
-# echo 4096 &gt; /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
-# echo 32768 &gt; /proc/sys/net/core/rps_sock_flow_entries
-
-# cat /sys/class/net/eth0/queues/rx-0/rps_cpus
-0f
-</code></pre>
-
-<p>それまで特定のコアだけが他よりも30〜50%ぐらい負荷が高かったのが、各コアにいい具合に分散するようになって、1台で捌けるトラフィックがぐっと多くなりました。</p>
-
-<h2>ip_conntrack_maxと監視系の変更</h2>
-
-<p>kernel 2.6.35を入れることで、それまでの/proc/sys/net/ipv4/ip_conntrack_maxが/proc/sys/net/nf_conntrack_maxに移動します。</p>
-
-<p>この値を見るNagiosプラグインを書いて、NRPE経由で監視してたのが動かなくなったので、プラグインを更新しました。</p>
-
-<ul>
-<li><a href="https://github.com/nekoya/nagios-plugins-ip_conntrack_max">https://github.com/nekoya/nagios-plugins-ip_conntrack_max</a></li>
-</ul>
-
-
-<p>/etc/sysctl.confの設定も変わるのですが、既存のサーバと統一するために</p>
-
-<pre><code>net.ipv4.ip_conntrack_max = 524288
-net.nf_conntrack_max = 524288
-</code></pre>
-
-<p>と両方書いてしまうことにしました。</p>
-
-<p>sysctl -pすると</p>
-
-<pre><code>error: "net.ipv4.ip_conntrack_max" is an unknown key
-</code></pre>
-
-<p>って怒られるけど、実際のところは無視されるだけで特に実害無さそう…</p>
-
-<p>Puppetのテンプレートで真面目に判定すればいいんだろうけど、ひとまずこれで。</p>
-
-<p><a href="http://kau.li/jp">弊社</a>ではLVSをUbuntu、GWをVyattaにして自作サーバでNIC叩き回してがんばっていますが、appサーバはこれでまだ戦えそうです。</p>
 ]]></content>
   </entry>
   
