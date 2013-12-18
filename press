@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+"""
+"""
+import argparse
+import os
+
+from simpress import commands
+
+parser = argparse.ArgumentParser(description='simpress bootstrap script')
+subparsers = parser.add_subparsers(help='sub-command help')
+
+publish_parser = subparsers.add_parser('publish', help='publish help')
+publish_parser.set_defaults(func='Publish')
+
+preview_parser = subparsers.add_parser('preview', help='preview help')
+preview_parser.add_argument('-p', '--port', type=int, default=3776)
+preview_parser.set_defaults(func='Preview')
+
+args = parser.parse_args()
+
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+cmd = getattr(commands, args.func)(args)
+cmd.run()

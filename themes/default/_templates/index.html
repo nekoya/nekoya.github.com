@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="post">
+  <p class="posted-at">{{ post.headers.date.strftime('%Y-%m-%d %a %H:%M') }}</p>
+  <h1><a href="{{ url_for('blog_post', year=post.year, month=post.month, day=post.day, name=post.name) }}">{{ post.headers.title }}</a></h1>
+  <div class="post-body">{{ post.contents | safe }}</div>
+  {% include 'assets/share.html' %}
+</div>
+
+<p class="backref"><a href="{{ url_for('blog_archives') }}">--- archives ---</a></p>
+{% endblock %}
