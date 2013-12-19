@@ -8,6 +8,7 @@
   <author>
     <name>{{ blog.author }}</name>
   </author>
+  <generator uri="https://github.com/nekoya/nekoya.github.com/tree/source">simpress</generator>
 
 {% for post in posts %}
 <entry>
