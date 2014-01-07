@@ -103,6 +103,27 @@ body {
         background: #f0f0f0;
     }
 
+    h3 {
+        margin: 2em 0 1em;
+        padding: 1em 0.5em 0;
+        font-size: 16px;
+        border-top: 1px solid #ccc;
+    }
+    h3:before {
+        padding-right: 4px;
+        color: #666;
+        content: '■';
+    }
+    h2+h3 {
+        padding-top: 0;
+        border-top: none;
+    }
+
+    h4 {
+        margin: 1em 0;
+        font-size: 16px;
+    }
+
     p {
         margin: 1em 0.5em;
         font-size: 16px;
@@ -127,6 +148,9 @@ body {
     pre {
         margin: 1em 0.5em;
         line-height: 1.6;
+    }
+    pre.prettyprint {
+        padding: 0.5em;
     }
 
     blockquote {
