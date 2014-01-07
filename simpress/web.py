@@ -14,6 +14,7 @@ app = Flask(__name__,
             template_folder='../themes/default/_templates')
 app.config.from_object(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.debug = True
 
 
 @app.before_request
