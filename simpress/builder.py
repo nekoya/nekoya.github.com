@@ -15,10 +15,12 @@ import simpress.blog
 class Builder(object):
     deploy_dir = '_deploy'
 
-    def __init__(self, client):
+    def __init__(self, client, no_push=None):
         self.client = client
         self.theme = 'default'
         self.logger = logging.getLogger(__name__)
+        self.no_push = no_push
+
         handler = logging.StreamHandler(sys.stdout)
         format = '%(asctime)s [%(levelname)s] %(message)s'
         handler.setFormatter(logging.Formatter(format, '%Y-%m-%d %H:%M:%S'))
@@ -40,7 +42,8 @@ class Builder(object):
         for post in blog.pages:
             self.build_page(post.fullpath,
                             '%sindex.html' % post.fullpath)
-        self.deploy()
+        if not self.no_push:
+            self.deploy()
 
     def build_theme(self):
         self.logger.info('build theme "%s"' % self.theme)

@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description='simpress bootstrap script')
 subparsers = parser.add_subparsers(help='sub-command help')
 
 publish_parser = subparsers.add_parser('publish', help='publish help')
+publish_parser.add_argument('--no-push', action='store_true')
 publish_parser.set_defaults(func='Publish')
 
 preview_parser = subparsers.add_parser('preview', help='preview help')

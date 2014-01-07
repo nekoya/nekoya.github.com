@@ -15,7 +15,8 @@ class Application(object):
 class Publish(Application):
     def run(self):
         import simpress.builder
-        builder = simpress.builder.Builder(simpress.web.app.test_client())
+        builder = simpress.builder.Builder(simpress.web.app.test_client(),
+                                           no_push=self.args.no_push)
         builder.build_all()
 
 
