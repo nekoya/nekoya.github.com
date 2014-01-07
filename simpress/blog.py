@@ -127,7 +127,7 @@ class Page(object):
 
     @cached_property
     def fullpath(self):
-        return 'pages/%s/' % self.filename
+        return 'pages/%s/' % self.name
 
     @cached_property
     def url(self):

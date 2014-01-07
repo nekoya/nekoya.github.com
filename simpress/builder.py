@@ -32,8 +32,12 @@ class Builder(object):
         self.build_page('/', 'index.html')
         self.build_page('atom.xml', 'atom.xml')
         self.build_page('blog/archives', 'blog/archives/index.html')
+        self.build_page('pages', 'pages/index.html')
         blog = simpress.blog.Blog()
         for post in blog.posts:
+            self.build_page(post.fullpath,
+                            '%sindex.html' % post.fullpath)
+        for post in blog.pages:
             self.build_page(post.fullpath,
                             '%sindex.html' % post.fullpath)
         self.deploy()
