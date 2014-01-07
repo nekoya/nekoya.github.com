@@ -52,3 +52,19 @@ def atom_feed():
         render_template('atom.xml', blog=g.blog, posts=g.blog.posts[:10]))
     res.headers['Content-Type'] = 'application/xml'
     return res
+
+
+@app.route('/pages/<name>')
+@app.route('/pages/<name>/')
+def blog_page(name):
+    try:
+        post = simpress.blog.Page(blog=g.blog, name=name)
+    except NotFoundException:
+        abort(404)
+    return render_template('page.html', blog=g.blog, post=post)
+
+
+@app.route('/pages')
+@app.route('/pages/')
+def blog_pages():
+    return render_template('pages.html', blog=g.blog, posts=g.blog.pages)

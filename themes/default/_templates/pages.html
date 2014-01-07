@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div id="archives">
+  <h1>pages</h1>
+{% for post in posts %}
+<div class="post">
+  <h2>
+    <a href="{{ url_for('blog_page', name=post.name) }}">{{ post.headers.title }}</a>
+  </h2>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
