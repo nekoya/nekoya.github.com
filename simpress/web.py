@@ -30,6 +30,7 @@ def index():
 
 
 @app.route('/blog/archives')
+@app.route('/blog/archives/')
 def blog_archives():
     return render_template('archives.html', blog=g.blog, posts=g.blog.posts)
 
