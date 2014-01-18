@@ -3,9 +3,9 @@ title: 逆引きPython
 ---
 ## コーディングスタイル（社内向け）
 
-Pythonの公式ガイドである[PEP8](http://works.surgo.jp/translation/pyguide.html)を基本とする。
+Pythonの公式ガイドである[PEP8](http://www.python.org/dev/peps/pep-0008/)を基本とする。
 
-細かい部分は原則として[Google Python Style Guide](http://works.surgo.jp/translation/pyguide.html)に従うが、絶対厳守というわけではない。
+細かい部分は原則として[Google Python Style Guide](http://google-styleguide.googlecode.com/svn/trunk/pyguide.html)に従うが、絶対厳守というわけではない。
 
 明文化しているわけではないが、なんとなくこんな感じでやってる。
 
@@ -185,6 +185,19 @@ datetime.datetime(2014, 1, 3, 8, 39, 41, tzinfo=<UTC>)
 </pre>
 
 上の例ではUTCだが、TimeZone情報を後から付与するので、夏時間のある地域でも問題ない。
+
+
+### 月の末日を求める
+
+[calendar.monthrange()](http://docs.python.jp/2.7/library/calendar.html#calendar.monthrange)を使う。
+
+<pre class="prettyprint">
+>>> import calendar
+>>> calendar.monthrange(2014, 2)[1]
+28
+</pre>
+
+monthrange()が指定月の1日の曜日と、月の日数をtupleで返すので後者を取ればよい。
 
 
 ## その他
