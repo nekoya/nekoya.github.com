@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 """
-from flask import Flask, g, render_template, abort
+import os
+
+from flask import Flask, g, render_template, abort, Response
 from flask import make_response
 
 import settings
@@ -66,3 +68,10 @@ def blog_page(name):
 @app.route('/pages')
 def blog_pages():
     return render_template('pages.html', blog=g.blog, posts=g.blog.pages)
+
+
+@app.route('/images/<path:path>')
+def images(path):
+    fullpath = os.path.join('sources/static/images', path)
+    content = open(fullpath).read()
+    return Response(content, mimetype='image/jpeg')

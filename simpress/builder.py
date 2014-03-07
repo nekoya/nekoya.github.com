@@ -31,6 +31,7 @@ class Builder(object):
         if os.path.exists(self.deploy_dir):
             shutil.rmtree(self.deploy_dir)
         self.build_theme()
+        self.copy_static_files()
         self.build_page('/', 'index.html')
         self.build_page('atom.xml', 'atom.xml')
         self.build_page('blog/archives', 'blog/archives/index.html')
@@ -50,6 +51,13 @@ class Builder(object):
         theme_dir = os.path.join('themes', self.theme)
         shutil.copytree(theme_dir, self.deploy_dir,
                         ignore=shutil.ignore_patterns('_*'))
+
+    def copy_static_files(self):
+        self.logger.info('copy static files')
+        for target in ('images',):
+            src_dir = os.path.join('sources', 'static', target)
+            dst_dir = os.path.join(self.deploy_dir, target)
+            shutil.copytree(src_dir, dst_dir)
 
     def build_page(self, url, filename):
         dirname = os.path.join(self.deploy_dir, os.path.dirname(filename))
