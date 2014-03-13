@@ -1,5 +1,5 @@
 ---
-title: 逆引きPython
+title: 逆引きPython - コーディングスタイル（社内向け）
 ---
 ## INDEX
 
@@ -8,7 +8,7 @@ title: 逆引きPython
 <li><a href="/pages/python_date/">日付・時刻</a></li>
 <li><a href="/pages/python/">その他</a></li>
 
-## コーディングスタイル（社内向け）
+## 基本方針
 
 Pythonの公式ガイドである[PEP8](http://www.python.org/dev/peps/pep-0008/)を基本とする。
 
@@ -18,15 +18,18 @@ Pythonの公式ガイドである[PEP8](http://www.python.org/dev/peps/pep-0008/
 
 1. メンバーの理解を損ねない範囲でクラスを直接importしてもよい
 1. サードパーティライブラリの公式ドキュメントにあれば関数を直接importしてもよい
-1. 文法チェッカーは[flake8](https://pypi.python.org/pypi/flake8)を使う
 
 1はそろそろ改めることも考えていいかもしれない…
 
 Google Python Style Guideは[rev 2.29の和訳](http://works.surgo.jp/translation/pyguide.html)があるが、2014/01/03現在の最新版はrev 2.59になっているので[差分](https://code.google.com/p/google-styleguide/source/list?path=/trunk/pyguide.html)は追いかけたい。
 
-### flake8のvim連携
+## 表記に関する規約
 
-[vim-flake8](https://github.com/nvie/vim-flake8)を入れて、ファイルの保存時に文法チェックをかけるのを推奨する。
+### flake8による文法チェック
+
+プロダクトのコードは全て[flake8](https://pypi.python.org/pypi/flake8)による文法チェックを通過することとする。
+
+vimを使っている場合は、[vim-flake8](https://github.com/nvie/vim-flake8)でファイルの保存時に随時チェックをかけることを推奨する。
 
 インストールは適当にやればいいが、例えばプレーンなvim環境だと~/.vim/plugin/でこういう風にやる。
 
@@ -78,7 +81,7 @@ nnoremap <Space>5 :<C-u>call Flake8IgnoreToggle()<CR>
 
 PEP8の制約がゆるくなって「チームで合意が取れるなら一行100文字でもいいんじゃねーの」という記述になったようだ。
 
-今までチーム的には「厳しいけど他に基準がないので80文字に収める、ただしテストコードは破ってもよい」としていたが、100文字に移行することを考えたい。
+今までチーム的には「厳しいけど他に基準がないので80文字に収める、ただしテストコードは破ってもよい」としていたが、この変更を受けて「全てのコードを一行100文字未満に収める」ことを規約とする。
 
 プロジェクトのルートディレクトリに以下のようなsetup.cfgを置けば、あとはよしなにやってくれる。
 
@@ -86,3 +89,57 @@ PEP8の制約がゆるくなって「チームで合意が取れるなら一行1
 [flake8]
 max-line-length = 99
 </pre>
+
+## テストコードの書き方
+
+### テストランナー
+
+[nose](https://nose.readthedocs.org/en/latest/testing.html)を使う。今のトレンドは[Pytest](http://pytest.org/latest-ja/)っぽいけど、乗り換えるだけのメリットが感じられないので今までの路線を継続する。
+
+### ok\_, eq\_の禁止
+
+今まではこの2つを積極的に利用してきたが、これから書くコードについてはこの2つを使ってはならない。
+
+Python2.7になってunittest.assertEqualでリストや辞書を比較して違った時の出力がPytestみたいに[親切になった](https://gist.github.com/nekoya/9522681)ので、
+
+<pre class="prettyprint">
+from nose.tools import assert_equal
+</pre>
+
+としてこれを使う。
+
+ok\_についてはこれまでも特に取り上げなかったが、eq_とセットで扱うべきだと考えられるので（どちらもnose/tools/trivial.pyで定義されている）個別のassert系のメソッドを利用することとする。
+
+### assert_equalのmaxDiff設定
+
+長い項目で差異があった場合、[assert_equalが情報を省略する](https://gist.github.com/nekoya/9525030)。この挙動は[maxDiff](http://docs.python.jp/2/library/unittest.html#unittest.TestCase.maxDiff)で調整できる。
+
+<pre class="prettyprint">
+import nose.tools
+nose.tools.assert_equal.__self__.maxDiff = None
+</pre>
+
+のように書くと、一切の省略をしないようになる。この値をどうするかはプロジェクトごとに判断すればよい。
+
+現時点での推奨は、プロジェクトごとにtestutils.pyを持ち、その中でプロジェクト標準の設定値を与えることとする。
+
+
+### assertionの順序
+
+assert_equalなどの「実値」と「期待値」を比較する場合は、期待値を後に書く。
+
+[公式ドキュメント](http://docs.python.jp/2/library/unittest.html#unittest.TestCase.assertEqual)では、
+
+<pre class="prettyprint">
+assertEqual(first, second, msg=None)
+</pre>
+
+first, secondとなっていて、順序については記載がない。
+
+[JUnitでは期待値が先](http://junit.sourceforge.net/javadoc/org/junit/Assert.html)になっていて、Javaのバックグラウンドがある人はこちらを自然なものとして捉えている。[phpunitも同様](http://phpunit.de/manual/3.7/ja/writing-tests-for-phpunit.html#writing-tests-for-phpunit.assertions.assertEquals)である。
+
+Perlでは[Test::More](http://search.cpan.org/~rjbs/Test-Simple-1.001002/lib/Test/More.pm)がgot, expectedの順で書くことを標準としている。
+
+Rubyの[RSpec](http://rspec.info/)は文法そのものが違うが、実値に対して「XXであるべき」のような記述をするので期待値が後のパターンと考えられる。
+
+unittestのドキュメントにはfirst, secondとしか書いていないが、ドキュメントのサンプルコードが全て期待値を後に書いているので、それに従うことにする。
