@@ -10,9 +10,19 @@ title: 逆引きPython - コーディングスタイル（社内向け）
 
 ## 基本方針
 
-Pythonの公式ガイドである[PEP8](http://www.python.org/dev/peps/pep-0008/)を基本とする。
+Pythonの公式ガイドである[PEP8](http://www.python.org/dev/peps/pep-0008/)を基本とする（[mumumu版日本語訳](https://github.com/mumumu/pep8-ja/blob/master/index.rst)）。
 
-細かい部分は原則として[Google Python Style Guide](http://google-styleguide.googlecode.com/svn/trunk/pyguide.html)に従うが、絶対厳守というわけではない。
+ただし、全てのファイルの先頭に以下のエンコーディング宣言を入れるものとする。
+
+<pre class="prettyprint">
+# -*- coding: utf-8 -*-
+</pre>
+
+これは、ソースコード内に日本語を書くことをイレギュラーとして捉えることを抑止するためである。
+
+「日本語でコメントを入れたいけど、その前にエンコーディング宣言を入れなければ」のような事態が発生することは、現状を鑑みると好ましくないと判断した。
+
+それ以外の細かい部分は原則として[Google Python Style Guide](http://google-styleguide.googlecode.com/svn/trunk/pyguide.html)に従うが、絶対厳守というわけではない。
 
 明文化しているわけではないが、なんとなくこんな感じでやってる。
 
