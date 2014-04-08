@@ -22,6 +22,6 @@ print server.logs
 # [('app.follow:', {u'foo': u'bar'}), ('app.label:', {u'hoge': u'fuga'})]
 </pre>
 
-やってることは単純で、[out_stdに投げてるだけ](https://github.com/nekoya/python-tcptest/blob/master/tcptest/fluentd.py)です。
+やってることは単純で、[out_stdoutに投げてるだけ](https://github.com/nekoya/python-tcptest/blob/master/tcptest/fluentd.py)です。
 
 サーバ停止前のウェイトとか何も考えてない感じですが、まぁとりあえずこれで。
