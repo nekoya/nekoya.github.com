@@ -128,3 +128,30 @@ decimal.Decimalといちいち書くのは面倒なので、今のところチ�
 
 - from decimal import Decimalで直接クラスをimportしてよい
 - テストコードのみfrom decimal import Decimal as Dで省略してよい
+
+
+### cached_propertyの励行
+
+werkzeug.utilsにある[cached_property](http://werkzeug.pocoo.org/docs/utils/#werkzeug.utils.cached_property)の使用を推奨する。
+
+社内でコードを書く場合は、ポートしたものがkauli.utilsにいるので以下のようにimportする。
+
+<pre class="prettyprint">
+from kauli.utils import cached_property
+</pre>
+
+通常のpropertyと比較して、キャッシュによるパフォーマンスの向上以外にも、
+
+<pre class="prettyprint">
+class Hoge(object):
+    @cached_property
+    def foo(self):
+        return 'FOO'
+
+hoge = Hoge()
+hoge.foo = 'BAR'
+</pre>
+
+このように外部から値を注入できるのでテストを書く際にも便利である。
+
+cached_propertyはキャッシュ可能なプロパティというよりも、遅延評価されるインスタンス変数と表現した方が適切なようにも思われる。通常のpropertyと適宜使い分けたい。
