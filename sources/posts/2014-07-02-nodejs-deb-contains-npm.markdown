@@ -10,6 +10,7 @@ Ubuntu12.04で用意されている標準パッケージは古いので、公式
 
 で、新しいVMを作ってセットアップしてたらnpmのインストールでコケる症状が出たのです。
 
+<pre>
 $ dpkg -l | grep nodejs
 ii  nodejs                          0.10.29-1chl1~precise1            Node.js event-based server-side javascript engine
 
@@ -39,6 +40,7 @@ The following packages have unmet dependencies:
        Depends: node-tar but it is not going to be installed
        Depends: node-which but it is not going to be installed
 E: Unable to correct problems, you have held broken packages.
+</pre>
 
 アイエエエエエエエ
 
