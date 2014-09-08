@@ -10,6 +10,16 @@ title: 逆引きPython
 
 ## その他
 
+### .pycを作りたくない
+
+環境変数[PYTHONDONTWRITEBYTECODE](http://docs.python.jp/2/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE)を設定すると、`.pyc`および`.pyo`ファイルが作成されなくなる。値は何でもいいので、
+
+<pre>
+export PYTHONDONTWRITEBYTECODE=1
+</pre>
+
+などと書いておけばよい。
+
 ### 辞書（dict）のソート
 
 キー（key）の順に取り出す
