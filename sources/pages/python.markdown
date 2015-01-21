@@ -57,6 +57,40 @@ reverse=Trueで降順になる。
 </pre>
 
 
+### 配列（リスト）のコピー
+
+単に代入しただけでは参照になるので、破壊的な操作をした時に元の値も変更されてしまう。
+
+<pre class="prettyprint">
+>>> a = ['foo', 'bar']
+>>> b = a
+>>> b[0] = 'hoge'
+>>> b
+['hoge', 'bar']
+>>> a
+['hoge', 'bar']
+</pre>
+
+以下のいずれかで新しいリストが作れる。
+
+<pre class="prettyprint">
+b = list(a)
+b = a[:]
+</pre>
+
+もしくは[copyモジュール](http://docs.python.jp/2/library/copy.html)を使ってもよい。
+
+<pre class="prettyprint">
+import copy
+b = copy.copy(a)
+b = copy.deepcopy(a)
+</pre>
+
+単なるリストのコピーであればシンプルに書けて高速な前述の方法を使えばよい。deep copyが必要な場合はcopy.deepcopyを使う。
+
+[ベンチマーク](https://gist.github.com/nekoya/2a06bd929c90c3f240eb)を取るとスライスが最も速いが、listを作り直す方が意味は伝わりやすい。速度差も小さく、dictにも応用が効く。
+
+
 ### 文字列からクラス名を決める
 
 クラス名を動的に決定する場合は[globals()](http://docs.python.jp/2/library/functions.html#globals)からクラスを取得する。
