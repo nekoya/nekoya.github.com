@@ -39,3 +39,6 @@ build: venv lint  ## Build your blog
 
 preview:  ## Run nginx for preview
 	docker run --name nginx -p 80:80 -v $(CURDIR)/__dist:/usr/share/nginx/html -it --rm nginx:mainline-alpine
+
+deploy: venv ## Deploy to GitHub
+	$(ACTIVATE) python deploy.py
