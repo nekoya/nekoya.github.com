@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ blog.title }}</title>
+  <link href="/atom.xml" rel="self"/>
+  <link href="{{ blog.url }}"/>
+  <updated></updated>
+  <id>{{ blog.url }}</id>
+  <author>
+    <name>{{ blog.author }}</name>
+  </author>
+  <generator uri="https://github.com/nekoya/nekoya.github.com/tree/source">simpress</generator>
+
+{% for post in posts %}
+<entry>
+  <title>{{ post.headers.title }}</title>
+  <link rel="alternate" type="text/html" href="{{ post.url }}"/>
+  <updated>{{ post.headers.date.isoformat() }}</updated>
+  <id>{{ post.url }}</id>
+  <content type="html"><![CDATA[{{ post.contents | safe }}]]></content>
+</entry>
+{% endfor %}
+
+</feed>

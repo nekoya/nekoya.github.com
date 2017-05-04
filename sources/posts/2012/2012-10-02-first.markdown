@@ -1,0 +1,11 @@
+---
+layout: post
+title: Octopressを入れてみた
+date: 2012-10-02 09:33
+comments: true
+categories: 
+old_post: true
+---
+SL6.2のサーバで環境作ろうとしたら、Rubyがゴネてうまく動かなかったよ…
+
+ひとまず動いたので、こっちで書いてみよう。

@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="post">
+  <p class="posted-at">{{ post.headers.date.strftime('%Y-%m-%d %a %H:%M') }}</p>
+  <h1><a href="{{ post.url }}">{{ post.headers.title }}</a></h1>
+  <div class="post-body">{{ post.contents | safe }}</div>
+  {% include 'assets/share.html' %}
+</div>
+{% endblock %}
