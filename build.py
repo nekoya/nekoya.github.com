@@ -20,6 +20,7 @@ theme = Theme(
 
 dist_path = '__dist'
 
-logger.info('building blog: {}'.format(blog.title))
-clean(dist_path)
-build(dist_path, blog, theme)
+if __name__ == '__main__':
+    logger.info('building blog: {}'.format(blog.title))
+    clean(dist_path)
+    build(dist_path, blog, theme)

@@ -35,7 +35,7 @@ lint: venv  ## Linting your scripts
 	$(ACTIVATE) mypy --ignore-missing-import --strict blog
 
 build: venv lint  ## Build your blog
-	$(ACTIVATE) python app.py
+	$(ACTIVATE) python build.py
 
 preview:  ## Run nginx for preview
 	docker run --name nginx -p 80:80 -v $(CURDIR)/__dist:/usr/share/nginx/html -it --rm nginx:mainline-alpine
