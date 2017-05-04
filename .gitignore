@@ -99,4 +99,6 @@ ENV/
 # mkdocs documentation
 /site
 
+## project specified
 
+__dist/
