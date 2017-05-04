@@ -31,8 +31,8 @@ freeze: venv  ## Freeze pip modules into constraints.txt
 	$(ACTIVATE) pip freeze > constraints.txt
 
 lint: venv  ## Linting your scripts
-	$(ACTIVATE) flake8 blog
-	$(ACTIVATE) mypy --ignore-missing-import --strict blog
+	$(ACTIVATE) flake8 blog *.py
+	$(ACTIVATE) mypy --ignore-missing-import --strict blog *.py
 
 build: venv lint  ## Build your blog
 	$(ACTIVATE) python build.py
