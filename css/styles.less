@@ -1,0 +1,201 @@
+@mobile: ~"(max-width: 640px)";
+
+/* Base CSS
+-------------------------------------------------- */
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+}
+
+/* Navigation
+-------------------------------------------------- */
+.nav {
+    margin: 1em 0;
+
+    @media @mobile {
+        div.col-xs-4 { padding: 0 5px }
+    }
+
+    a {
+        display: inline-block;
+        width: 99%;
+        padding: 5px 0;
+        border-top: 1px dotted #999;
+        text-align: center;
+        color: #999;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: #999;
+        background: #f8f8f8;
+    }
+}
+
+/* Contents
+-------------------------------------------------- */
+#title {
+    text-align: center;
+
+    a {
+        color: #333;
+    }
+    a:hover {
+        color: #999;
+        text-decoration: none;
+    }
+}
+
+.credit {
+    margin: 2em 0;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    color: #999;
+}
+
+
+/* Content
+-------------------------------------------------- */
+#content {
+    padding: 1em 8em;
+    @media @mobile { padding: 0 0.5em; }
+
+    h1 {
+        padding: 0 0.5em 5px;
+        font-size: 20px;
+        text-align: left;
+        border-bottom: 1px solid #ccc;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .backref {
+        margin: 2em 0 0;
+        text-align: center;
+        color: #999;
+
+        a {
+            color: #999;
+        }
+    }
+}
+
+
+/* Post
+-------------------------------------------------- */
+.post {
+    h1 {
+        margin: 0.5em 0 1.5em;
+    }
+
+    h2 {
+        margin: 2em 0 1em;
+        padding: 8px;
+        background: #f0f0f0;
+    }
+
+    h3 {
+        margin: 2em 0 1em;
+        padding: 1em 0.5em 0;
+        font-size: 16px;
+        border-top: 1px solid #ccc;
+    }
+    h3:before {
+        padding-right: 4px;
+        color: #666;
+        content: '■';
+    }
+    h2+h3 {
+        padding-top: 0;
+        border-top: none;
+    }
+
+    h4 {
+        margin: 1em 0;
+        font-size: 16px;
+    }
+
+    p {
+        margin: 1em 0.5em;
+        font-size: 16px;
+        line-height: 1.85;
+    }
+
+    p.posted-at {
+        margin: 2em 0 0;
+        font-size: 14px;
+        font-weight: normal;
+        color: #999;
+    }
+
+    ul {
+        font-size: 16px;
+
+        li {
+            margin-bottom: 0.5em;
+        }
+    }
+
+    pre {
+        margin: 1em 0.5em;
+        line-height: 1.6;
+    }
+    pre.prettyprint {
+        padding: 0.5em;
+    }
+
+    blockquote {
+        margin: 2em 0.5em;
+        padding: 1em;
+        background: #eee;
+
+        p {
+            margin: 0;
+            font-size: 16px;
+        }
+    }
+
+    div.sharing {
+        margin: 2em 1em 0;
+    }
+}
+
+/* Archives
+-------------------------------------------------- */
+#archives {
+    h1 {
+        margin: 2em 0 0;
+    }
+
+    .post {
+        margin: 0 1em;
+    }
+
+    h2 {
+        margin: 0.5em 0;
+        padding: 0;
+        background: none;
+    }
+
+    h2>a {
+        position: relative;
+        bottom: 3px;
+        padding-right: 0.5em;
+    }
+}
+
+/* Widgets
+-------------------------------------------------- */
+
+.fb_iframe_widget > span {
+	vertical-align: baseline !important;
+}

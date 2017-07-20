@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>redisのバックアップは慎重に | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.com/blog/2013/02/26/redis-backup/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2013-02-26 Tue 23:06</p>
+  
+  <h1>redisのバックアップは慎重に</h1>
+  <div class="post-body"><iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+<p>皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。</p>
+<p>弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。</p>
+<p>本番環境でRedisを運用する上で、強く訴えたい注意点は「RDBが壊れることがある」ということです。</p>
+<p>「RDBがあるからインスタンスが落ちても平気だぜ」とか思ってると、RDBが壊れてリストア失敗→データ消失ということになりかねません。ファイルにdumpされるからと安心していると痛い目に遭うかも知れません。</p>
+<p>（2013/02/27追記）今のところ壊れたのはハード障害が怪しい場面のみです。「RDB壊れるとかRedis使えねー」とかそういう話ではまったくありません。誤解無きよう。壊れる時はRedisじゃなくても壊れます。自分のユースケースではTokyo Cabinet/Tyrantからの乗り換えだったので「RDBの修復自体がサポートされていない」というのが一番の注意点でした（AOFは育ちすぎるのと、I/O発生しすぎで見送り）。</p>
+<p>Redisにはredis-check-dump, redis-check-aofというファイルのチェックツールが同梱されています。</p>
+<p>redis-check-aofには--fixオプションがあり、ディスクに保存されたAOFログの復旧を試みることが出来ますが、redis-check-dumpにはそういったオプションはありません。ちゃんと準備しておかないと、RDBが壊れていることは確認できても、それを修復することはかなわず途方に暮れることになります。</p>
+<p>ふつうに使っていてRDBが壊れることはそうそうないのは確かですが、メモリ故障などのハード障害のあおりを受けてクラッシュすることはあります。ハード障害に対してはレプリケーションは有効な対策ですが、RDB自体のバックアップもきっちり取っておきたいもの。</p>
+<p>なので、ごくごく単純ですがRedisサーバでのRDBのバックアップは</p>
+<ol>
+<li>RDBファイルの待避</li>
+<li>redis-check-dumpで検査</li>
+<li>bzip2で固める</li>
+<li>バックアップキューに突っ込む</li>
+</ol>
+<p>という手順で取っています。</p>
+<p>キューに登録しておくと、バックアップサーバが後でrsyncしてくれるような簡単なジョブキューの仕組みをRedisのSortedSetを使って作っています。</p>
+<p>なお、アプリケーションレベルでのRedisの使い方については<a href="http://www.manning.com/carlson/">Redis in Action</a>が実例豊富でお勧めです。データ型の解説などもじっくりたっぷり解説してあるので、これからRedisを始めようという人はWEB+DBの特集を見た上で、この本を読むのがよいと思います。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=redisのバックアップは慎重に%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.com/blog/2013/02/26/redis-backup/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

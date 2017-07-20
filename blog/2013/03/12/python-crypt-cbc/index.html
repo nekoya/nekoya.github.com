@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2013-03-12 Tue 09:49</p>
+  
+  <h1>PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする</h1>
+  <div class="post-body"><p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
+<p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
+<p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
+<p>{% gist 5088592 publish_hex_key.pl %}</p>
+<p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
+<p>{% gist 5088592 decrypt.py %}</p>
+<p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

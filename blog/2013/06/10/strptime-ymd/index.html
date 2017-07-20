@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>本当は怖いstrptimeと%Y%m%dの関係 | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/blog/2013/06/10/strptime-ymd/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2013-06-10 Mon 10:33</p>
+  
+  <h1>本当は怖いstrptimeと%Y%m%dの関係</h1>
+  <div class="post-body"><p>「%Y%m%d」をstrptimeで処理すると曖昧になることを今更ながらに知りました。</p>
+<p>社内で「201312」を渡すとキモいという話が出て、</p>
+<blockquote class="twitter-tweet"><p>Pythonでdatetime.datetime.strptime('201312', '%Y%m%d')がエラーにならず1月2日として成立するの具合悪いと思うの</p>&mdash; nekoya (@nekoya) <a href="https://twitter.com/nekoya/status/342897090780876800">June 7, 2013</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>ってPostしたら<a href="http://twitter.com/hiratara/">@hiratara</a>さんが「2013129と2013130もキモいぞ」と教えてくれました。</p>
+<p>普段は%Y-%-%dを使うんだけど、URLに日付を埋め込む場合はデリミタ無しの方が自然だなーと思ったらご覧の有様だよ。</p>
+<p>Python2.7.1</p>
+<pre><code>&gt;&gt; datetime.strptime('201312', '%Y%m%d')
+datetime.datetime(2013, 1, 2, 0, 0)
+&gt;&gt; datetime.strptime('2013129', '%Y%m%d')
+datetime.datetime(2013, 12, 9, 0, 0)
+&gt;&gt; datetime.strptime('2013130', '%Y%m%d')
+datetime.datetime(2013, 1, 30, 0, 0)
+</code></pre>
+<p>なお、Pythonだけでなく他の言語でも見事にバラバラでﾜﾛﾀ。それぞれ最新版じゃないけど、そう変わらない気がする。</p>
+<p>Perl5.12.2 Time::Piece</p>
+<pre><code>$ perl -MTime::Piece -le 'print localtime-&gt;strptime("201312", "%Y%m%d")'
+Sun Dec  1 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013129", "%Y%m%d")'
+Mon Dec  9 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013130", "%Y%m%d")'
+Error parsing time at /Users/ryo/perl5/perlbrew/perls/perl-5.12.2/lib/5.12.2/darwin-2level/Time/Piece.pm line 469.
+</code></pre>
+<p>PHP5.3.15</p>
+<pre><code>$ php -r 'var_dump(new DateTime("201312"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-06-10 20:13:12"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013129"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-09 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013130"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-10 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+</code></pre>
+<p>Ruby1.9.3p194</p>
+<pre><code>% irb
+irb(main):001:0&gt; require 'date'
+=&gt; true
+irb(main):002:0&gt; Date.strptime('201312', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):2:in `strptime'
+        from (irb):2
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+irb(main):003:0&gt; Date.strptime('2013129', '%Y%m%d').to_s
+=&gt; "2013-12-09"
+irb(main):004:0&gt; Date.strptime('2013130', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):4:in `strptime'
+        from (irb):4
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+</code></pre>
+<p>%Y%m%dを取る場合は、strptime任せにせず自分でフォーマットのチェックもしておかないと危険ですね。もしくは、おとなしくデリミタ挟むか。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=本当は怖いstrptimeと%Y%m%dの関係%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/blog/2013/06/10/strptime-ymd/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>逆引きPython | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/pages/python/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2017-07-21 Fri 05:10</p>
+  
+  <h1>逆引きPython</h1>
+  <div class="post-body"><h2>INDEX</h2>
+<li><a href="/pages/python_coding/">コーディングスタイル</a></li>
+
+<li><a href="/pages/python_file/">ファイル操作</a></li>
+
+<li><a href="/pages/python_date/">日付・時刻</a></li>
+
+<li>その他</li>
+
+<h2>その他</h2>
+<h3>.pycを作りたくない</h3>
+<p>環境変数<a href="http://docs.python.jp/2/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE">PYTHONDONTWRITEBYTECODE</a>を設定すると、<code>.pyc</code>および<code>.pyo</code>ファイルが作成されなくなる。値は何でもいいので、</p>
+<pre>
+export PYTHONDONTWRITEBYTECODE=1
+</pre>
+
+<p>などと書いておけばよい。</p>
+<h3>辞書（dict）のソート</h3>
+<p>キー（key）の順に取り出す</p>
+<pre class="prettyprint">
+>>> score = {'Jack':300, 'Mike':200, 'Jane':100}
+>>> for (k, v) in sorted(score.items()):
+...     k, v
+...
+('Jack', 300)
+('Jane', 100)
+('Mike', 200)
+</pre>
+
+<p>値（value）の順に取り出す</p>
+<pre class="prettyprint">
+>>> for (k, v) in sorted(score.items(), key=lambda x:x[1]):
+...     k, v
+...
+('Jane', 100)
+('Mike', 200)
+('Jack', 300)
+</pre>
+
+<p>reverse=Trueで降順になる。</p>
+<pre class="prettyprint">
+>>> for (k, v) in sorted(score.items(), key=lambda x:x[1], reverse=True):
+...     k, v
+...
+('Jack', 300)
+('Mike', 200)
+('Jane', 100)
+</pre>
+
+<h3>配列（リスト）のコピー</h3>
+<p>単に代入しただけでは参照になるので、破壊的な操作をした時に元の値も変更されてしまう。</p>
+<pre class="prettyprint">
+>>> a = ['foo', 'bar']
+>>> b = a
+>>> b[0] = 'hoge'
+>>> b
+['hoge', 'bar']
+>>> a
+['hoge', 'bar']
+</pre>
+
+<p>以下のいずれかで新しいリストが作れる。</p>
+<pre class="prettyprint">
+b = list(a)
+b = a[:]
+</pre>
+
+<p>もしくは<a href="http://docs.python.jp/2/library/copy.html">copyモジュール</a>を使ってもよい。</p>
+<pre class="prettyprint">
+import copy
+b = copy.copy(a)
+b = copy.deepcopy(a)
+</pre>
+
+<p>単なるリストのコピーであればシンプルに書けて高速な前述の方法を使えばよい。deep copyが必要な場合はcopy.deepcopyを使う。</p>
+<p><a href="https://gist.github.com/nekoya/2a06bd929c90c3f240eb">ベンチマーク</a>を取るとスライスが最も速いが、listを作り直す方が意味は伝わりやすい。速度差も小さく、dictにも応用が効く。</p>
+<h3>文字列からクラス名を決める</h3>
+<p>クラス名を動的に決定する場合は<a href="http://docs.python.jp/2/library/functions.html#globals">globals()</a>からクラスを取得する。</p>
+<pre class="prettyprint">
+>>> class Hoge(object):
+...     pass
+...
+>>> globals()['Hoge']()
+<__main__.Hoge object at 0x10d62e390>
+</pre>
+
+<p>正直ちょっと無理矢理感があるが、実際のアプリケーションではこのような操作の対象は特定のモジュールにまとまっているはずで、その場合はもっとスマートに書ける。</p>
+<p>myapp.commandsモジュールから動的にクラスを決定してインスタンスを得る。</p>
+<pre class="prettyprint">
+import myapp.commands
+obj = getattr(myapp.commands, 'Hoge')()
+</pre>
+
+<h3>スクリプトを終了する</h3>
+<p>exit()ではなく<a href="http://docs.python.jp/2/library/sys.html#sys.exit">sys.exit()</a>を使う。</p>
+<pre class="prettyprint">
+import sys
+sys.exit(exit_code)
+</pre>
+
+<ul>
+<li><a href="http://stackoverflow.com/questions/6501121/the-difference-between-exit-and-sys-exit-in-python">The difference between exit() and sys.exit() in python?</a></li>
+</ul>
+<p>exit()はインタラクティブを終了するためのショートカット（^D相当）であって、実行の停止ではない。</p>
+<h3>メールを送信する</h3>
+<pre class="prettyprint">
+import smtplib
+from email.MIMEText import MIMEText
+from email.Header import Header
+from email.Utils import formatdate
+
+def send(from_addr, to_addr, subject, body=None, encoding='utf-8'):
+    if isinstance(body, unicode):
+        body = body.encode(encoding)
+    msg = MIMEText(body, 'plain', encoding)
+    msg['Subject'] = Header(subject, encoding)
+    msg['From'] = from_addr
+    msg['To'] = to_addr
+    msg['Date'] = formatdate()
+
+    s = smtplib.SMTP('localhost:25')
+    s.sendmail(msg['From'], msg['To'].split(','), msg.as_string())
+    s.close()
+</pre>
+
+<h3>decimal.Decimalを指定の桁で丸める</h3>
+<p>Pythonで浮動小数点演算をおこなう場合は、誤差を避けるためにfloatではなく<a href="http://docs.python.jp/2/library/decimal.html">decimal</a>を用いる。</p>
+<p>指定の桁で数値を丸めるには、<a href="http://docs.python.jp/2/library/decimal.html#decimal.Decimal.quantize">quantize</a>メソッドを使う。</p>
+<pre class="prettyprint">
+>>> import decimal
+>>> decimal.Decimal('1.05').quantize(decimal.Decimal('0.0'), rounding=decimal.ROUND_HALF_UP)
+Decimal('1.1')
+</pre>
+
+<p>roundingの種別は<a href="http://docs.python.jp/2/library/decimal.html#decimal.Context">decimal.Context</a>に詳しいが、基本はこの3つ。</p>
+<ul>
+<li>切り捨て : ROUND_DOWN</li>
+<li>切り上げ : ROUND_UP</li>
+<li>四捨五入 : ROUND_HALF_UP</li>
+</ul>
+<p>decimal.Decimalといちいち書くのは面倒なので、今のところチームのルールとして以下を設定している。</p>
+<ul>
+<li>from decimal import Decimalで直接クラスをimportしてよい</li>
+<li>テストコードのみfrom decimal import Decimal as Dで省略してよい</li>
+</ul>
+<h3>cached_propertyの励行</h3>
+<p>werkzeug.utilsにある<a href="http://werkzeug.pocoo.org/docs/utils/#werkzeug.utils.cached_property">cached_property</a>の使用を推奨する。</p>
+<p>社内でコードを書く場合は、ポートしたものがkauli.utilsにいるので以下のようにimportする。</p>
+<pre class="prettyprint">
+from kauli.utils import cached_property
+</pre>
+
+<p>通常のpropertyと比較して、キャッシュによるパフォーマンスの向上以外にも、</p>
+<pre class="prettyprint">
+class Hoge(object):
+    @cached_property
+    def foo(self):
+        return 'FOO'
+
+hoge = Hoge()
+hoge.foo = 'BAR'
+</pre>
+
+<p>このように外部から値を注入できるのでテストを書く際にも便利である。</p>
+<p>cached_propertyはキャッシュ可能なプロパティというよりも、遅延評価されるインスタンス変数と表現した方が適切なようにも思われる。通常のpropertyと適宜使い分けたい。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=逆引きPython%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/pages/python/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

@@ -1,0 +1,1572 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Nekoya press</title>
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://nekoya.github.io/"/>
+  <updated></updated>
+  <id>http://nekoya.github.io/</id>
+  <author>
+    <name>nekoya</name>
+  </author>
+  <generator uri="https://github.com/nekoya/nekoya.github.com/tree/source">simpress</generator>
+
+
+<entry>
+  <title>stylelint v8.0.0がリリースされてた</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2017/07/19/stylelint8/"/>
+  <updated>2017-07-20T22:16:00</updated>
+  <id>http://nekoya.github.io/blog/2017/07/19/stylelint8/</id>
+  <content type="html"><![CDATA[<p><a href="https://stylelint.io/">stylelint</a>のv8.0.0がリリースされてた。</p>
+<p><a href="https://github.com/stylelint/stylelint/releases">今回のリリース</a>では、deprecated扱いになっていた各種ルールが正式に削除されて、古い設定を使い続けていたプロジェクトでは更新が結構ダルいかもしれない。</p>
+<p>新たに<code>stylelint-config-recommended</code>というルールセットも公式から提供されました。</p>
+<ul>
+<li><a href="https://github.com/stylelint/stylelint-config-recommended">https://github.com/stylelint/stylelint-config-recommended</a></li>
+</ul>
+<p>わりと<a href="https://github.com/stylelint/stylelint-config-recommended/blob/master/index.js">ゆるめの設定</a>になっているので、こいつをベースにしておくと今後のアップデートへの追従とかもいい感じに出来そう。各ルールの設定そのものも標準的なんじゃないかなぁという印象です。</p>
+<p>新規に導入するなら<code>stylelint-config-standard</code>の方が幅広くカバーしているのでよさそう。</p>
+<ul>
+<li><a href="https://github.com/stylelint/stylelint-config-standard">https://github.com/stylelint/stylelint-config-standard</a></li>
+</ul>
+<p>こいつもrecommendedをextendsする形になって、もうなんかこのへんに乗っかってしまった方がいろいろ楽ですよという気持ちになりますね。</p>
+<p>この手のlintツールについては、</p>
+<ul>
+<li>細かいルールに従うことは生産性に貢献しない</li>
+<li>更新が頻繁でルールもコロロ変わるので追従するコストに見合わない</li>
+<li>それぐらい自由に書かせろ</li>
+</ul>
+<p>みたいな意見もあるかもしれないけど、</p>
+<ul>
+<li>単純なミスを防げる</li>
+<li>あらかじめ決めておくことで書き方で悩まなくてよい</li>
+</ul>
+<p>あたりはやはり一度それがある生活を送ると、離れがたい安心感があります。</p>
+<p>特に後者は今あなたがそこを問題だと考えていなくても、いつかどこかで誰かが人知れず悩むかもしれない。それを未然に防げるのはよいこと。</p>
+<p>「それぐらい聞けよ」と思うかもしれないけど、機会的に判定可能なルールで守られていると「それを守っていればOK」という線引ができるのは大きい。そこから外れる部分についての議論はあるにしても、何もないのと比べるとだいぶましなはず。</p>
+<p>で、それに加えて「プロジェクト内に個人の縄張りが作られるのを防ぐ」という効果があって、自分はそこを特に重く見ています。</p>
+<p>全て各自の最量に任せてしまうと、後から見て「あー、ここは○○さんが書いたんだな」というのがひと目で分かるコードになりがちで、それはコードに対する縄張り意識につながってしまう。</p>
+<p>それを全否定するつもりはないけど、少なくともコードフォーマットみたいな部分でそうした影響が出てしまうのは望ましくないと考えているので、こういうツールによってガイドラインを与えられるのはいいよなぁと思うのです。</p>]]></content>
+</entry>
+
+<entry>
+  <title>AJITOの予定を把握して快適Ajiting</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2015/12/14/ajiting-advent-calendar/"/>
+  <updated>2015-12-14T12:22:00</updated>
+  <id>http://nekoya.github.io/blog/2015/12/14/ajiting-advent-calendar/</id>
+  <content type="html"><![CDATA[<p>この記事は<a href="http://www.adventar.org/calendars/876">#ajiting Advent Calendar 2015</a>の14日目の記事です。</p>
+<p>nekoyaです。<a href="http://amacbee.hatenablog.com/entry/2015/12/09/000000">昼Ajiting</a>勢です。</p>
+<p>AJITOでは様々なイベントが日々開催されており、小規模なものもあれば貸切で行われる大規模なものあります。</p>
+<p>その日のAJITOの予定を抑えておくのは、昼Ajiting勢のたしなみ。というわけで、今日のネタはそんなAJITOのスケジュール管理についてです。</p>
+<p>VOYAGE GROUPでは社内の予定をサイボウズ・ガルーンを使って管理しています。</p>
+<p>「Slackには常駐してるけどガルーンはあんまり」という我々にとって、予定を見に行くコストは大きいものです。</p>
+<p>そこで、毎朝その日のAJITOの予定をSlackに通知するようにしたら快適になりました。</p>
+<p><img src="https://i.gyazo.com/e3d7df99e8f9087ea96f87906bf6b083.png" alt="ある日の予定"></p>
+<p>こんな感じの通知がAJITOのSlackチャンネルに流れます（予定は架空のものです）。</p>
+<p>技術的には何も見るべき点はありませんが、せっかくなのでGitHubに上げておきました。</p>
+<ul>
+<li><a href="https://github.com/nekoya/garoonbot"><a href="https://github.com/nekoya/garoonbot">https://github.com/nekoya/garoonbot</a></a></li>
+</ul>
+<p><a href="https://cybozudev.zendesk.com/hc/ja/categories/200157760-Garoon-API">ガルーンAPI</a>はSOAPだったり、今時のノリで気軽に叩くにはやや面倒だったりするのですが、真面目にXMLを読み書きせずに適当に済ませています。</p>
+<p><code>garoon.py</code>には引数として</p>
+<ul>
+<li>ユーザもしくは施設のid</li>
+<li>通知先のチャンネル</li>
+<li>対象日</li>
+</ul>
+<p>などを与えられるようになっており、AJITOに限らず各種予定を通知できるようになっています。自分の予定を通知するのに使ってくれる人もいたりして、わりといい感じです。</p>
+<p>イベントが始まる直前の通知も欲しくなったので、本日新たに「予定が始まる10分前になったら通知する」体制も作りました。</p>
+<p>他にも毎日の定時後の特定の予定を検知するスクリプトなど、必要に応じてちょっとしたものを回したりしています。</p>
+<p>この手の「技術的には見るべき点はないが、なんやかんやで面倒な課題」は日常の様々な場面で我々の目の前に現れます。</p>
+<p>そうした課題を技術的・非技術的なアプローチでどうにかして「大したことじゃないけど、ちょっと便利になったよね」と言ってもらえるように日々平穏に過ごしていきたいですね。</p>
+<p>明日はE.本田使いのアイス王子<a href="https://twitter.com/kuromatu">@kuromatu</a>さんです。</p>]]></content>
+</entry>
+
+<entry>
+  <title>YAPCという区切りは大きく重いがブログを書かなければ終わらないのだ</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2015/08/29/thank-yapc/"/>
+  <updated>2015-08-31T20:30:00</updated>
+  <id>http://nekoya.github.io/blog/2015/08/29/thank-yapc/</id>
+  <content type="html"><![CDATA[<p>YAPC::Asia 2015が終わってもう一週間以上。やっと自分の中で少し消化できた感があるので今更ながらエントリ。</p>
+<h2>俺とYAPC</h2>
+<p>自分にとってYAPCは「楽しいお祭」というよりは、過去を見つめ直し、未来を見据えるための厳粛な式典という趣がある。</p>
+<p>初参加予定だった2008年（チケット買ったけど行けなかった）と最後の区切りとなる2015年の両方に、会社の買収というイベントが重なるのも感慨深いものです。渦中まっただ中という立場ではなかったにしろ、自分の生き方が確実に変わる節目が何度かあって、その年その年のYAPCで自分の立ち位置を確かめて来た感があります。</p>
+<p>必ずしも楽しいばかりではなく、悶々とする年も少なくありませんでしたが、それもこのイベントが自身にとって大きな意味を持つ儀式であることの表れでした。</p>
+<p>この数年で、かつては村社会的なイメージが強く（※個人の感想です）、様々な理由からあまり表に出るような存在ではなかった「広告エンジニア」というもののイメージが大きく変わったことは自分の中でとても大きな変化でした。</p>
+<p>きっとそこにはいろいろな要因があるだろうけど、@myfinderの功績は大きかったと改めて声に出したい。その世界の空気感というか時代感を変えるその力は本当に素晴らしいものだし、様々な場面で大きな支えになりました。ありがとう。</p>
+<h2>技術というもの</h2>
+<p>実のところ、近年は個別の要素技術に対する感心が薄れ気味でした。この業界の片隅で生きていくようになって15年、2〜3周の技術の移り変わりは見たという感もあったし、また技術者という存在の限界のようなものを感じつつあったのかもしれません。</p>
+<p>ただ、環境の変化もあってか今年のトークは具体的にどれというわけでもなく、近年になくワクワクできたように思います。</p>
+<p>Matzのトークで「技術は振り子のように揺り戻しがある」という表現がありましたが、自分はこうした流れを振り子ではなく螺旋と捉えています。</p>
+<p>ある側面からは同じ所をぐるぐる回っているように見えて、着実に進んでいる。絶えずしてしかももとの水にあらず。その流れの中に身を置くことの重要性が改めて自分の中にすっと入ってきた気がする。そんなYAPCでした。</p>
+<h2>不惑とは</h2>
+<p>奇跡的なめぐり合わせによって、2008年に思い描いていた未来とはまったく違う環境に身をおくことになった今。</p>
+<p>正直、会社員やってるとは思っていなかったのだけど、それが何がどうなったか数百人の会社に所属しているという事実。</p>
+<p>人生わりとあっさり予想とか予定なんてものは覆るので、あんまり考えすぎても仕方ないよなと改めて痛感させられる昨今です。</p>
+<p>40歳まであと3年という状況で、こうした場に居合わせているという縁を大切にして、じっくり進んでいきたいものです。</p>
+<p>最後に、これだけ素敵な場をこれまで提供してくださった牧さんを筆頭とする全ての人々に感謝の意を。</p>]]></content>
+</entry>
+
+<entry>
+  <title>キーボード二刀流のススメ</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2015/07/03/double-keyboard/"/>
+  <updated>2015-07-03T17:56:00</updated>
+  <id>http://nekoya.github.io/blog/2015/07/03/double-keyboard/</id>
+  <content type="html"><![CDATA[<p>こうやって</p>
+<p><img src="/images/2015-07-03-double-keyboard/keyboard01.jpg" alt="" style="max-width:100%"></p>
+<p>こうじゃ</p>
+<p><img src="/images/2015-07-03-double-keyboard/keyboard02.jpg" alt="" style="max-width:100%"></p>
+<p>そもそも、キーボードを使う姿勢というのは不自然なものです。</p>
+<p>肩が内側に入り込んで、手首を内側にひねる。だいたい<a href="https://www.google.co.jp/search?q=%E7%A5%9E%E7%A0%82%E5%B5%90+aa&amp;espv=2&amp;biw=1366&amp;bih=646&amp;source=lnms&amp;tbm=isch&amp;sa=X&amp;ved=0CAYQ_AUoAWoVChMIvLLG6L6-xgIVhrW8Ch0WjwRf#tbm=isch&amp;q=%E7%A5%9E%E7%A0%82%E5%B5%90+">こういう感じ</a>ですね。正直、人類には荷が重いです。</p>
+<p>この疲れに対抗するには、まず肩を開くことが重要です。</p>
+<p>ふたつのキーボードを肩幅に開くことで鎖骨と肩甲骨の負担が圧倒的に軽減され、35歳の定年を迎えた我々も心穏やかに日々を過ごすことが可能となります。</p>
+<p>また、キーボードの距離を時々変えることで、同じ姿勢を長時間続けることによる疲れも回避することができます。</p>
+<p>このソリューションを導入して2ヶ月ほど経ちますが、これまでの疲れが嘘のように吹き飛びました ※個人の感想です</p>
+<h2>Kinesis</h2>
+<p>こういう時の定番と言えば<a href="http://www.edikun.co.jp/kinesis/">Kinesis</a>ですが、円安が進んだ現在は4万円を超えます。</p>
+<p>年単位で気になっているのですが、かな入力派なのでJIS配列でないと日本語入力が厳しいというのもあり導入に至っていません。</p>
+<p>触ってみたいとは思いながらも、身近なところにユーザーもおらず未体験です。</p>
+<p>一般的なキーボードよりは大きいながらも、肩を開くという観点からはもう少し幅が欲しい感はあります。</p>
+<p>最近は同じKinesisのシリーズに、ヌンチャクみたいに2つに分かれる<a href="http://www.edikun.co.jp/kinesis/freestyle.htm">Kinesis Freestyle2 Keyboard</a>というのがあるようです。</p>
+<p>現物を見てみたいところだけど、さすがにコスト的にもタイプの感触などを過度に期待するのは難しいでしょうねぇ…</p>
+<p>ちょっと引っかかるのは、Mac版が別に存在しているような記述があることでしょうか。</p>
+<h2>HHKB</h2>
+<p>一方で今回ご紹介するHHKBを二本使うアプローチですが、打鍵感は今更言うことがありません。</p>
+<p>また、皆様恐らく既に一本はお持ちのことと存じますので、追加投資は半分で済むというメリットもあります。</p>
+<p>会社用、自宅用、保存用などで複数本を既に所持されている方もいらっしゃるかと思います。</p>
+<p>Macで確認したところ<a href="https://pqrs.org/osx/karabiner/index.html.ja">Karabiner</a>（旧KeyRemap4MacBook）を入れていないと、左右キーボードをまたいだSHIFT入力が効かない（右キーボードのSHIFTを押しながら左キーボードの1を押しても!にならない）という症状がありましたが、入れれば大丈夫でした。</p>
+<ul>
+<li>勝手知ったる打鍵感</li>
+<li>既に二本持っていた</li>
+<li>かな入力おじさんも安心</li>
+</ul>
+<p>という要素から、個人的には最良のソリューションでした。皆様も是非ご検討ください。</p>]]></content>
+</entry>
+
+<entry>
+  <title>Serverspec読みました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2015/01/21/serverspec/"/>
+  <updated>2015-01-21T08:51:00</updated>
+  <id>http://nekoya.github.io/blog/2015/01/21/serverspec/</id>
+  <content type="html"><![CDATA[<p>皆が待ってたServerspec本が発売されました。オライリーから電子版で購入。</p>
+<p><a href="http://www.oreilly.co.jp/books/9784873117096/"><a href="http://www.oreilly.co.jp/books/9784873117096/">http://www.oreilly.co.jp/books/9784873117096/</a></a></p>
+<p>実のところServerspecはずっと気にはしつつも、横目で見るだけで使いどころを決めかねていました。</p>
+<p>自分のサーバ管理のスタイルは、</p>
+<ul>
+<li>cobblerでOS入れる</li>
+<li>Puppetで構成管理</li>
+<li>オペレーションはfabric（以前はcapistrano）</li>
+<li>監視にNagios, CloudForecast</li>
+</ul>
+<p>というもので、<a href="http://gihyo.jp/magazine/SD/archive/2007/200712">2007年のSofeware Design</a>でmizzyさんの記事を読んでPuppetを使い始めて以来、構成管理はずっとPuppetです。</p>
+<p>モジュールは全て自作で、年単位でメンテしているモジュール群を投入しつつ、必要なものをその都度追加していくスタンス。</p>
+<p>Puppetサーバを起動するモデルではなく、--noopでdiffを確認してから必要な時だけマニフェストを適用しています。</p>
+<p>適用後のサーバの挙動に問題があれば監視からアラートが上がるので、実質的にそれがサーバの受け入れテストとなっています。</p>
+<p>現状のサーバ運用であればServerspecの必要性もあまり高くはないのですが、「マニフェストを更新するPull Requestがレビューを経てmergeされたけど実は間違っていた」みたいなこともあるので、そこをCIしたいとは思いつつ、メンテナンス対象のコードが増えることに二の足を踏んでいました。</p>
+<p>特にテストしたい部分としてはNagios等の監視ではカバー出来ない部分、例えば</p>
+<ul>
+<li>NTPミラーサーバの設定</li>
+<li>sysctlによるカーネルパラメータの更新</li>
+<li>特定プロセスのulimit</li>
+</ul>
+<p>といった細かいものが多かったのも難しい部分です。</p>
+<p>ここにServerspecを投入するのも本筋ではないよなぁなどと考えながらずるずると今日まで過ごしていました。</p>
+<p>ところが、こうした事情がdockerによって大きく変わりつつあり、いよいよ自分にとってのServerspecの必要性が一気に高まってきました。</p>
+<p>PuppetやChefなどの構成管理ツールは、そもそもが「サーバのあるべき状態」を定義するためのもので、安定した土台の上で生きていく分にはServerspecの恩恵はそこまで大きくないでしょう。そこは本書にもある通りです。</p>
+<p>一方でDockerfileは通常のシェルスクリプトのように「何をするか」を記述していくため、それらよりも簡単に扱える反面、定義的に書くものではありません。</p>
+<p>いくらシンプルなコンテナであっても、そのコンテナが正しく動作することに自信を持つのは難しくなってきます。</p>
+<p>「dockerコンテナを本番環境に投入するのにインフラをCIしないのは、テストコードを書かないのと同じ」と言い切ってもいいかもしれません。</p>
+<p>というわけで、今年は積極的にインフラのCIを回していく所存です。</p>
+<p>また、本書は周辺情報も豊富です。中でもNagiosとの連携は個人的に非常に可能性を感じました。</p>
+<p>Nagiosは台数や監視項目が増えてくると、ひとつの障害で多数のアラートが飛ぶ状況に陥りがちです。</p>
+<p>現在はそれを回避するために<a href="http://my-plugin.de/wiki/projects/check_multi/start">check_multi</a>を利用して、複数のコマンドをひとつの監視項目にまとめています。</p>
+<p>例えば、Webアプリケーションの監視は</p>
+<ul>
+<li><code>check_tcp</code>によるポート監視</li>
+<li>upstartやdaemontoolsのサービスstatusの監視</li>
+</ul>
+<p>という監視を個別に登録すると、このアプリケーションを起点とするアラートが2つ上がる場合がありますが、check_multiを使うことでこの通知を集約できます。</p>
+<p>check_multiの難点としては、コマンドそのものが複雑化するため、監視が正常に回っていることに自信を持ちづらいというものがあります。</p>
+<p>ここをServerspecに置き換えることで、開発段階からサーバ設定とテスト内容を両輪で育てていく体制が作れるのではないかと目論んでいます。</p>
+<p>Pythonのfabricと連携するenvassertも本書で知りました。</p>
+<p><a href="http://tdoc.info/blog/2013/05/14/envassert.html"><a href="http://tdoc.info/blog/2013/05/14/envassert.html">http://tdoc.info/blog/2013/05/14/envassert.html</a></a></p>
+<p>本番環境のオペレーションにはfabricを使っていますが、開発時には使っていないので自分の環境に合うかは分かりませんが、こちらも興味深いプロダクトです。</p>
+<p>他にも本書の大きなポイントは、あちこちで述べられているように、Serverspecの背景となる思想や実装の理由などが切々と語られているところにあります。</p>
+<p>ある意味Rubyっぽくないその思想には大いに共感するとともに、そうしたスタンスでRubyと付き合うのもありなのだと本書は改めて気付かせてくれます。</p>
+<p>全体的に非常に読みやすく、実用書としても読み物としても大いに楽しめるので、Serverspecを使う人だけでなく全てのWebエンジニアに強くおすすめしたい一冊です。</p>]]></content>
+</entry>
+
+<entry>
+  <title>nodejsをaptで入れたらnpmも入るようになってた</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/07/02/nodejs-deb-contains-npm/"/>
+  <updated>2014-07-02T08:51:00</updated>
+  <id>http://nekoya.github.io/blog/2014/07/02/nodejs-deb-contains-npm/</id>
+  <content type="html"><![CDATA[<p>nodeで開発はしてないけど、フロントエンドを書く時にはnpmとか必要なので何かが変わるとうろたえる情弱です。</p>
+<p>Ubuntu12.04で用意されている標準パッケージは古いので、公式のリポジトリを追加して入れる。</p>
+<ul>
+<li><a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os"><a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os">https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os</a></a></li>
+</ul>
+<p>で、新しいVMを作ってセットアップしてたらnpmのインストールでコケる症状が出たのです。</p>
+<pre>
+$ dpkg -l | grep nodejs
+ii  nodejs                          0.10.29-1chl1~precise1            Node.js event-based server-side javascript engine
+
+$ sudo apt-get install npm
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ npm : Depends: nodejs but it is not going to be installed
+       Depends: nodejs-dev
+       Depends: node-request but it is not going to be installed
+       Depends: node-mkdirp but it is not going to be installed
+       Depends: node-minimatch but it is not going to be installed
+       Depends: node-semver but it is not going to be installed
+       Depends: node-ini but it is not going to be installed
+       Depends: node-graceful-fs but it is not going to be installed
+       Depends: node-abbrev but it is not going to be installed
+       Depends: node-nopt but it is not going to be installed
+       Depends: node-fstream but it is not going to be installed
+       Depends: node-rimraf but it is not going to be installed
+       Depends: node-tar but it is not going to be installed
+       Depends: node-which but it is not going to be installed
+E: Unable to correct problems, you have held broken packages.
+</pre>
+
+<p>アイエエエエエエエ</p>
+<ul>
+<li><a href="https://chrislea.com/2013/03/15/upgrading-from-node-js-0-8-x-to-0-10-0-from-my-ppa/">Upgrading from Node.js 0.8.x to 0.10.0 From my PPA</a></li>
+</ul>
+<blockquote>
+<p>Also to note is that the nodejs-dev and npm packages don’t exist anymore. The new nodejs package contains everything that these separate packages used to</p>
+</blockquote>
+<p>あっ、はい。うん、確かにそのままnpmって打ったら動きました。試しにコマンド叩いてみるなりすればよかったね…</p>]]></content>
+</entry>
+
+<entry>
+  <title>debian/Ubuntuの/etc/hostnameにはFQDNではなくshort nameを書く</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/06/13/debian-hostname-should-not-use-fqdn/"/>
+  <updated>2014-06-13T08:23:00</updated>
+  <id>http://nekoya.github.io/blog/2014/06/13/debian-hostname-should-not-use-fqdn/</id>
+  <content type="html"><![CDATA[<p>Ubuntuのインストール時にFQDNを書いても/etc/hostnameにはshort nameが入るし、Vagrantのconfig.vm.hostnameにFQDNを書いても<a href="https://github.com/mitchellh/vagrant/blob/f0cd8511ed3784415df14aa17b7e4b4935733b63/plugins/guests/debian/cap/change_host_name.rb#L44">ドメイン部分落とされる</a>し、どういうことなんだろうと思ったら<a href="http://www.debian.org/doc/manuals/debian-reference/ch03.en.html#_the_hostname">debianマニュアルのホスト名の項</a>に書いてありました。</p>
+<pre>
+3.2.5. The hostname
+
+The kernel maintains the system hostname. The init script in runlevel S which is symlinked to "/etc/init.d/hostname.sh" sets the system hostname at boot time (using the hostname command) to the name stored in "/etc/hostname". This file should contain only the system hostname, not a fully qualified domain name.
+</pre>
+
+<p>「only」を太字にするレベルで守られるべきルールのようです。</p>
+<p>serverfaultに<a href="http://serverfault.com/questions/331936/setting-the-hostname-fqdn-or-short-name">Setting the hostname: FQDN or short name?</a>として、CentOS, RHEL, debianの違いがまとまっていました。</p>
+<p>自分もCentOSを使ってた時は/etc/sysconfig/networkにFQDNを書いていたのですが、debian系では</p>
+<ul>
+<li>/etc/hostnameにshort nameを書く</li>
+<li>/etc/hostsに書くなど名前解決のレイヤでFQDNを補完する</li>
+</ul>
+<p>といったルールが敷かれているようです。「hostnameだからドメインは関係ないだろ！」ってことなんでしょうか。一理ある。</p>
+<p>Ubuntuの<a href="http://manpages.ubuntu.com/manpages/precise/man1/hostname.1.html">hostnameコマンドのman</a>にも、</p>
+<pre>
+You can't change the FQDN (as returned by hostname --fqdn) or  the  DNS domain  name (as returned by dnsdomainname) with this command.
+</pre>
+
+<p>という記述がありますね。</p>]]></content>
+</entry>
+
+<entry>
+  <title>Pythonでimportの呼び出し元モジュールを操作する</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/06/04/python-module-injection/"/>
+  <updated>2014-06-04T10:43:00</updated>
+  <id>http://nekoya.github.io/blog/2014/06/04/python-module-injection/</id>
+  <content type="html"><![CDATA[<p>「モジュールAをimportしたらBもCもまとめて入っちゃう」とか「importしたら俺の中の何かが変わった」みたいなのをやる方法。</p>
+<p>お行儀のいいやり方ではないが、テストコードに限って言えばやってもいいかなと思って試してみた。</p>
+<pre class="prettyprint">
+import inspect
+caller = inspect.getmodule(inspect.stack()[1][0])
+caller.hoge = fuga
+</pre>
+
+<p>callerに呼び出し元のモジュールが入るので、あとはよしなに。</p>
+<p>ただ、これやるとpyflakes（自分はflake8使用）とかに「未定義の名前を参照してるよ！」って怒られる。うーん微妙か…</p>]]></content>
+</entry>
+
+<entry>
+  <title>Pythonのdictをnamedtupleに変換してベンチ取ってみた</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/06/02/config-namedtuple/"/>
+  <updated>2014-06-02T09:06:00</updated>
+  <id>http://nekoya.github.io/blog/2014/06/02/config-namedtuple/</id>
+  <content type="html"><![CDATA[<p><a href="http://docs.python.jp/2/library/collections.html#collections.namedtuple">namedtuple</a>をもっと積極的に使っていきたいと思いながらも、今ひとつやれてないので軽くベンチ取ってみた。</p>
+<p>ユースケースとして、アプリケーションのconfigをdict, namedtuple, objectそれぞれで持った場合を想定する。</p>
+<pre class="prettyprint">
+from collections import namedtuple
+
+from benchmarker import Benchmarker
+
+
+def convert(v):
+    if isinstance(v, dict):
+        return namedtuple('_', v.keys())(**{x: convert(y) for x, y in v.items()})
+    if isinstance(v, (list, tuple)):
+        return [convert(x) for x in v]
+    return v
+
+conf = {
+    'home': '/home/nekoya',
+    'list': ['foo', 'bar', {'hoge': 'fuga'}],
+    'databases': {
+        'master': {
+            'host': 'localhost',
+            'db': 'myapp',
+        },
+        'slave': {
+            'host': 'localhost',
+            'db': 'myapp',
+        },
+    },
+}
+immutable_conf = convert(conf)
+
+
+class C(object):
+    def __init__(self, **kw):
+        self.__dict__.update(**kw)
+
+obj = C(databases=C(master=C(host='localhost')))
+
+with Benchmarker(width=40, loop=1000) as bm:
+    for _ in bm('convert'):
+        convert(conf)
+
+with Benchmarker(width=40, loop=1000*1000) as bm:
+    for _ in bm('dict'):
+        _ = conf['databases']['master']['host']
+    for _ in bm('namedtuple'):
+        _ = immutable_conf.databases.master.host
+    for _ in bm('object'):
+        _ = obj.databases.master.host
+</pre>
+
+<p>手元のMacBookAirだとこんなもん。</p>
+<pre class="prettyprint">
+## benchmarker:       release 3.0.1 (for python)
+## python platform:   darwin [GCC 4.2.1 Compatible Apple LLVM 5.0 (clang-500.2.79)]
+## python version:    2.7.6
+## python executable: /Users/nekoya/.pyenv/versions/py27/bin/python
+
+##                                           user       sys     total      real
+convert                                    2.2300    0.0100    2.2400    2.2400
+
+## Ranking                                   real
+convert                                    2.2400 (100.0%) *************************
+
+## Ratio Matrix                              real    [01]
+[01] convert                               2.2400  100.0%
+## benchmarker:       release 3.0.1 (for python)
+## python platform:   darwin [GCC 4.2.1 Compatible Apple LLVM 5.0 (clang-500.2.79)]
+## python version:    2.7.6
+## python executable: /Users/nekoya/.pyenv/versions/py27/bin/python
+
+##                                           user       sys     total      real
+dict                                       0.2300    0.0000    0.2300    0.2269
+namedtuple                                 0.6300    0.0000    0.6300    0.6369
+object                                     0.2800    0.0000    0.2800    0.2786
+
+## Ranking                                   real
+dict                                       0.2269 (100.0%) *************************
+object                                     0.2786 ( 81.5%) ********************
+namedtuple                                 0.6369 ( 35.6%) *********
+
+## Ratio Matrix                              real    [01]    [02]    [03]
+[01] dict                                  0.2269  100.0%  122.8%  280.7%
+[02] object                                0.2786   81.5%  100.0%  228.6%
+[03] namedtuple                            0.6369   35.6%   43.7%  100.0%
+</pre>
+
+<p>アクセサとしては生のdictや、オブジェクトの__dict__を参照するよりも重いようだ。</p>
+<p>パフォーマンス的に問題になるようなレベルではないが、「高速だからnamedtupleを使うべき」というわけでもない。</p>
+<p>indexではなくドットシンタックスでアクセスできるのは書いていて気持ちいいので、あとはimmutableであることの利点を開発プロセスの中でどれぐらい活かせるかというところか。</p>
+<p>DDDでいうところのValueObjectを明示的に宣言するにはちょうどよさそうではある。不変なデータと関連する操作という考え方で、通常のクラスのベースに適用していくこともできるが、実際にメリットがあるかはまだ見えない。</p>
+<p>なお、frozendictが<a href="http://legacy.python.org/dev/peps/pep-0416/">PEP416</a>として上がって却下されているので、今のところdictがimmutableになることはなさそう。</p>]]></content>
+</entry>
+
+<entry>
+  <title>tcptestにfluentdのテストサーバを追加しました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/04/08/tcptest-fluentd/"/>
+  <updated>2014-04-08T07:38:00</updated>
+  <id>http://nekoya.github.io/blog/2014/04/08/tcptest-fluentd/</id>
+  <content type="html"><![CDATA[<p>Pythonからテスト用の各種サーバを起動するライブラリ、tcptestにfluentdを起動するモジュールを追加しました。</p>
+<ul>
+<li><a href="https://pypi.python.org/pypi/tcptest/0.4.0">https://pypi.python.org/pypi/tcptest/0.4.0</a></li>
+</ul>
+<p>こんな感じで使うと、server.logsに軽く整形されたログが溜まっていくのでテストがわりと楽に書けます。</p>
+<pre class="prettyprint">
+import fluentd.sender
+import fluentd.event
+
+with tcptest.fluentd.Server() as server:
+    fluent.sender.setup('app', port=server.port)
+    fluent.event.Event('follow', {'foo': 'bar'})
+    fluent.event.Event('label', {'hoge': 'fuga'})
+
+print server.logs
+# [('app.follow:', {u'foo': u'bar'}), ('app.label:', {u'hoge': u'fuga'})]
+</pre>
+
+<p>やってることは単純で、<a href="https://github.com/nekoya/python-tcptest/blob/master/tcptest/fluentd.py">out_stdoutに投げてるだけ</a>です。</p>
+<p>サーバ停止前のウェイトとか何も考えてない感じですが、まぁとりあえずこれで。</p>]]></content>
+</entry>
+
+<entry>
+  <title>現役勢だけど自作サーバ同窓会に行ってきました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/03/07/jisakuserver/"/>
+  <updated>2014-03-07T09:05:00</updated>
+  <id>http://nekoya.github.io/blog/2014/03/07/jisakuserver/</id>
+  <content type="html"><![CDATA[<p>「そもそも現役バリバリだし、前回のカンファレンスの同窓会だし」とか思ってたら、いつの間にかすごい規模の公開イベントになっていた<a href="http://atnd.org/events/47968">自作サーバー同窓会</a>におじゃましてきました。主催の<a href="https://twitter.com/stanaka">@stanaka</a>さん、ありがとうございました。ご挨拶できなかった…</p>
+<p>弊社のインフラを支える<a href="https://twitter.com/SatchanP">@SatchanP</a>の当日のスライドと振り返りがこちらにございます。</p>
+<ul>
+<li><a href="http://takyaku.com/?p=402">自作サーバ同窓会で話をしてきました</a></li>
+</ul>
+<p>我々としては<a href="https://twitter.com/SatchanP">@SatchanP</a>という優秀なコンテンツをインターネッツに提供できただけで満足です。</p>
+<p>当日のトークでは物理面にフォーカスしていたので、もう少し上のレイヤにも軽く触れておきたいと思います。</p>
+<h2>調達の歴史</h2>
+<p>弊社は2009年創業で、ちょうど自作サーバカンファレンスがあった年にサービスを開始しました。2007年頃にも自作サーバでサービスを回していたこともあって、まったく抵抗なくやれたし業界的にも活気がありました。</p>
+<p>その後、Core i世代に移行してしばらく経つと自作PC市場の衰退もあり、コストメリットが出しにくくなったり、M/BもGPU統合で自作サーバに適合するものは限られてしまい、調達が難しくなってきました。</p>
+<p>この時期に「海外から直接仕入れる」というソリューションが導入され、再び大きなコストメリットを得られたことが後の展開に多大な影響をもたらしました。</p>
+<p><img src="/images/2014-03-07-jisakuserver/dynatron_fans.jpg" alt="CPUファン100個ほど" style="max-width:100%"></p>
+<p>みんな大好きDynatronのCPUファンですね。100個ぐらいあります。さすがにこのまま届いたわけではなく、2箱ぐらいに分かれて梱包されていたのをまとめたような記憶があります。</p>
+<p><img src="/images/2014-03-07-jisakuserver/utr1.jpg" alt="UTR1" style="max-width:100%"></p>
+<p>除雪機器としても有能なUTR1の山。これは国内仕入れだけど、インパクトがあったので残ってた写真おいときますね。2012年のものみたいです。</p>
+<p>2010年頃に使ってたM/Bが非常に優秀で今でもこき使ってたり、その後の世代交代で入手性が再び上がったりみたいな話もあるのですが、それはまた別の機会に。</p>
+<p>コスト面でのメリットを出すのが難しくなってきたのはこの半年〜1年ぐらいでしょうか。かつてのタイの洪水はSSDへの移行でほとんど吸収できたのですが、円安とメモリ価格の高騰はかなり大きなインパクトがあります。</p>
+<h2>自作サーバの限界</h2>
+<blockquote class="twitter-tweet" lang="en"><p>自作サーバの限界はそれを作り、回し、責任を持つ人間がスケールしないことだと思ってます <a href="https://twitter.com/search?q=%23jisakuserver&amp;src=hash">#jisakuserver</a></p>&mdash; nekoya (@nekoya) <a href="https://twitter.com/nekoya/statuses/441186527637278721">March 5, 2014</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>弊社にはこれを当たり前にこなすチームがいるのでうまく回っていますが、サービス規模の増大とともにそろそろ難しくなってきました。</p>
+<p>現在、稼働中の自作サーバが約200台で、今までの累計だと300台ぐらいでしょうか。台数としてはさくらインターネットさんとは比べるべくもありませんが、それなりの規模ではあると思います。</p>
+<p>ちょうど当日も話題になった「新人に自作サーバを教えるのか」という課題に改めて向き合っているところですね。</p>
+<p><img src="/images/2014-03-07-jisakuserver/cpu_socket.jpg" alt="ピン曲がってる…" style="max-width:100%"></p>
+<p>不慣れな人間が自作して、CPUソケットのピンが曲がってしまって、それをがんばって直したりしてると人件費でﾄｰﾀﾙｺｽﾄｶﾞｰなんてことにもなりがちです。</p>
+<p>調達から制作、運用、メンテナンスまでを全てを十分なレベルでこなせる人材を複数確保するのは確かに簡単ではありません。それを何年も維持継続できているのは幸せなことなのでしょう。</p>
+<p>知識としては持っておいた方がいいし、そこで戦えない人間にメーカー製のサーバを渡してもスペックを引き出せないという意味では「自作サーバはあり」だというのが自分のスタンスです。ただ、それと事業戦略上の選択とはまた別の話。</p>
+<h2>自作サーバは「選択肢のひとつ」</h2>
+<p>実際ほとんどのWebサービスは何も考えずにクラウドで回せばいいと思います。</p>
+<p>けれども「自作の時代は終わった」とか「もうメリットは何一つない」と自分で検証もせずに切り捨てるのは、「クラウドなんか信用できないからダメだ」と言ってるのと同じことです。</p>
+<p>一定の条件下では今でも十分なメリットが得られますし（だからやってるんですが）、今後も選択肢の一つとして保持し続けるでしょう。</p>
+<p>大切なのは自分たちのサービスの特性を知り、そこにどう向き合っていくかを常に問い続ける姿勢ではないでしょうか。</p>
+<p><img src="/images/2014-03-07-jisakuserver/servers.jpg" alt="搬出を待つ第一世代のサーバたち" style="max-width:100%"></p>
+<p>なお、弊社では変態インフラエンジニアだけでなくPythonで広告配信サービスを作りたいエンジニアさんも絶賛募集中ですので、@nekoyaまで気軽にお声がけください。</p>]]></content>
+</entry>
+
+<entry>
+  <title>残業しないプログラマ</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/01/28/zangyo-overtime/"/>
+  <updated>2014-01-28T12:18:00</updated>
+  <id>http://nekoya.github.io/blog/2014/01/28/zangyo-overtime/</id>
+  <content type="html"><![CDATA[<p>TLで見かけた記事。</p>
+<ul>
+<li><a href="http://japan.zdnet.com/sp/10things/20382969/3/">プログラマーを採用する際に重視すべき10の資質</a></li>
+</ul>
+<p>2008年の記事を今更どうこう言うのも何だけど、翻訳記事の難しさを改めて感じたので。</p>
+<p>元記事へのリンクが切れてたので、原文分からんけど海外でも「残業こそ正義」みたいな価値観もあるのかーと思ったんですね。</p>
+<p>そしたら、<a href="https://twitter.com/t_ichimiya">@t_ichimiya</a>が原文拾ってきてくれました。よく見たら原文へのリンクが「.com.com」になってますね。適当だなぁ。</p>
+<ul>
+<li><a href="http://www.techrepublic.com/blog/10-things/10-traits-to-look-for-when-youre-hiring-a-programmer/">10 traits to look for when you're hiring a programmer</a></li>
+</ul>
+<blockquote>
+<p>Some programmers are "daycoders" -- people who write code 9 to 5, Monday through Friday, and do not think about it in the slightest outside of those times.</p>
+</blockquote>
+<p>原文では「月〜金の9〜17時しかコードを書かず、それ以外の時間には少しもそのことを考えない人」をdaycodersと表現しているのを「残業しない人」と訳しています。</p>
+<p>残業を表すような表現は見当たらないのに、翻訳のタイミングで「定時以外でコードを書くってことは残業だろうよ」という価値観が紛れ込んだものと思われます。</p>
+<p>ニュアンスの違いというより、誤訳じゃないかという気もするけど、こんなものなのかもしれません。</p>
+<p>我々はここからいつもどおりの教訓を得るわけです。</p>
+<ul>
+<li>翻訳記事は翻訳者のフィルタが入っているので原文と内容が違うことがある</li>
+<li>1つの記事が4ページに分割されてないので原文の方が読みやすい</li>
+</ul>]]></content>
+</entry>
+
+<entry>
+  <title>社内勉強会でオブジェクト指向についてLTしました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/01/10/oop/"/>
+  <updated>2014-01-10T08:15:00</updated>
+  <id>http://nekoya.github.io/blog/2014/01/10/oop/</id>
+  <content type="html"><![CDATA[<iframe src="http://www.slideshare.net/slideshow/embed_code/29860005" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+<p>毎週定例の社内勉強会でオブジェクト指向の基礎についてLTしました。資料はやや加筆しています。</p>
+<p>昨今、オブジェクト指向というとMVCとかデザインパターンみたいな発展的なトピックが目立つような気がしていて、もっと簡単に考えればいいのになーという思いからこういう話をしました。</p>
+<p>凝集度を高める設計指針を出来るだけ平易な言葉で語ろうというのがコンセプトでした。</p>
+<p>サンプルがいろいろ話をはしょりすぎで、改めて見るとちょっと違和感ありますね…</p>
+<p>開発のバイトで来てくれてる学生の子たちに、こういう概念的な話を聞いてもらう機会って積極的に作らないとなかなかないので、そういう場を作っていくのもおっさんの役割なのかなーみたいなことを思ってます。</p>]]></content>
+</entry>
+
+<entry>
+  <title>Pythonの逆引きレシピを上げました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2014/01/07/python-page/"/>
+  <updated>2014-01-07T10:29:00</updated>
+  <id>http://nekoya.github.io/blog/2014/01/07/python-page/</id>
+  <content type="html"><![CDATA[<p>社内向けにちょこちょこ書いてた<a href="http://nekoya.github.io/pages/python/">Python逆引きレシピ</a>みたいなのを改めてまとめなおしました。</p>
+<p>Pythonは言語自体が分かりやすいし、標準モジュールがよく出来ているので<a href="http://docs.python.jp/2.7/">公式ドキュメント</a>を読んでおけばあまり困らないのですが、それでも「あれどうやるんだっけ」みたいなのは出てくるものです。</p>
+<p>特に日付周り、特にTimeZoneがからむと面倒なことが多いですね。どの言語でもこのへんは罠を含みがちだけど、Pythonもやはり一筋縄ではいかない感があります。</p>]]></content>
+</entry>
+
+<entry>
+  <title>社内勉強会でテストについて話しました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/12/24/about-test/"/>
+  <updated>2013-12-24T10:23:00</updated>
+  <id>http://nekoya.github.io/blog/2013/12/24/about-test/</id>
+  <content type="html"><![CDATA[<p>毎週水曜にやっている社内勉強会で、テストに関する基本的なことについてLTしました。</p>
+<iframe src="http://www.slideshare.net/slideshow/embed_code/29457897" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
+
+<p><div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/nekoya/about-test" title="About test" target="_blank">About test</a> </strong> from <strong><a href="http://www.slideshare.net/nekoya" target="_blank">Ryo Miyake</a></strong> </div></p>
+<p>主にバイトの子たちに普段何気なく書いてるテストコードについて、改めて概念的なところのおさらいをしてもらえればなーという感じの話でした。</p>
+<p>xUTPの話をしたけどわりとハードル高そうだったので、会社の本棚に置いてるレガシーコード改善ガイドも軽く紹介しておきました。</p>
+<p>毎週、ネタがある人に適当な時間でトークしてもらうというので1時間ぐらい何となく回してて、3ヶ月ぐらい途切れることなくやれてるのでわりといい感じ。</p>]]></content>
+</entry>
+
+<entry>
+  <title>ブログを作り直しました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/12/19/rebuild-my-blog/"/>
+  <updated>2013-12-19T10:41:00</updated>
+  <id>http://nekoya.github.io/blog/2013/12/19/rebuild-my-blog/</id>
+  <content type="html"><![CDATA[<p>MacBookAirの液晶が割れて買い替える →  新しく作った環境でOctopressが動かない →  だるい</p>
+<p>みたいなことがあって放置してましたが、改めてブログを作り直しました。</p>
+<p>github pagesのドメイン変更への追従やら、Octopressのcanonical設定がデフォルトだとよろしくないのやら、微妙な黒歴史を捨てようかとも思ったのですが、できるだけ維持する方向で調整しました。</p>
+<ul>
+<li><a href="https://github.com/nekoya/nekoya.github.com/tree/source"><a href="https://github.com/nekoya/nekoya.github.com/tree/source">https://github.com/nekoya/nekoya.github.com/tree/source</a></a></li>
+</ul>
+<p>rstblogとかも考えたけど、まぁたいした機能いらないからPythonでふわっと書いてみたのでようやく社会復帰できますかね…</p>]]></content>
+</entry>
+
+<entry>
+  <title>猫ふんじゃったに見るシステム開発の悲哀</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/07/11/neko-to-computer/"/>
+  <updated>2013-07-11T18:30:00</updated>
+  <id>http://nekoya.github.io/blog/2013/07/11/neko-to-computer/</id>
+  <content type="html"><![CDATA[<p><a href="https://twitter.com/kokorohamoe">@kokorohamoe</a>さんのエントリがとても面白かったので紹介。</p>
+<ul>
+<li><a href="http://revilog.com/2013/07/10197.html">プログラマの生産性は２０倍違うという表現は誤り、プログラムはピアノだと思えば良い。　猫ふんじゃったならだれでも引ける。</a></li>
+</ul>
+<blockquote>
+<p>猫ふんじゃったならだれでも引ける。だけれども、そのレベルの人を５００人集めても、ショパンは引けない。</p>
+</blockquote>
+<p>この例えは穏便に、かつ適切に実情を表していて、積極的に日常で使ってきたいですね。</p>
+<p>けど、きっとこんなこと言うオッサンが出てくるんだぜ…</p>
+<p>「1小節だけならどうにかなるだろ。500人に1小節ずつ弾かせて後で編集でつないでよ」</p>
+<p>「難しいところも右手だけ、左手だけなら以下略」</p>
+<p>「大丈夫、ちょっとぐらい間違えたって分かりゃしないって」</p>
+<p>「そこだけ外注に出して弾いてもらえばいいんじゃないの。あとは猫が踏めりゃどうにかなるって」</p>
+<p>そして、挙げ句の果てには</p>
+<p>「天才がいないからショパンが弾けないなんて甘え。工夫すればどうにでもなるのに、これだから技術者ってのはいけませんな。ガハハ」</p>
+<p>とか言われて世界滅びろとか思うんだ…</p>]]></content>
+</entry>
+
+<entry>
+  <title>情報をまとめるスタンス</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/07/10/background-of-last-post/"/>
+  <updated>2013-07-10T09:36:00</updated>
+  <id>http://nekoya.github.io/blog/2013/07/10/background-of-last-post/</id>
+  <content type="html"><![CDATA[<p>昨日、「<a href="http://nekoya.github.io/blog/2013/07/09/what-time-is-it/">コード内で「現時刻」を気軽に取得してはいけない</a>」を上げたらえらいアクセスを頂いて驚いた次第でございます。</p>
+<p>書いている内容自体は普段からやっていることなので、特に大きなハズレはないと思っていますし、内容的にも一定の評価を頂いたようなので書いて良かったなと。</p>
+<p>ですが、タイトルやまとめ方にやや釣り臭い部分があったのも事実で、そのあたりはもうちょっとまとめ方があったかなぁという感もあります。</p>
+<p>元々は社内のコードレビューコメントとして書いていて、途中で「これブログにまとめようか」と思い直して肉付けして上げたもので、そういうコードに対して「現時刻を気軽に取ると落とし穴があるよ」と言いたいためのエントリでした。</p>
+<p>なので、ああいうスタンスになったこと自体は自分の中では納得しているのですが、一般化して上げるにはやや雑だったのも確かです。</p>
+<p>適応範囲の広い問題に対して、特定のケースを挙げて「とにかくここに気を付けろ」とやるのは具体的な問題が見えやすいし、その時に目の前にある課題への対応として有効です。</p>
+<p>そういうまとめ方をしたおかげで多くの人に見て頂けた側面もあるはずなので、それはそれで一つのやり方として有効だというのは実感しています。にしても昨日のはあんなに見て頂けるとは思っていませんでしたが…</p>
+<p>ただ、そういったアプローチはやりすぎると「恣意的なまとめで人を煽る」みたいなことにもなりかねないので、気を付けないといかんなぁと自戒することしきりです。</p>
+<p>こういう時に冷静なツッコミを頂けるのは大変ありがたいことです。皆様ありがとうございました。</p>]]></content>
+</entry>
+
+<entry>
+  <title>コード内で「現時刻」を気軽に取得してはいけない</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/07/09/what-time-is-it/"/>
+  <updated>2013-07-09T01:20:00</updated>
+  <id>http://nekoya.github.io/blog/2013/07/09/what-time-is-it/</id>
+  <content type="html"><![CDATA[<p>日付を扱う処理についていろいろまとめたついでに、わりと簡単なことだけど知らないと落とし穴にハマる系のネタを。</p>
+<p>日頃いろいろな処理を書いていて、現時刻を扱うこともは少なくないはずです。ですが、これを適当にやっていると困ることが多々あります。</p>
+<h2>実行中に「現時刻」を元にした処理が食い違う</h2>
+<p>例えばこんなコード。ログ集計とかやってるイメージです。</p>
+<pre><code>class Analyzer(object):
+    def analyze(self):
+        logfile = datetime.datetime.now().strftime('my_log_file.%H')
+        self.save(self.analyze_logfile(logfile))
+
+    def save(self, result):
+        now = datetime.datetime.now()
+        self.result[now.hour] = result
+</code></pre>
+<p>analyze_logsの実行にやたら時間がかかったり、やんごとない事情で14:57とかに実行して15:02に集計が終わった場合などに悲劇が起きます。</p>
+<p>ここまで問題が明らかな場合に限らず、現時刻をその都度取得していると、そのスクリプトにとって「今」がいつを指し示すのかが曖昧になってしまいます。</p>
+<p>この意識が薄いままコードを書く習慣が身についてしまうと、いざという時に上記のような問題を抱えたコードを書いてしまいがちなので気を付けたいところです。</p>
+<p>この問題に対しては、例えば</p>
+<pre><code>    def __init__(self):
+        self.target_time = datetime.datetime.now()
+</code></pre>
+<p>のように、最初に現時刻を取得しておいて、他の箇所ではこの時刻を使って処理します。</p>
+<p>この時に現時刻を保存する変数名は、そのままnowとしても構いませんが、その時の処理に応じた適切な名前を付けましょう。上記の例では集計の対象時刻なのでtarget_timeとしています。</p>
+<p>それが本当に「現時刻」である必要があるのか、それともたまたま現時刻を元にしているだけで、格納された値には別の意味があるのかの見極めは、設計にも大きな意味を持ちます。</p>
+<p>ちなみに、話を分かりやすくするために省略しましたが、本当にログ集計を書く場合は対象時刻は現在ではなくローテート済みの「前の時間」なのでそのへんは調整が必要です。</p>
+<h2>再試行したい時に手が出せない</h2>
+<p>先のようなログ集計が代表例になります。特定の時間に対する処理をやり直したいとき、現時刻を取得するコードがあちこちにあると改修は大仕事になります。</p>
+<p>先のように、現時刻を取得する処理が独立していればオプションで変更可能に拡張することもできるし、いざという時は直接コードを書き換えて緊急回避することだって可能です。</p>
+<h2>後から「あの時の処理」を追うのが難しい</h2>
+<p>特定の条件を満たしたプレイヤーにレアアイテムを配布する、というユースケースを想定します。</p>
+<p>DBにアイテムのレコードをINSERTして、そのレコードには付与時刻のカラムがあったとしましょう。</p>
+<p>例えば500件ずつBULK INSERTしたとして、付与時刻をINSERT文を発行する度に現時刻から取っていたら、一度のバッチで複数の「付与時刻」が記録されることになります。</p>
+<p>後から「あの時にアイテム付与したユーザのidを全部くれ」と言われた時に、DBから取ってくる付与時刻は一定の期間で範囲検索することになります。また、その指定する範囲に漏れがないことを確実に保証するのは意外と厄介です。</p>
+<p>「DBに入ったその瞬間がいつか」を記録したいという場面もあるかも知れませんが、それよりもひとつの意味を持つ処理単位で時刻が統一されていた方が便利なケースが多いのではないでしょうか。</p>
+<p>どうせレプリケーションの遅延やらキャッシュやらでconsistencyを保証することが不可能なことも多いはずですし。</p>
+<h2>テスタビリティが落ちる</h2>
+<p>これは本質的な問題ではないと考える向きもあるかも知れませんが、重要なことだと考えています。</p>
+<p>テストを書こうという意志を持っているのに、現時刻を扱うノウハウを持っていないために回りくどいコードを書いてしまったり、この部分のほころびが他にも波及してカバレッジが下がってしまったりという事例を見ています。</p>
+<p>そういうことがあると「テスト書くの面倒だからTDDやりたくない」みたいな意識が生まれてしまいがちです。これは大変もったいないことです。</p>
+<p>また「テストが書きにくい（書けない）」というのは、言い換えれば設計がよくないという見方もできます。そういうアプローチや考え方を採用するかは別にして、ノウハウとして持っておいて選択肢を増やすことは悪くないでしよう。</p>
+<p>ここも先の構成であれば、テストコードで</p>
+<pre><code>analyzer = Analyzer()
+analyzer.target_time = datetime.datetime(2013, 7, 8, 22, 43, 11)
+</code></pre>
+<p>このようにtarget_timeを変更するだけで自由にテストが書けます。</p>
+<p>（追記）テストで現時刻を扱うためのライブラリも各言語で色々あります。Perlの<a href="http://search.cpan.org/~ddick/Test-MockTime-0.12/lib/Test/MockTime.pod">Test::MockTime</a>や、Rubyの<a href="http://rubygems.org/gems/timecop">timecop</a>、Pythonだとそのものズバリは知らないけど<a href="http://www.voidspace.org.uk/python/mock/">mock</a>でmonkey patchを当てることが出来ます。</p>
+<p>これはこれで有効な手立てですが、こうしたライブラリに頼らずとも一貫した現時刻を扱えた方がいいでしょう。テストだけであればそうした回避策も有効ですが、最初からその部分が入れ替え可能な設計にしておいた方がより堅いアプローチだと考えます。</p>
+<p>また、そういったライブラリでパッチを当ててテストを通した場合、そのテスト内では現時刻が固定されるため、先に挙げた問題を含んだコードがそのまま生き延びてしまうリスクが高まります。</p>
+<h2>現時刻をどこで取るべきか</h2>
+<p>簡単なアプリケーションであれば、上記のようにコンストラクタで現時刻を取れば解決するかも知れませんが、実際に書くアプリケーションの大半は一つのクラスで完結するものではないでしょう。じゃあ、どうするか。</p>
+<p>原則として、現時刻を取得するのは「外部からの入力を受け取る部分」です。Facadeになるオブジェクトだけが現時刻を取得し、そこから呼ばれるドメイン層のオブジェクトは時刻を受け取るだけにするのが自分のパターンです。</p>
+<p>具体的には、バッチであればCLIからパラメータ等を受け取るオブジェクト、WebアプリケーションであればRequestやContextに相当するオブジェクトがその役割を担います。</p>
+<p>こうすることで「前はこのクラスで現時刻を取ってたが、その上に別のクラスが挟まったので、ここで現時刻を取っているのは具合が悪い」みたいな問題を回避することができます。</p>
+<h2>まとめ</h2>
+<ul>
+<li>現時刻をあちこちで取るな</li>
+<li>入り口で取って使い回せ</li>
+<li>nowという名前が適切か考えろ</li>
+</ul>]]></content>
+</entry>
+
+<entry>
+  <title>Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/"/>
+  <updated>2013-07-05T12:24:00</updated>
+  <id>http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/</id>
+  <content type="html"><![CDATA[<p>Pythonでnaiveなdatetimeオブジェクトにtzinfoを付けてawareにするには、<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.astimezone">公式</a>には</p>
+<blockquote>
+<p>単にタイムゾーンオブジェクト tz を datetime オブジェクト dt に追加したいだけで、日付や時刻データメンバへの調整を行わないのなら、 dt.replace(tzinfo=tz) を使ってください。</p>
+</blockquote>
+<p>こう書かれているのですが、どうもこの方法は夏時間の扱い以外にも問題があるようです。</p>
+<pre><code>&gt;&gt;&gt; import datetime, pytz
+&gt;&gt;&gt; jst = pytz.timezone('Asia/Tokyo')
+&gt;&gt;&gt; datetime.datetime.now(jst)
+datetime.datetime(2013, 7, 5, 12, 23, 1, 962735, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+&gt;&gt;&gt; datetime.datetime.now().replace(tzinfo=jst)
+datetime.datetime(2013, 7, 5, 12, 23, 9, 143578, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' CJT+9:00:00 STD&gt;)
+</code></pre>
+<p>replaceでtzinfoを付与すると、JSTではなくCJTとなります。CentOS5.8 + Python2.6.5とSnowLeopard + Python2.7.1で同じ結果になりました。</p>
+<ul>
+<li><a href="http://www.atmarkit.co.jp/ait/articles/0505/27/news116_3.html">SQLクリニック（4）：日付データ演算の達人技を伝授する 【第3話】 (3/3) - ＠IT</a></li>
+</ul>
+<blockquote>
+<p>実は、日本にも複数のタイムゾーンが存在したことが過去にあるようです。それまでJSTとされていたタイムゾーンがこのときCJTとなりました。「Central Japan Time」の略称で、日本中央時間（もしくは中央日本時間）です。</p>
+</blockquote>
+<p>少なくとも2013年にCJTを使うことはなさそうなので、これは嬉しくないですね。</p>
+<pre><code>&gt;&gt;&gt; jst.localize(datetime.datetime.now())
+datetime.datetime(2013, 7, 5, 12, 23, 19, 647283, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+</code></pre>
+<p>夏時間に対処した時と同じように、localizeしてやれば問題なくJSTが返ってきます。とりあえずlocalizeしておけば安心、なのかな。</p>
+<h2>関連エントリ</h2>
+<ul>
+<li><a href="http://nekoya.github.io/blog/2013/06/21/python-datetime/">Pythonの日付処理とTimeZone</a></li>
+<li><a href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/">Pythonのdatetimeで夏時間を扱う</a></li>
+</ul>]]></content>
+</entry>
+
+<entry>
+  <title>MySQL-python1.2.4でdatetimeから文字列の変換方法が変わった件</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/07/03/mysql-python-datetime-format/"/>
+  <updated>2013-07-03T10:32:00</updated>
+  <id>http://nekoya.github.io/blog/2013/07/03/mysql-python-datetime-format/</id>
+  <content type="html"><![CDATA[<p>MySQL-python（MySQLdb）を上げたら、今まで通ってたテストでwarningが出るようになりました。</p>
+<p><a href="https://github.com/farcepest/MySQLdb1/blob/MySQLdb-1.2.4/MySQLdb/times.py">MySQLdb/times.py</a>で以前は</p>
+<pre><code>def format_TIMESTAMP(d):
+    return d.strftime("%Y-%m-%d %H:%M:%S")
+</code></pre>
+<p>こうなっていたものが、</p>
+<pre><code>def format_TIMESTAMP(d):
+    return d.isoformat(" ")
+</code></pre>
+<p>こうなったのが原因らしいのだけど、<a href="https://github.com/farcepest/MySQLdb1/blob/MySQLdb-1.2.4/HISTORY">Changelog</a>を見てもそれらしい表記がないので少し経緯を追ってみました。</p>
+<p>この変更で何が問題になったかというと、</p>
+<pre><code>&gt;&gt; import datetime, pytz
+&gt;&gt;&gt; datetime.datetime.now(pytz.utc).isoformat(' ')  # aware
+'2013-06-27 01:50:16.156481+00:00'
+&gt;&gt;&gt; datetime.datetime.now().isoformat(' ')  # naive
+'2013-06-27 10:48:30.696072'
+</code></pre>
+<p>のように、microsecondや時差を含んだ文字列がSQLに渡って「Warning: Incorrect datetime value: '2013-06-27 01:50:16.156481+00:00' for column 〜」という警告が出るようになりました。</p>
+<p>履歴を追っていくと、<a href="http://sourceforge.net/p/mysql-python/svn/659/"><a href="http://sourceforge.net/p/mysql-python/svn/659/">http://sourceforge.net/p/mysql-python/svn/659/</a></a> で</p>
+<blockquote>
+<p>Use isoformat() instead of strftime() to avoid year limitations of the latter. Fixes #3296395</p>
+</blockquote>
+<p>とあって、1900年以前の日付を扱えるようにこの変更を加えたことが分かります。strftime(3)の仕様的にそうなってたけど、そこの制限を外したぜってことらしいです。だけど、この#3296395ってどこのことだ…</p>
+<p>該当するチケットは <a href="http://sourceforge.net/p/mysql-python/bugs/311/">#311 executing a datetime column update with year &lt; 1900 fails</a> っぽいけど、BTS移行とかしたんでしょうか。</p>
+<p>最初はMySQL5.6でdatetime型がミリ秒対応したらしい（検証してない）ので、それに合わせた施策かなーと思ったらそんなことはなかった。</p>
+<p>他にもmicrosecond周りでは <a href="http://sourceforge.net/p/mysql-python/bugs/325/">#325 Datetime fields with microsecond shows as None</a> みたいなチケットが今も動いていたりして、なかなか予断を許さない印象を受けます。</p>
+<p>DBのライブラリがdatetimeオブジェクトを適切に扱ってくれるのは素敵だと思ってたけど、なかなか難しいですね。取り急ぎの対処法としては、</p>
+<ul>
+<li>microsecondやtzinfoを含まないdatetimeオブジェクトだけを扱う</li>
+<li>事前に自分で文字列にして渡す</li>
+</ul>
+<p>のいずれかにわけで、自分のユースケースだとコネクション管理と<a href="http://search.cpan.org/~tokuhirom/SQL-Maker-1.12/lib/SQL/Maker.pm">SQL::Maker</a>の簡易版みたいなことをするラッパーを通しているので、そこで時前でstrftimeして乗り切る感じになりました。</p>
+<p>メロスには英語がわからぬ。だが、<a href="https://github.com/farcepest/MySQLdb1/issues/22">issue</a>は切ってみた。</p>]]></content>
+</entry>
+
+<entry>
+  <title>Pythonのdatetimeで夏時間を扱う</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/"/>
+  <updated>2013-07-02T15:07:00</updated>
+  <id>http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/</id>
+  <content type="html"><![CDATA[<p>「<a href="http://nekoya.github.io/blog/2013/06/21/python-datetime/">Pythonの日付処理とTimeZone</a>」を書いた後、Twitterで指摘をもらっていたのを遅ればせながら検証したので、改めてエントリを起こしてみました。</p>
+<blockquote class="twitter-tweet"><p>Pythonの日付処理とTimeZone <a href="http://t.co/KK1B5Fot0V">http://t.co/KK1B5Fot0V</a> datetime を tzinfo 付きで生成する場合は pytz.tzinfo.normalize しないと DST 境界を超えるところで存在しない時刻を作りますよ</p>&mdash; Jun Omae⁽⁶⁶ʲ⁵⁾ (@jun66j5) <a href="https://twitter.com/jun66j5/statuses/348421676503011328">June 22, 2013</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p><a href="https://twitter.com/jun66j5">@jun66j5</a>さんありがとうございました。</p>
+<p>このへんの背景は<a href="http://pytz.sourceforge.net/">pytzのサイト</a>にありますが、そもそもサマータイムに馴染みがないのでどうあるべきかがしっくりきません。</p>
+<h2>標準時と夏時間の切り替わり</h2>
+<p>ここでは、ニューヨークが属するTimeZoneを例に話を進めます。まずは基本的な用語の整理から。</p>
+<ul>
+<li><a href="http://ja.wikipedia.org/wiki/%E5%A4%8F%E6%99%82%E9%96%93">DST</a> … daylight saving time、夏時間（サマータイム）のこと</li>
+<li><a href="http://ja.wikipedia.org/wiki/%E6%9D%B1%E9%83%A8%E6%A8%99%E6%BA%96%E6%99%82">EST</a> … 東部標準時、UTCより5時間遅れ（-05:00）</li>
+<li><a href="http://ja.wikipedia.org/wiki/%E6%9D%B1%E9%83%A8%E5%A4%8F%E6%99%82%E9%96%93">EDT</a> … 東部夏時間、UTCより4時間遅れ（-04:00）</li>
+</ul>
+<p>とりあえずWikipediaにリンクしときましたが、他にも「<a href="http://www.time-j.net/">Time-j.net 世界時計 - 世界の時間と時差</a>」というサイトの「<a href="http://www.time-j.net/WorldTime/Location/America/New_York">アメリカ / ニューヨークの時差と現在時刻</a>」がいろいろ参考になりました。</p>
+<p>2013年は3月10日の午前2時から11月3日の午前2時までが夏時間らしいです。と一口に言っても、夏時間に突入すると同時に現時刻の定義が変わるし、標準時に戻った時も現時刻の定義が変わるのでややこしいんですよね。</p>
+<p>正確には「標準時（EST）の3/10 02:00から」「夏時間（EDT）の11/3 02:00まで」が夏時間の適用期間で、その時刻を迎えた時に切り替わるのでこういうことになるようです。</p>
+<pre><code>from datetime import datetime
+import pytz
+
+fmt = '%Y-%m-%d %H:%M:%S %z(%Z)'
+
+def dump(year, mon, day, hour, min, sec):
+    dt = datetime(year, mon, day, hour, min, sec, tzinfo=pytz.utc)
+    print dt.astimezone(ny).strftime(fmt)
+
+ny = pytz.timezone('America/New_York')
+
+dump(2013, 3, 10, 6, 59, 59)  # 2013-03-10 01:59:59 -0500(EST)
+dump(2013, 3, 10, 7, 0, 0)    # 2013-03-10 03:00:00 -0400(EDT)
+dump(2013, 11, 3, 5, 59, 59)  # 2013-11-03 01:59:59 -0400(EDT)
+dump(2013, 11, 3, 6, 0, 0)    # 2013-11-03 01:00:00 -0500(EST)
+</code></pre>
+<p>2013年3月10日の午前2時という時間は消し飛び、夏時間に突入したという結果だけが残る。と考えれば覚えやすいのではないでしょうか。</p>
+<h2>datetimeオブジェクトの作り方</h2>
+<p>夏時間に該当するdatetimeオブジェクトを作る時、コンストラクタにtzinfoを渡すとこうなります。</p>
+<pre><code>&gt;&gt;&gt; from datetime import datetime
+&gt;&gt;&gt; import pytz
+&gt;&gt;&gt; ny_tz = pytz.timezone('America/New_York')
+&gt;&gt;&gt; datetime(2013, 4, 10, 8, 0, tzinfo=ny_tz).strftime(fmt)
+'2013-04-10 08:00:00 EST(-0500)'
+</code></pre>
+<p>ESTなので夏時間になっていません。これは、pytz.timezone()を単体で呼んだだけでは夏時間の判定ができないため、</p>
+<ol>
+<li>とりあえずESTのtzinfoを返す</li>
+<li>datetimeは渡されたtzinfoを単純に取り込む</li>
+</ol>
+<p>という動作をして、こういう結果を返してしまうものと思われます。</p>
+<pre><code>&gt;&gt;&gt; ny_tz.localize(datetime(2013, 4, 10, 8, 0)).strftime(fmt)
+'2013-04-10 08:00:00 EDT(-0400)'
+</code></pre>
+<p>こちらは日付が確定した後にTimeZone情報を与えているので、夏時間に属するawareなdatetimeオブジェクトが取れています。</p>
+<pre><code>def localize(dt):
+    print ny_tz.localize(dt).strftime(fmt)
+
+localize(datetime(2013, 3, 10, 1, 59, 59))  # 2013-03-10 01:59:59 EST(-0500)
+localize(datetime(2013, 3, 10, 2, 0, 0))    # 2013-03-10 02:00:00 EST(-0500)
+localize(datetime(2013, 3, 10, 2, 59, 59))  # 2013-03-10 02:59:59 EST(-0500)
+localize(datetime(2013, 3, 10, 3, 0, 0))    # 2013-03-10 03:00:00 EDT(-0400)
+</code></pre>
+<p>2時になったらキング・クリムゾン発動するんじゃないの…</p>
+<pre><code>def normalize(dt):
+    print ny_tz.normalize(ny_tz.localize(dt)).strftime(fmt)
+
+normalize(datetime(2013, 3, 10, 1, 59, 59))  # 2013-03-10 01:59:59 EST(-0500)
+normalize(datetime(2013, 3, 10, 2, 0, 0))    # 2013-03-10 03:00:00 EDT(-0400)
+normalize(datetime(2013, 3, 10, 2, 59, 59))  # 2013-03-10 03:59:59 EDT(-0400)
+normalize(datetime(2013, 3, 10, 3, 0, 0))    # 2013-03-10 03:00:00 EDT(-0400)
+</code></pre>
+<p>こちらは2時台も補正されました。ただし、3/10 02:00〜02:59は存在しない時間なので、02:00は03:00と同時刻として処理されます。</p>
+<pre><code>&gt;&gt;&gt; ny_tz.localize(datetime(2013, 3, 10, 2, 0, 0)).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 7, 0, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; ny_tz.localize(datetime(2013, 3, 10, 3, 0, 0)).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 7, 0, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<p>いずれもUTCに変換してしまえば補正されます。UTCではなくJSTにしても同様ですが、TimeZoneの変換をするなら基準はUTCに置いた方が混乱が少ないでしょう。</p>
+<p>ただし、この場合でもコンストラクタにtzinfoを渡してしまうと、</p>
+<pre><code>&gt;&gt;&gt; datetime(2013, 3, 10, 2, 0, tzinfo=ny_tz).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 7, 0, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; datetime(2013, 3, 10, 3, 0, tzinfo=ny_tz).astimezone(pytz.utc)
+datetime.datetime(2013, 3, 10, 8, 0, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<p>このように、後者もESTをベースとして処理されてしまいます。pytzの公式にもあるように、datetimeの実装が今の仕様である以上どうにもならないようです。</p>
+<p>夏時間を考慮してdatetimeオブジェクトを作る場合は、以下を基本方針とするのがいいでしょう。</p>
+<ul>
+<li>コンストラクタにはtzinfoを渡さず、naiveなdatetimeオブジェクトをlocalizeする</li>
+<li>存在しない時刻が渡る可能性がある時はnormalizeするかUTCに変換する</li>
+</ul>
+<h2>timedeltaによる演算と夏時間</h2>
+<p>tzinfoが夏時間を考慮してくれない問題は、datetimeオブジェクトを作る時だけでなく、timedeltaによる演算時も同様です。</p>
+<pre><code>from datetime import timedelta
+
+def offset(seconds):
+    dt = ny_tz.localize(datetime(2013, 3, 10, 1, 59, 59))
+    dt += timedelta(seconds=seconds)
+    print dt.strftime(fmt)
+
+offset(0)     # 2013-03-10 01:59:59 EST(-0500)
+offset(1)     # 2013-03-10 02:00:00 EST(-0500)
+offset(3600)  # 2013-03-10 02:59:59 EST(-0500)
+offset(3601)  # 2013-03-10 03:00:00 EST(-0500)
+</code></pre>
+<p>夏時間に突入しても、TimeZoneはESTのままです。</p>
+<pre><code>def offset_n(seconds):
+    dt = ny_tz.localize(datetime(2013, 3, 10, 1, 59, 59))
+    dt += timedelta(seconds=seconds)
+    print ny_tz.normalize(dt).strftime(fmt)
+
+offset_n(0)     # 2013-03-10 01:59:59 EST(-0500)
+offset_n(1)     # 2013-03-10 03:00:00 EDT(-0400)
+offset_n(3600)  # 2013-03-10 03:59:59 EDT(-0400)
+offset_n(3601)  # 2013-03-10 04:00:00 EDT(-0400)
+</code></pre>
+<p>normalizeしてやると、補正されてEDTになります。</p>
+<p>ただ、夏時間のように時間の定義が途中で変わるような条件で演算するのはあまりに複雑なので、事前にUTCに変換してしまった方が安全でしょう。</p>
+<pre><code>&gt;&gt;&gt; datetime(2013, 3, 10, 6, 59, 59, tzinfo=pytz.utc).astimezone(ny_tz).strftime(fmt)
+'2013-03-10 01:59:59 EST(-0500)'
+&gt;&gt;&gt; datetime(2013, 3, 10, 7, 0, 0, tzinfo=pytz.utc).astimezone(ny_tz).strftime(fmt)
+'2013-03-10 03:00:00 EDT(-0400)'
+</code></pre>
+<p>astimezoneで変換した場合はnormalizeは不要なので、夏時間を意識する必要はありません。</p>
+<p>特にテストを書く場合に、夏時間とその期間外でUTCからの時差が変わってテストケースに影響が出るのは好ましくないと考えます。</p>
+<p>本件に限らず複数のTimeZoneを扱う場合は、「内部ではUTCで保持し、出力する段階でlocaltimeに変換する」のが間違いが起きにくいでしょう。文字コードで「内部ではUnicodeで保持し、出力する段階でUTF-8等に変換する」というのと同じですね。</p>
+<h2>まとめ</h2>
+<ul>
+<li>夏時間がある場合はコンストラクタにtzinfoを渡さない</li>
+<li>時刻を扱う場合は内部ではUTCで持つと混乱が少ない（はず）</li>
+</ul>]]></content>
+</entry>
+
+<entry>
+  <title>Pythonの日付処理とTimeZone</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/06/21/python-datetime/"/>
+  <updated>2013-06-21T10:04:00</updated>
+  <id>http://nekoya.github.io/blog/2013/06/21/python-datetime/</id>
+  <content type="html"><![CDATA[<p>日付周りの処理というのはとても難しい問題で、特にTimeZoneが絡むと基本的に大変なことになります。</p>
+<p>Pythonは標準で用意されているdatetimeモジュールが高機能なので、それを使っておけば間違いない感があって、そういう意味では安心感があります。</p>
+<p>とは言え、その扱いにはやはり注意が必要で、現時点でこうするのがいいかなーと思っていることをつらつらと記録したエントリがこちらです。</p>
+<p>基本的にはMacのPython2.7.1で検証して、おやっと思ったところはCentOS5.8のPython2.6.5やUbuntu12.04のPython2.7.3で追試しています。</p>
+<p>なお、datetime.datetimeと書くのがだるいので本文中では、</p>
+<pre><code>from datetime import datetime
+</code></pre>
+<p>を前提としています。</p>
+<h2>naiveとaware</h2>
+<p><a href="http://docs.python.jp/2/library/datetime.html">公式ドキュメント</a>にそのまま載ってるけど、datetimeオブジェクトは自身がTimeZone情報を持つ（aware）場合と、持たない（naive）場合があります。</p>
+<p>明示的に指定しない限りnaiveになるため、プログラマは自身が「そのオブジェクトがどのTimeZoneに属するか」を常に間違いなく扱う必要があります。</p>
+<p>で、これは当然難しい。JSTとUTCぐらいならまだしも、様々なタイムゾーンを扱うシステムでは常に正しい値を扱うことは至難の業と言ってもいい。</p>
+<p>「基本はUTCで扱い、localtimeの場合は変数名にlocalと付ける」みたいなルールで頑張っても、モジュールをまたぐ時に変換間違えて残念なことになりかねません。</p>
+<p>これに対して、awareなオブジェクトは内部にTimeZone情報を持っているので、そういうケースでも安心できます。</p>
+<pre><code>&gt;&gt;&gt; import pytz
+&gt;&gt;&gt; from datetime import datetime
+&gt;&gt;&gt; datetime.now(pytz.utc)
+datetime.datetime(2013, 5, 10, 7, 38, 56, 442741, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; datetime(2013, 5, 16, tzinfo=pytz.timezone('Asia/Tokyo'))
+datetime.datetime(2013, 5, 16, 0, 0, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' CJT+9:00:00 STD&gt;)
+</code></pre>
+<p>こんな感じで、原則として全てのdatetimeオブジェクトはawareな状態で扱うようにしています。utcnow()はtzinfoを受け取れないので、UTCにする場合でも必ずnow()を使います。</p>
+<h3>pytzの位置付け</h3>
+<p>TimeZoneを表すには<a href="http://pytz.sourceforge.net/">pytz</a>を使っています。可能であればサードパーティのライブラリではなく、全て標準モジュールで済ませたいところですが、pytzは<a href="http://docs.python.jp/3.3/library/datetime.html#tzinfo-objects">Python3.3の公式ドキュメント</a>でも、</p>
+<blockquote>
+<p>pytz は最新の情報を含み、使用を推奨されています。</p>
+</blockquote>
+<p>とお墨付きが出ているので標準に近いモジュールということで利用しています。</p>
+<h3>naiveとawareの変換、あるいはTimeZone変更</h3>
+<p>naiveとawareの変換は、<del>公式にあるようにreplaceを使います</del>。naiveなdatetimeオブジェクトとawareなそれでは比較や演算が出来ないので、意外と使う場面はあります。</p>
+<p>（2013/07/05修正）replaceするとJSTがCJTと認識される問題があったので、naive→awareの変換にはlocalizeを使用します → <a href="http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/">Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない</a></p>
+<p>naive→aware</p>
+<pre><code>&gt;&gt;&gt; now = datetime.now()
+&gt;&gt;&gt; now
+datetime.datetime(2013, 6, 18, 2, 15, 2, 485439)
+&gt;&gt;&gt; pytz.utc.localize(now)
+datetime.datetime(2013, 6, 18, 2, 15, 2, 485439, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<p>aware→naive</p>
+<pre><code>&gt;&gt;&gt; now = datetime.now(pytz.utc)
+&gt;&gt;&gt; now
+datetime.datetime(2013, 6, 17, 17, 15, 43, 157502, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; now.replace(tzinfo=None)
+datetime.datetime(2013, 6, 17, 17, 15, 43, 157502)
+</code></pre>
+<p>awareなオブジェクトの持っているTimeZone情報の変更は、replaceではなくastimezoneで以下のように。</p>
+<pre><code>&gt;&gt;&gt; now = datetime.now(pytz.utc)
+&gt;&gt;&gt; now
+datetime.datetime(2013, 5, 10, 7, 55, 30, 9529, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; now.astimezone(pytz.timezone('Asia/Tokyo'))
+datetime.datetime(2013, 5, 10, 16, 55, 30, 9529, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+</code></pre>
+<h2>UNIXTIMEを扱う</h2>
+<p>PythonでUNIXTIMEを得る方法として、よく紹介されるのが</p>
+<pre><code>&gt;&gt;&gt; int(time.mktime(datetime.now().timetuple()))
+1371682685
+</code></pre>
+<p>です。intでくくらないと「1371682685.0」のようなfloatが返ってきます。これはこれでいいのですが、datetimeオブジェクトからUNIXTIMEを得ようとすると、</p>
+<pre><code>&gt;&gt;&gt; int(time.mktime(datetime(1970, 1, 1).timetuple()))
+-32400
+&gt;&gt;&gt; int(time.mktime(datetime(1970, 1, 1, tzinfo=pytz.utc).timetuple()))
+-32400
+&gt;&gt;&gt; int(time.mktime(datetime(1970, 1, 1, tzinfo=pytz.timezone('Asia/Tokyo')).timetuple()))
+-32400
+</code></pre>
+<p>どうやってもUTCを認識してくれない。time.mktimeはtzinfoに対応しておらず、localtimeを受けることになっているのが原因です。</p>
+<p><a href="http://docs.python.jp/2/library/time.html">timeモジュールのドキュメント</a>にそのあたりのルールが書いてあって、UTCを扱う場合はcalendar.timegm()を使えとのこと。</p>
+<pre><code>&gt;&gt;&gt; calendar.timegm(datetime(1970, 1, 1).timetuple())
+0
+&gt;&gt;&gt; calendar.timegm(datetime(1970, 1, 1, tzinfo=pytz.utc).timetuple())
+0
+</code></pre>
+<p>今度はうまくいきましたが、入力値をUTCとして解釈するので</p>
+<pre><code>&gt;&gt;&gt; calendar.timegm(datetime(1970, 1, 1, tzinfo=pytz.timezone('Asia/Tokyo')).timetuple())
+0
+</code></pre>
+<p>こんな風にlocaltimeの1970-01-01 00:00:00を渡しても0が返ってきます。要注意。</p>
+<p>ちなみに、<a href="http://docs.python.jp/2/library/calendar.html#calendar.timegm">calendar.timegm()</a>は</p>
+<blockquote>
+<p>関連はありませんが便利な関数で、 time モジュールの gmtime() 関数の戻値のような時間のタプルを受け取り、 1970年を起点とし、POSIX規格のエンコードによるUnixのタイムスタンプに相当する値を返します。実際、 time.gmtime() と timegm() は反対の動作をします。<br />
+バージョン 2.0 で追加.</p>
+</blockquote>
+<p>なんて紹介されていて、昔はのどかだったんだなぁと思いを馳せる次第です。</p>
+<h3>結局どうすればいいのか</h3>
+<p>ベンチ取ってみたら、UTCなdatetimeオブジェクトをcalendar.timegm()にかけるのが一番速かったので、現時刻を表すUNIXTIMEを取得するには、</p>
+<pre><code>calendar.timegm(datetime.utcnow().timetuple())
+</code></pre>
+<p>が最適解でしょう。</p>
+<p>datetimeオブジェクトを変換する場合は何を優先するかによりますが、基本的には安全性を重視して</p>
+<pre><code>calendar.timegm(dt.astimezone(pytz.utc).timetuple())
+</code></pre>
+<p>とawareなdatetimeオブジェクトを確実にUTCにした上でcalendar.timegm()にかけるのがいいでしょう。</p>
+<p>dtが元々UTCの場合はastimezone()は不要ですが、その場合は実行コスト自体が小さくなるのでやはり上記の形式が最適と考えます。</p>
+<p>速度を求める場合は、</p>
+<ul>
+<li>dtがUTCならcalendar.timegm()</li>
+<li>dtがlocalならtime.mktime()</li>
+</ul>
+<p>と変換する時点でdtのTimeZoneを確実に制御してやる必要があります。この場合、datetimeオブジェクト自体もnaiveな方が若干速くなりました。</p>
+<p>datetimeオブジェクトに、tzinfoを考慮してUNIXTIMEを算出してくれるメソッドが生えていればこんなに考えなくていいのに…</p>
+<h3>strftimeでUNIXTIMEを取る</h3>
+<p>ちなみに、プラットフォーム依存なので公式ドキュメントには記載されていませんが、</p>
+<pre><code>&gt;&gt;&gt; datetime.now().strftime('%s')
+'1371683864'
+</code></pre>
+<p>strftimeで%sを使うことでUNIXTIMEが取れます。</p>
+<pre><code>&gt;&gt;&gt; datetime(1970, 1, 1).strftime('%s')
+'-32400'
+&gt;&gt;&gt; datetime(1970, 1, 1, tzinfo=pytz.utc).strftime('%s')
+'-32400'
+</code></pre>
+<p>こいつも手元では、localtimeを前提としたtzinfo非対応の挙動を示しました。検証してないけど、strftime(3)を使っててWindows非対応とかそういうことですかね。</p>
+<p>ベンチ取ったらcalendar.timegm()よりも遅かったので、特に使うメリットは無さそうです。</p>
+<h3>UNIXTIME to datetime</h3>
+<p>次にUNIXTIMEからdatetimeオブジェクトを作る方法です。</p>
+<pre><code>&gt;&gt;&gt; datetime.utcfromtimestamp(1337914193)
+datetime.datetime(2012, 5, 25, 2, 49, 53)
+</code></pre>
+<p>するとnaiveになってしまいます。先のnow()とutcnow()の関係と同様、utcfromtimestamp()ではなくfromtimestamp()にtzinfoを渡すアプローチを採ります。</p>
+<pre><code>&gt;&gt;&gt; datetime.fromtimestamp(1337914193, pytz.utc)
+datetime.datetime(2012, 5, 25, 2, 49, 53, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<h2>datetime.dateもtzinfo非対応</h2>
+<p>年・月・日で構成される、dateオブジェクトは残念ながらTimeZone情報を持つことができません。</p>
+<p>日付だって時差の影響を受けるのに、どうしてこうなっているのでしょう。残念。</p>
+<p>仕方がないので純粋に日付を扱いたい場合も、datetimeオブジェクトを作って時刻関連の情報をreplace()でつぶしています。</p>
+<pre><code>&gt;&gt;&gt; datetime.now(pytz.utc).replace(hour=0,minute=0,second=0,microsecond=0)
+datetime.datetime(2013, 6, 20, 0, 0, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<p>replace漏れがあると悲劇につながりかねないのが不安要素ではある。</p>
+<p>あと、datetimeもtoday()があって日付だけ取得できるように見えるけど、</p>
+<pre><code>&gt;&gt;&gt; datetime.today()
+datetime.datetime(2013, 6, 20, 12, 8, 14, 929174)
+</code></pre>
+<p>時刻も込みで返ってくるので、そういう用途には使えません。</p>
+<blockquote>
+<p>datetime.fromtimestamp(time.time()) と等価です<br />
+<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.today">http://docs.python.jp/2/library/datetime.html#datetime.datetime.today</a></p>
+<p>このメソッドは today() と同様ですが、可能ならば time.time() タイムスタンプを通じて得ることができる、より高い精度で時刻を提供します<br />
+<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.now">http://docs.python.jp/2/library/datetime.html#datetime.datetime.now</a></p>
+</blockquote>
+<p>あたりの説明もなんだか微妙…</p>
+<h2>strptimeがTimeZoneを無視する</h2>
+<p>先日「<a href="http://nekoya.github.io/blog/2013/06/10/strptime-ymd/">本当は怖いstrptimeと%Y%m%dの関係</a>」でも登場したstrptimeですが、TimeZoneの情報を与えてもnaiveなdatetimeオブジェクトしか作ってくれません。</p>
+<pre><code>&gt;&gt;&gt; from datetime import datetime
+&gt;&gt;&gt; datetime.strptime('2012-06-18 UTC', '%Y-%m-%d %Z')
+datetime.datetime(2012, 6, 18, 0, 0)
+</code></pre>
+<p>仕方がないので、strptimeの後に続けてtzinfoだけ埋め込んでやります。</p>
+<pre><code>&gt;&gt;&gt; import pytz
+&gt;&gt;&gt; datetime.strptime('2012-06-18 12:31:07', '%Y-%m-%d %H:%M:%S').replace(tzinfo=pytz.utc)
+datetime.datetime(2012, 6, 18, 12, 31, 7, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<h2>まとめ</h2>
+<ul>
+<li>datetimeオブジェクトはawareな状態で扱おう</li>
+<li>UNIXTIMEの扱いはTimeZoneを意識して</li>
+<li>UTCを基準にcalendar.timegmとdatetime.fromtimestampがよさそう</li>
+<li>dateやstrptimeはtzinfo非対応なので要注意</li>
+</ul>
+<p>本稿での検証に使ったベンチマークスクリプトは<a href="https://gist.github.com/nekoya/5819512"><a href="https://gist.github.com/nekoya/5819512">https://gist.github.com/nekoya/5819512</a></a>にまとめておきました。</p>
+<p>1.4GHzのCore2Duoを積んだMacBookAirだと結構な差が付いたけど、SandyBridge Core i7-2600 @3.4GHzで走らせたら3倍ぐらい速くなってあまり気にならなくなってしまった。買い換え時？</p>]]></content>
+</entry>
+
+<entry>
+  <title>本当は怖いstrptimeと%Y%m%dの関係</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/06/10/strptime-ymd/"/>
+  <updated>2013-06-10T10:33:00</updated>
+  <id>http://nekoya.github.io/blog/2013/06/10/strptime-ymd/</id>
+  <content type="html"><![CDATA[<p>「%Y%m%d」をstrptimeで処理すると曖昧になることを今更ながらに知りました。</p>
+<p>社内で「201312」を渡すとキモいという話が出て、</p>
+<blockquote class="twitter-tweet"><p>Pythonでdatetime.datetime.strptime('201312', '%Y%m%d')がエラーにならず1月2日として成立するの具合悪いと思うの</p>&mdash; nekoya (@nekoya) <a href="https://twitter.com/nekoya/status/342897090780876800">June 7, 2013</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>ってPostしたら<a href="http://twitter.com/hiratara/">@hiratara</a>さんが「2013129と2013130もキモいぞ」と教えてくれました。</p>
+<p>普段は%Y-%-%dを使うんだけど、URLに日付を埋め込む場合はデリミタ無しの方が自然だなーと思ったらご覧の有様だよ。</p>
+<p>Python2.7.1</p>
+<pre><code>&gt;&gt; datetime.strptime('201312', '%Y%m%d')
+datetime.datetime(2013, 1, 2, 0, 0)
+&gt;&gt; datetime.strptime('2013129', '%Y%m%d')
+datetime.datetime(2013, 12, 9, 0, 0)
+&gt;&gt; datetime.strptime('2013130', '%Y%m%d')
+datetime.datetime(2013, 1, 30, 0, 0)
+</code></pre>
+<p>なお、Pythonだけでなく他の言語でも見事にバラバラでﾜﾛﾀ。それぞれ最新版じゃないけど、そう変わらない気がする。</p>
+<p>Perl5.12.2 Time::Piece</p>
+<pre><code>$ perl -MTime::Piece -le 'print localtime-&gt;strptime("201312", "%Y%m%d")'
+Sun Dec  1 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013129", "%Y%m%d")'
+Mon Dec  9 00:00:00 2013
+$ perl -MTime::Piece -le 'print localtime-&gt;strptime("2013130", "%Y%m%d")'
+Error parsing time at /Users/ryo/perl5/perlbrew/perls/perl-5.12.2/lib/5.12.2/darwin-2level/Time/Piece.pm line 469.
+</code></pre>
+<p>PHP5.3.15</p>
+<pre><code>$ php -r 'var_dump(new DateTime("201312"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-06-10 20:13:12"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013129"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-09 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+$ php -r 'var_dump(new DateTime("2013130"));'
+object(DateTime)#1 (3) {
+  ["date"]=&gt;
+  string(19) "2013-05-10 00:00:00"
+  ["timezone_type"]=&gt;
+  int(3)
+  ["timezone"]=&gt;
+  string(10) "Asia/Tokyo"
+}
+</code></pre>
+<p>Ruby1.9.3p194</p>
+<pre><code>% irb
+irb(main):001:0&gt; require 'date'
+=&gt; true
+irb(main):002:0&gt; Date.strptime('201312', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):2:in `strptime'
+        from (irb):2
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+irb(main):003:0&gt; Date.strptime('2013129', '%Y%m%d').to_s
+=&gt; "2013-12-09"
+irb(main):004:0&gt; Date.strptime('2013130', '%Y%m%d').to_s
+ArgumentError: invalid date
+        from (irb):4:in `strptime'
+        from (irb):4
+        from /Users/ryo/.rbenv/versions/1.9.3-p194/bin/irb:12:in `&lt;main&gt;'
+</code></pre>
+<p>%Y%m%dを取る場合は、strptime任せにせず自分でフォーマットのチェックもしておかないと危険ですね。もしくは、おとなしくデリミタ挟むか。</p>]]></content>
+</entry>
+
+<entry>
+  <title>PythonでTest::TCP的なことをするライブラリをPyPIに上げました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/05/27/python-tcptest/"/>
+  <updated>2013-05-27T16:25:00</updated>
+  <id>http://nekoya.github.io/blog/2013/05/27/python-tcptest/</id>
+  <content type="html"><![CDATA[<p>Perlでいうところの<a href="http://search.cpan.org/~tokuhirom/Test-TCP-1.27/lib/Test/TCP.pm">Test::TCP</a>相当のことをPythonでやるライブラリをPyPIに上げました。ようやくPyPIデビューです。</p>
+<ul>
+<li><a href="https://github.com/nekoya/python-tcptest"><a href="https://github.com/nekoya/python-tcptest">https://github.com/nekoya/python-tcptest</a></a></li>
+<li><a href="https://pypi.python.org/pypi/tcptest"><a href="https://pypi.python.org/pypi/tcptest">https://pypi.python.org/pypi/tcptest</a></a></li>
+</ul>
+<p>Test::TCPはPerlでテスト時に一時的にサーバを起動したりする処理の基盤となるライブラリです。同等のことをPythonでやるのに適当なものが見当たらなかったので自分で書いたという経緯です。</p>
+<p>社内では以前からこの仕組みを使ってテストを書いていたのですが、自社のconfig系のライブラリとの結合を排除して、再構成したものになります。今回こうして公開するにあたって、関数名をオリジナルのPerl版に近付けたり、TestServerの実装を全面的に見直したりしました。</p>
+<p>tcptestパッケージにはTest::TCP本体だけでなく、memcachedとredisのテストサーバ実装も含まれています。Perlでは<a href="http://search.cpan.org/~dmaki/Test-Memcached-0.00004/lib/Test/Memcached.pm">Test::Memcached</a>や<a href="http://search.cpan.org/~typester/Test-RedisServer-0.12/lib/Test/RedisServer.pm">Test::RedisServer</a>のように別のライブラリとしてリリースされていますが、名前空間がバラバラになるのも微妙な気がしたので同一のパッケージにまとめました。</p>
+<p>PyPIにアップロードすること自体は参考資料もたくさんあり難しくないのですが、どういう名前付けをすべきかなど運営上のルールが今ひとつ分からず、まだ戸惑っている面があります。大文字小文字とか-_.のどれで区切るのかとか。あと、bdistとかbdist_eggはPure Pythonのライブラリだと不要だと思うけどよく分からない。</p>
+<p>なお、今回のtcptestは最初test.tcpという名前空間を使おうとしたのですが、Python標準のtestパッケージと干渉することが判明したので衝突回避のためこの名前になりました。</p>
+<p>自社プロダクト間の名前空間であれば、pkgutil.extend_pathを使って回避するのですが、標準ライブラリはともかくとして、PyPIのライブラリ同士での衝突はどう回避してるんだろう。</p>]]></content>
+</entry>
+
+<entry>
+  <title>ベンチャーで働くエンジニアに必要な「勇気」</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/04/12/pluck/"/>
+  <updated>2013-04-12T09:59:00</updated>
+  <id>http://nekoya.github.io/blog/2013/04/12/pluck/</id>
+  <content type="html"><![CDATA[<h2>「恐怖」を知ること</h2>
+<p>35歳が目前に迫りつつある中、ぼちぼちスピリチュアルなことも書いていこうかと思う今日この頃です。</p>
+<p>これまで十数年、小さな会社やフリーランス、大企業（はすぐ辞めたけど）を渡り歩いてきて改めてベンチャーの面白さを実感しています。</p>
+<p>様々な要素がありますが、その最たる物は「エンジニアが会社の命運を握っている」という紛れもない事実です。自社でプロダクトを開発しているベンチャーにおいて、どんなに立派な経営理念やビジネスモデルも動かないシステムの前ではクソの役にも立ちません。</p>
+<p>そして、それはそのままエンジニアの過ちが会社を危機に陥れるリスクを意味します。言ってしまえば「ワンクリックデプロイ」が「ワンクリック倒産」へと直結するかもしれないのです。省力化そのものは目指すべきですが、自分の行為が内包するリスクは忘れてはならないのです。</p>
+<p>「何か」が起きてしまった時に上長の責任だ、確認ミスだと逃げることは簡単ですが、ベンチャーは一人一人の裁量の最大化をよしとする文化です。その中で大企業では得られない自由を享受しながら、自らは何のリスクも負わずにいられるわけがないのです。</p>
+<p>こういう時に「責任を持ってやります」なんて発言が出来る人はそれこそ恐怖を知らない。事業あるいは会社そのものが無くなることに一介のエンジニア責任を負えるのか。正直なところ責任の取りようなどありません。</p>
+<p>もちろん、全てのエンジニアがいつもそこまでの危機に直面することはありません。しかし、本質的にそうしたリスクが内在していることと向き合えないエンジニアは、ベンチャーにおいて重用されることはないでしょう（あえて重用されないよう振る舞うという生き方もあります）。</p>
+<p>ベンチャーで働く上で忘れてはならないのが、この「自分の責任能力の及ばない仕事をこなすこと」への恐怖です。</p>
+<h2>恐怖を我がものとする</h2>
+<p>では、その恐怖にどう立ち向かえばいいのか。身も蓋もない言い方ですが、日々やれることをただやるしかないのです。</p>
+<p>エンジニアには何が出来るのか。</p>
+<ul>
+<li>「ここがコケたら何が起きるのか」を想像し、最悪の事態を引き起こさないように手を打つ。</li>
+<li>間違いが起こりにくいようにコードを明確にし、テストを厚くする。</li>
+<li>システムが正常に稼働していることを確認するため。そして、何かあった時に素早く状況を把握し、適切な対応が出来るよう、ログを吐く。</li>
+<li>監視スクリプトを仕込み、アラートには24時間365日すぐに対応する。</li>
+<li>サービスのコードだけでなく、ビジネス要件やインフラも理解し、状況把握の早さと正確さを上げる。</li>
+</ul>
+<p>こうした要素の一つ一つが必要不可欠です。目新しいものはないし、全て当たり前と言えば当たり前。しかし、これら全てを一人でこなせるようになるには一朝一夕では難しいのも確かです。</p>
+<p>では、まず何をすべきか。やはりテストを書くことが誰にでも出来て、確実なリターンを得られる備えでしょう。</p>
+<p>「テストは不安を解消するもの」とはよく言われることですが、ベンチャーで働くエンジニアにとってはより切実です。</p>
+<p>テストは不安などという生っちょろいものではなく「恐怖を克服するためのもの」なのです。</p>
+<p><a href="http://kau.li/">Kauli</a>ではそんな勇気のすばらしさを知るエンジニアを絶賛募集中です。<a href="http://twitter.com/nekoya">@nekoya</a>までDください（思った以上に読まれているのであさまし追記）。</p>
+<h2>そして君の未来にこの言葉を持って行けッ！</h2>
+<p>いくら強くてもこいつら屍生人は『テスト』を書かん！　ノミと同類よォーッ！</p>]]></content>
+</entry>
+
+<entry>
+  <title>UMLも捨てたもんじゃない</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/04/01/useful-uml/"/>
+  <updated>2013-04-01T10:30:00</updated>
+  <id>http://nekoya.github.io/blog/2013/04/01/useful-uml/</id>
+  <content type="html"><![CDATA[<p>UML、最近はあまり名前を聞くこともなくなってきた感があります。</p>
+<p>「<a href="http://kohada.2ch.net/test/read.cgi/prog/1314799400/">UMLなんていらない</a>」なんてスレもあったりして、どうにも廃れた物と見る向きもあるようです。</p>
+<p>「<a href="http://b.hatena.ne.jp/search/tag?safe=on&amp;sort=popular&amp;q=uml&amp;users=100">UML</a>」タグではてブの人気エントリを探しても、2005〜2007年ぐらいのものが目立つので、注目度という意味では流行ではないのは確かなのかなぁとは思います。</p>
+<p>が、このところ有用性を改めて実感することが多いので「UMLいいよ」というエントリを書きます。</p>
+<p>上記のスレは賛否両論併せてなかなかいい具合に意見が出ていて面白いのですが、以下を抑えていれば認識としてはいいのではないかと思います。</p>
+<ul>
+<li>UMLは設計の技法ではない</li>
+<li>頭の中を整理するため、あるいは人と共有する際の表現技法である</li>
+</ul>
+<p><a href="http://kau.li/">弊社</a>では、新しく入社したメンバーにプロダクトの設計を共有したり、新機能の開発をする際の社内レビューなどの際に、シーケンス図っぽいものやクラス図っぽいものを使うことがよくあります。</p>
+<p>いきなりコードを読み書きしたり、文章に落とすよりも意志の共有がうまくいく感があって、このところ特に積極的に使うようにしているのですが、手応えは強く感じています。</p>
+<p>UMLの厳密な書式ルールには全くこだわりはなく、大まかなイメージだけ伝われば、細かい部分は口頭でフォローすれば十分だと考えていています。そういう意味ではUMLを正しく使っているとは言えないのかも知れませんが、それはそれでいいんじゃないのと。</p>
+<p>「廃れた」というよりはある程度のところまで浸透して、ふつうに使われるようになったので、大々的に取り沙汰されることがなくなってきただけではないかという気もしますが、それにしてもWeb+DBやSDで見かけないのはどうなのかなぁ…</p>
+<p>UMLと併せて「オブジェクト指向で設計する」みたいなのもあまり目にしない印象があります。自分としてはプログラマとしての根幹を支えるとても大切な技術だと思うのですが、最近は雑誌などでもあまり目にすることがなくて寂しい限りです。</p>
+<p>若いエンジニアが責務の切り分けや命名に苦心しているのを見るにつけ、この手の話題はもっと定期的に取り沙汰されてもいいのになぁと思うことがままあります。</p>
+<p>面接の時にもこのあたりの質問をするべきか、最近はそんなに重視されないのか迷ったこともありましたが、一頃話題になった<a href="http://www.crackingthecodinginterview.com/content/cracking-coding-interview">Cracing The Coding Interview</a>を読むと、多くの企業が採用に際してオブジェクト指向設計についての技術的な質問項目を設けているというエピソードがあり、それ以来迷うことなく、面接時に積極的にこの手の質問を振るようにしています。</p>
+<p>あまり細かい部分を追いかける必要はないし、使えば皆が幸せになれるとか言うつもりもないけど、このへんのテーマは知識として身につけておくとお得なので是非。</p>]]></content>
+</entry>
+
+<entry>
+  <title>githubでdiff --ignore-space-changeを見る方法</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2013/03/26/github-diff-ignore-space-change/"/>
+  <updated>2013-03-26T15:15:00</updated>
+  <id>http://nekoya.github.com/blog/2013/03/26/github-diff-ignore-space-change/</id>
+  <content type="html"><![CDATA[<p>Python書いてると、モジュールの関数をクラスに抽出するリファクタリングとかで、git diff --ignore-space-changeする機会が多いですね。</p>
+<p>githubでdiffを見る時にも--ignore-space-change出来たらなぁと思ったら、mizzy（@gosukenator）さんから神の声が！</p>
+<blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/nekoya">nekoya</a> ?w=1 とURLにつけるといいみたいですよ <a href="https://t.co/3iuAcB3Stp" title="https://github.com/blog/967-github-secrets">github.com/blog/967-githu…</a></p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/status/316431837444595713">March 26, 2013</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>というわけで、githubでdiff画面開いて、URLに?w=1を付ければOKでした。</p>]]></content>
+</entry>
+
+<entry>
+  <title>PerlのCrypt::CBCとPythonのPyCryptoで暗号文字列をやりとりする</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc/"/>
+  <updated>2013-03-12T09:49:00</updated>
+  <id>http://nekoya.github.com/blog/2013/03/12/python-crypt-cbc/</id>
+  <content type="html"><![CDATA[<p>ここ数年はPerlで暗号を扱う時は<a href="http://search.cpan.org/~jesus/Mcrypt-2.5.7.0/Mcrypt.pm">Mcrypt</a>を使っていますが、少し前の時代だと<a href="http://search.cpan.org/~lds/Crypt-CBC-2.32/CBC.pm">Crypt::CBC</a>を使ったりしてました。世間の流れは知らないけど、Mcrypt使っておけば他のシステムとデータをやりとりする時にお互いやりやすいよねという。</p>
+<p>Crypt::CBCで作られた暗号文字列をPythonで復号するケースがあったのですが、そのまま素直にやるとうまくいきません。</p>
+<p>padding周りかなと思ったけど、どうやらkeyがそのままでは使えないらしい。stackoverflowにズバリそのまま<a href="http://stackoverflow.com/questions/14859006/using-pycrypto-to-decrypt-perl-encrypted-password">Using PyCrypto to decrypt Perl encrypted password</a>があったのでメモ。</p>
+<p>{% gist 5088592 publish_hex_key.pl %}</p>
+<p>こんな具合にして変換したkeyをPythonのコードに埋め込みます。</p>
+<p>{% gist 5088592 decrypt.py %}</p>
+<p>あとはpaddingをそれっぽく調整して、こんなもんでいけたっぽいです。</p>]]></content>
+</entry>
+
+<entry>
+  <title>redisのバックアップは慎重に</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2013/02/26/redis-backup/"/>
+  <updated>2013-02-26T23:06:00</updated>
+  <id>http://nekoya.github.com/blog/2013/02/26/redis-backup/</id>
+  <content type="html"><![CDATA[<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&nou=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=studiomweblog-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155071" style="float:left;width:120px;height:240px;margin:0 1em 1em 0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+<p>皆様におかれましては、WEB+DB PRESSの最新号のRedis特集は既にご覧頂いたかと存じます。</p>
+<p>弊社では1年ほど前から広告配信に関する様々な部分でRedisを使っています。まだ2.4系なので、2.6の新機能とか新鮮でした。</p>
+<p>本番環境でRedisを運用する上で、強く訴えたい注意点は「RDBが壊れることがある」ということです。</p>
+<p>「RDBがあるからインスタンスが落ちても平気だぜ」とか思ってると、RDBが壊れてリストア失敗→データ消失ということになりかねません。ファイルにdumpされるからと安心していると痛い目に遭うかも知れません。</p>
+<p>（2013/02/27追記）今のところ壊れたのはハード障害が怪しい場面のみです。「RDB壊れるとかRedis使えねー」とかそういう話ではまったくありません。誤解無きよう。壊れる時はRedisじゃなくても壊れます。自分のユースケースではTokyo Cabinet/Tyrantからの乗り換えだったので「RDBの修復自体がサポートされていない」というのが一番の注意点でした（AOFは育ちすぎるのと、I/O発生しすぎで見送り）。</p>
+<p>Redisにはredis-check-dump, redis-check-aofというファイルのチェックツールが同梱されています。</p>
+<p>redis-check-aofには--fixオプションがあり、ディスクに保存されたAOFログの復旧を試みることが出来ますが、redis-check-dumpにはそういったオプションはありません。ちゃんと準備しておかないと、RDBが壊れていることは確認できても、それを修復することはかなわず途方に暮れることになります。</p>
+<p>ふつうに使っていてRDBが壊れることはそうそうないのは確かですが、メモリ故障などのハード障害のあおりを受けてクラッシュすることはあります。ハード障害に対してはレプリケーションは有効な対策ですが、RDB自体のバックアップもきっちり取っておきたいもの。</p>
+<p>なので、ごくごく単純ですがRedisサーバでのRDBのバックアップは</p>
+<ol>
+<li>RDBファイルの待避</li>
+<li>redis-check-dumpで検査</li>
+<li>bzip2で固める</li>
+<li>バックアップキューに突っ込む</li>
+</ol>
+<p>という手順で取っています。</p>
+<p>キューに登録しておくと、バックアップサーバが後でrsyncしてくれるような簡単なジョブキューの仕組みをRedisのSortedSetを使って作っています。</p>
+<p>なお、アプリケーションレベルでのRedisの使い方については<a href="http://www.manning.com/carlson/">Redis in Action</a>が実例豊富でお勧めです。データ型の解説などもじっくりたっぷり解説してあるので、これからRedisを始めようという人はWEB+DBの特集を見た上で、この本を読むのがよいと思います。</p>]]></content>
+</entry>
+
+<entry>
+  <title>get_user()の何がいかんのか</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2013/02/20/what-about-get-user/"/>
+  <updated>2013-02-20T08:30:00</updated>
+  <id>http://nekoya.github.com/blog/2013/02/20/what-about-get-user/</id>
+  <content type="html"><![CDATA[<p><a href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/">先のエントリ</a>で以下のように述べた伏線の回収エントリとなります。</p>
+<blockquote>
+<p>そして、get_user()という名前はサンプルコードにはありがちだが、この名前も闇が深いと思っている。これについてはまた別途取り上げたい。</p>
+</blockquote>
+<p>このメソッドを構成する単語であるget, userともに問題があると考えており、それぞれについて見ていきます。</p>
+<h2>Userとは具体的に何か</h2>
+<p>これはよくある話で、まず自問すべきは「そのUserの定義を教えてください」である。</p>
+<p>多くの業務システムではユーザ（アクタ）が複数存在しており、単に「ユーザ」と言った場合に指す対象が文脈によって異なることが多い。</p>
+<p>これに対しては、Employee, Staff, Administrator, Visitor, Sponsorなど別の具体的な単語に置き換えられないかを検討することになる。</p>
+<p>「ユーザ」が一意なシステムであればUserと名付けるのも妥当だろう（SNSなどが該当するだろうか）。</p>
+<p>userについては、より具象化した名前が見付からないかよく検討しましょう、という話で簡単に終わる。</p>
+<h2>get_XXX()という名前</h2>
+<p>このgetという名前についてはここ数年に渡って思うところがあり、もやもやしていたが、この話題を通してある程度は自分のスタンスが見えてきた。</p>
+<p>個人的な経験から、近年のプログラム言語はメソッドとプロパティ（メンバ変数）の境界線が曖昧になる方向に進んでいると感じている。</p>
+<p>具体的には、PerlでMoose系モジュールによるlazyとdefaultを使ったアクセサと初期値の定義や、Pythonの@propertyがそう感じるに至った体験である。また、JavaScriptでもクロージャを使うことで似たような感覚に陥ることがある。</p>
+<p>ここから生まれた疑問が「メソッドや関数への参照を変数に格納可能な言語において、その内容が現物の値そのものなのか、何らかの処理の結果なのかを区別することに意味はあるのか」というものだ。</p>
+<p>書籍『リーダブルコード』では、</p>
+<blockquote>
+<p>多くのプログラマは、getで始まるメソッドはメンバの値を返すだけのアクセサ」であるという規約に慣れ親しんでいる。この規約を守らなければ誤解を招く可能性がある。</p>
+</blockquote>
+<p>として、get*()にコストの高い処理を組み込むことを戒め、</p>
+<blockquote>
+<p>コストの高さが事前にわかるように、このメソッドはcoputeMean()などの名前に変えるべきだろう（あるいは、コストの高くない実装に変えるべきだろう）。</p>
+</blockquote>
+<p>と書いている。この論には大筋では同意なのだが、「そもそもgetを付ける必然性はあるのか」という疑念がついて回る。</p>
+<p>setterについては言語仕様も含めて一概には言えないが、少なくともgetterはプロパティへのアクセスと区別する必要はないとの思いが日に日に強くなっている。</p>
+<p>また、呼び出しのコストについては名前の如何に関わらず、呼び出し元がそこを意識するべきではないとも思う。</p>
+<p>少し理想論も入ってくるが、外部に公開しているインタフェースは呼び出し元がその内部の実装を意識することなく利用されるべきであると考えている。非機能要件が機能を制限すべきでない、とも言い換えられる。</p>
+<p>現実的には呼び出しコストを完全に無視できないケースは多々あるが、それが命名規則に影響を与えることには違和感がある。</p>
+<p>例えば、キャッシュを導入すればそれまで毎回大きなコストがかかっていた処理が、最初の1回だけ高コストで、その後は軽い処理になる。</p>
+<p>その計算をアクセサが呼ばれた瞬間でなく、オブジェクトが生成されたタイミングで行えば、メソッドそのものは重い処理ではなくなる。</p>
+<p>更には、事前にその集計結果をKVS等に格納することになれば、オブジェクト生成も含めて呼び出しコストの問題は無視できるレベルになるだろう。</p>
+<p>このような対策が考えられる問題に対して、命名が影響を受けることには疑問がある。</p>
+<p>コストの問題は命名とは別のものとして、別途計測やチューニングの対象とすべきではないか。高コストであっても呼び出し頻度が低ければ問題にならないことも多いだろうし、頻度が高いのであれば、名前で警告するよりもコスト軽減に目を向けた方が実りが多いように思う。</p>
+<h2>3行まとめ</h2>
+<ul>
+<li>抽象化されたサンプルの名前に引きずられるな</li>
+<li>アクセサとプロパティの違いは明確にしなくていい</li>
+<li>命名と処理コストは別問題として扱え</li>
+</ul>]]></content>
+</entry>
+
+<entry>
+  <title>ダメなのはcheck_xxxだけではない</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/"/>
+  <updated>2013-02-12T08:23:00</updated>
+  <id>http://nekoya.github.com/blog/2013/02/12/dont-say-check-xxx/</id>
+  <content type="html"><![CDATA[<p>id:<a href="http://d.hatena.ne.jp/Yamashiro0217/">Yamashiro0217</a>さんの<a href="http://d.hatena.ne.jp/Yamashiro0217/20130210/1360480362">check_xxx がなんでダメなのか - Yamashiro0217の日記</a>が面白かったので、少し掘り下げてみる。</p>
+<p>第一印象は「いくら何でも例が恣意的すぎ。check_XXX言うな言いたいだけちゃうんか」だったが、現実は非情であり、こういうコードを押し付けられたこともあるので決して大袈裟ではなかった。</p>
+<p>こういう名前が付く場合というのは、往々にしてメソッドの目的が定まっていないことが多い。そこに、is_valid_XXXのような名前を持ち込んで戻り値の型を規定してしまうことは有効なアプローチである。やる人は名前に関わらずどこでもexitするが、それは個別に教育していくしかない。</p>
+<p>そんな訳でcheck_XXXは確かに避けたい名前だが、is_valid_x_stateやis_valid_user_about_xもやはりよろしくない。check_user_x_value_and_if_invalid_update_x_and_redirectはネタとしても、その方向性には危険な香りがする。</p>
+<p>メソッド名が長くなるのはクラスが自身の責務を外部に放り投げることにつながるからだ。is_valid_user_about_xはその分かりやすい例で、対象となるオブジェクトがUserなのかXなのか分からない。</p>
+<p>これは、$user-&gt;hasValidX()もしくは$x-&gt;isValid()として実装されるべきだろう。メソッド名に対象となりうる物が複数出てきたら、その時点でクラスの責務が揺らいでいるのでリファクタリングした方がよい。</p>
+<p>また、メソッド名に具体的な条件を表す文言が出てきた場合は、クラスではなくメソッドが責務を持っている可能性が高いので、これも怪しい匂いである。「メソッド名が処理内容そのままで、何も抽象化されていない」が代表的な症例だろう。</p>
+<p>と、ここまで読んで何かおかしいと思ったら、サンプルコードに一つもクラスが無いことに気付いた。オブジェクトが設計されていないので、メソッド名だけを整えたところで根本的な問題が解決しないのだ。</p>
+<p>メソッドはオブジェクトの公開インタフェースなので、メソッド自体の名前ももちろん大切だけど、その前提となるオブジェクトのクラス設計の方がもっと大切なので気を付けましょう。クラス設計が不適切だと、名前の付けようもなかったりするし。</p>
+<p>元ネタでは簡略化のためにあえてクラスを省略したのかも知れないが、メソッドはオブジェクトと対になって意味を持つものなので、やはり省略すべきではない。</p>
+<p>なお、オブジェクトに従属していないPHPの関数はメソッドではなく「サブルーチン」と呼びたい。なので自分には、このサンプルのget_XXXをメソッド名と呼ぶこと自体に違和感がある。</p>
+<p>そして、get_user()という名前はサンプルコードにはありがちだが、この名前も闇が深いと思っている。これについてはまた別途取り上げたい。</p>
+<p>ちなみに、個人的にはcheck_XXXと聞いて最初に思い浮かぶのはNagiosプラグインなので、boolで成否が返ってくることが期待される。が、Nagiosプラグインもwarn/crit/unknownなど様々な戻り値があるので、確認する対象によっては違う型を返すことがあり、やはり適切でない。</p>]]></content>
+</entry>
+
+<entry>
+  <title>Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.io/blog/2013/02/08/python27-stream-handler/"/>
+  <updated>2013-02-08T09:12:00</updated>
+  <id>http://nekoya.github.io/blog/2013/02/08/python27-stream-handler/</id>
+  <content type="html"><![CDATA[<p>CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。</p>
+<p>logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。</p>
+<ul>
+<li><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler"><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler">http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler</a></a></li>
+<li><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler"><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler">http://docs.python.org/2.7/library/logging.handlers.html#streamhandler</a></a></li>
+</ul>
+<p>Python2.6で</p>
+<pre><code>handler = logging.StreamHandler(strm=stream)
+</code></pre>
+<p>と書いていたところが、2.7では</p>
+<pre><code>handler = logging.StreamHandler(stream=stream)
+</code></pre>
+<p>と書かないと動かなくなっています。StreamHandlerの__init__()では、</p>
+<pre><code>def __init__(self, stream=None):
+    """
+    Initialize the handler.
+
+    If stream is not specified, sys.stderr is used.
+    """
+    Handler.__init__(self)
+    if stream is None:
+        stream = sys.stderr
+    self.stream = stream
+</code></pre>
+<p>として受け取っているだけで他の引数もないので、単に</p>
+<pre><code>handler = logging.StreamHandler(stream)
+</code></pre>
+<p>とキーワード引数で渡すのをやめれば動くんだけど、こういう「短縮名じゃない方がいいよね」みたいな深い意味のなさそうな変更をあっさり入れられると萎える…</p>
+<p>それとも2.6.5と2.7.3の間にはそういう変更を入れても問題ないとされるぐらいの隔たりがあるのだろうか。</p>]]></content>
+</entry>
+
+<entry>
+  <title>さくらのVPSにUbuntuを入れる初期設定手順</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu/"/>
+  <updated>2013-01-24T10:15:00</updated>
+  <id>http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu/</id>
+  <content type="html"><![CDATA[<p>さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。</p>
+<p>ただ、インストール直後は本当にOSを入れただけの無防備な状態で非常に危険です。</p>
+<p>最低限の設定を定型化しておかないと怖いので、以下メモ。</p>
+<p>手順はUbuntu12.04LTSを前提にしていますが、特別なことはしていないので多少の違いは問題ないはず。</p>
+<h2>OSインストール直後の安全確保</h2>
+<p>インストール自体はマニュアルに沿ってやればOK。</p>
+<p>ただし、パスワードは万が一抜かれてもいいように、普段使っていない捨てパスワードを使う。</p>
+<p>起動したら急いでufwを使ってiptablesの設定を入れる。まずは全部閉じる。</p>
+<div class="highlight"><pre><span></span>sudo ufw enable
+sudo ufw default DENY
+</pre></div>
+
+
+<p>念のためiptablesの設定を見ておく。</p>
+<div class="highlight"><pre><span></span>sudo iptables -L
+</pre></div>
+
+
+<p>いろいろ出てきたら個別のルールは精査しなくてもとりあえずはOK。</p>
+<p>外からのアクセスを遮断したら、その時点で不審なログが無いことを確認する。</p>
+<div class="highlight"><pre><span></span>sudo less /var/log/auth.log
+</pre></div>
+
+
+<h2>SSHの設定</h2>
+<p>ひとまず安全が確保されたので、ここからは落ち着いて作業できる。</p>
+<p>~/.ssh/が無いので作るところから。</p>
+<div class="highlight"><pre><span></span>mkdir .ssh
+chmod 700 .ssh
+</pre></div>
+
+
+<p>リモートコンソールのコピペボタンを使って、~/.ssh/authorized_keysを作る。</p>
+<div class="highlight"><pre><span></span>cat &gt; .ssh/authorized_keys
+chmod 600 .ssh/authorized_keys
+</pre></div>
+
+
+<p>パーミッションは644とかでも怒られなかったが、落ち着かないので600にしておく。</p>
+<p>SSHの設定もデフォルトのままなので、rootログインとパスワード認証をつぶす。</p>
+<p>リモートコンソールでのコピペが結構面倒なので、viで直接編集した方が早いかも。</p>
+<div class="highlight"><pre><span></span>sudo sed -i &#39;s/^PermitRootLogin yes/PermitRootLogin no/&#39; /etc/ssh/sshd_config
+sudo sed -i &#39;s/^#PasswordAuthentication yes/PasswordAuthentication no/&#39; /etc/ssh/sshd_config
+sudo /etc/init.d/ssh reload
+</pre></div>
+
+
+<p>外からのSSH接続を許可する。</p>
+<div class="highlight"><pre><span></span>sudo ufw allow ssh
+</pre></div>
+
+
+<p>外からrootと適当なユーザ名（user等）で入れないのを確認してから、自分のアカウントでSSH接続する。</p>
+<p>これで最低限の安全性を確保したサーバが出来るので、あとはふつうに使う。</p>]]></content>
+</entry>
+
+<entry>
+  <title>Pythonのパッケージimportで間接的に参照が生える</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2013/01/18/python-package-import/"/>
+  <updated>2013-01-18T07:25:00</updated>
+  <id>http://nekoya.github.com/blog/2013/01/18/python-package-import/</id>
+  <content type="html"><![CDATA[<p>社内のプロダクト開発がPythonに移行したはいいけど、調査・運用系のスクリプトは変わらずPerlで書いてDevsとOpsの分離が進みそうで老害化著しい今日この頃です。</p>
+<p>これじゃいかんと思って、ワンライナー以外はPythonで書くようになりました。pull req送るとダメ出しもらえるのでありがたいです。</p>
+<p>そんなPythonでパッケージをimportしたりfrom〜importしたりすると、自分のイメージと違う動作をすることがあって新鮮だったのでメモ。</p>
+<p>（2013/01/19 barとbazが紛らわしいのでs/baz/hoge/gしました）</p>
+<p>main.py<br />
+    import foo.bar<br />
+    print foo.hoge.var</p>
+<p>foo/__init__.py</p>
+<p>foo/bar.py<br />
+    from foo.hoge import var</p>
+<p>foo/hoge.py<br />
+    var = 'DEAAAAAAAATH'</p>
+<p>これでmain.pyを実行すると</p>
+<pre><code>$ python main.py
+DEAAAAAAAATH
+</code></pre>
+<p>main.pyではfoo.hogeをimportしていないのに、参照できる。Python 2.6.5, 2.7.1で確認。</p>
+<ul>
+<li>foo.barが走った時点でfooの名前空間にhogeが取り込まれる</li>
+<li>foo.barをimportするとfoo.barだけでなく、fooへの参照も取り込まれる</li>
+<li>foo以下のパッケージをimportするとfoo.hoge.varにアクセス可能</li>
+</ul>
+<p>ということか。</p>
+<p>以下追記（2013/01/19）</p>
+<p><a href="http://twitter.com/hiratara">@hiratara</a>さんとお話ししたので、少し補足。</p>
+<p>（2013/01/22 リンク追加）<a href="https://www.facebook.com/hiratara/posts/10152460490030164"><a href="https://www.facebook.com/hiratara/posts/10152460490030164">https://www.facebook.com/hiratara/posts/10152460490030164</a></a></p>
+<p>『初めてのPython』によると、from module import name1は</p>
+<pre><code>import module
+name1 = module.name1
+del module
+</code></pre>
+<p>と理屈の上ではほぼ同じ意味を持ちます、というような記述があって、パッケージでないモジュールでは実際そういう動作をするので「fromで指定したモジュールへの参照は保持されない」と思っていました。</p>
+<p>上記のサンプルでは、foo.hogeはどこからも直接importはされず、foo.bar内でfrom〜importの形で参照されているだけなので、foo.hogeへの参照が残ると思っていなかったのです。「ほぼ」であって同一でないのはこういうところなのか、と。</p>
+<p>確かにdel foo.hoge的なことをしてしまうと、問題が起こりうるしそこを厳密に管理するのは大変すぎるのでこうなっているのは合理的だけど、今まで考えてなかったなぁというのがこちらのエントリでございます。</p>]]></content>
+</entry>
+
+<entry>
+  <title>ウノウとZyngaJapanは別の会社だし、ウノウも時期によっていろいろだったよという話</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish/"/>
+  <updated>2012-11-20T08:37:00</updated>
+  <id>http://nekoya.github.com/blog/2012/11/20/unoh-will-never-perish/</id>
+  <content type="html"><![CDATA[<p>この記事は「全くもってAdvent Calendarじゃない」と評判の<a href="http://atnd.org/events/33478">Unoh Advent Calendar</a>に参加しています。一日遅れたけど…</p>
+<p>こういう話は内輪の酒の席でいいじゃないのかと思うけど、「ZyngaJapanが閉鎖されるかも（現時点でそのような公式アナウンスはありません）」という話題が持ち上がった時に、目に付いた「ウノウもこれで終わりか」とか「ウノウの人たちどうなるの」みたいな論調には違和感が強いので、あえて過去を振り返ってみることにしました。</p>
+<p>ウノウとZyngaJapanは別の会社だし、そもそもウノウという会社も時期によって大きく姿を変えてきたんだということを、勝手気ままに振り返ってみようというのがこのエントリの趣旨です。</p>
+<h2>第一期</h2>
+<p>創業から2006年ぐらいのイメージ。</p>
+<p>「映画生活」「フォト蔵」のふたつを柱に、エンジニアが何でもかんでもやってたっぽい時期。自分はこの時の中のことを知らないけど、会社にエンジニアしかいなかったので事務仕事やバックオフィス系の雑務も何もかも全てエンジニアがやっていたと聞いた。</p>
+<p>ラボブログの被ブクマ数は、実はこの頃が一番多かったっぽい。まだ世の中が情報過多になる前のこの時期にブランドを確立したことは、大きなことだったのだろうなと改めて感じます。</p>
+<h2>第二期</h2>
+<p>2007年から、「まちつく！」立ち上げぐらい。</p>
+<h3>人が一気に増えた</h3>
+<p>その後、ZyngaJapan期までを支えることになるエンジニア達の入社もこの時期</p>
+<h3>「映画生活」売却</h3>
+<p>事業の大きな柱を手放し、次のステージを模索していた</p>
+<p>「PHPの会社」というイメージが定着したのはこの時期で、毎日いろんな人が入れ替わり立ち替わりラボブログを更新していた。</p>
+<p>自分が在籍してたのはこの時期の中盤あたりで、社外プロジェクトやってました。</p>
+<p>あんまり知られてないと思うけど、当時のウノウは社外の面白そうなプロジェクトにエンジニアを出すということもしていました。</p>
+<p>ユニークなのは「こういうプロジェクトがあるけど、誰かやりたいですか？」と聞いて、誰もいなかったら案件自体をお断りするというスタンスだったこと。</p>
+<p>この体制の象徴的なエピソードは今をときめくgumiが危うく立ち上げ損ねかねなかった事案でしょう。当時の様子が<a href="http://digimaga.net/2011/11/zynga-japan-yamada-gumi-kunimitsu-report/3">「起業は若いうちにやればやるほど得」『Zynga Japan』山田進太郎×『gumi』国光宏尚対談レポート</a>で赤裸々に語られております。</p>
+<p>坂田くんという架空の人物のことはよく分からないけど、GoogleもPythonだから仕方ないですね。</p>
+<h2>第三期</h2>
+<p>ソーシャルゲームで業界が一気に動いた時期。2009年秋、mixiアプリのモバイルプラットフォームが産まれ、独立したサービスとしてコツコツやってた「まちつく！」がそこで大当たりする。この時に一気に「まちつく！」にリリースを寄せてSAPとしての地位を確立したスピード感はかなりのものだったように思う。</p>
+<p>この時期、自分はサーバ構築屋として非常勤で週2〜4回ぐらい顔を出してて、少し離れたところから中のことを見ていました。</p>
+<p>人数もエンジニア以外も合わせて20人ぐらいだったのが、一気に増えて、ZyngaJapanになるまでの1年足らずで50人を超えるまでになってた。</p>
+<p>社内の体制も今までは、各エンジニアが独立採算的なよく言えば自律的な、悪く言えば烏合の衆みたいなものだったのが、この時期には「俺たちはチームだ」という意識が強く働いていたように思います。</p>
+<p>そうでなければ恐らく破綻していたし、この時期にそういうマインドを持ったエンジニアが在籍していたことには巡り合わせの妙を感じざるを得ません。</p>
+<p>この時期はラボブログの更新も週一がルールになって、やや盛り下がった印象ごあったのだけど、</p>
+<p><a href="http://unoh.github.com/"><a href="http://unoh.github.com/">http://unoh.github.com/</a></a></p>
+<p>を見ると元気に更新されてましたね。思い込みｲｸﾅｲ。</p>
+<h2>ZyngaJapan期</h2>
+<p>そして売却後。この時期のことは知らないので、何とも言えない。</p>
+<p>自分はこの買収と時を同じくして離れたのだけど、それは本当に偶然で、3ヶ月ぐらいかけた離れる計画を立ててたら、途中でいきなり話が出てきてあらあらという具合でした。</p>
+<p>ラボブログが本当に更新されなくなって、外から見えなくなったのは残念だなぁというぐらい。少なからぬ人にとって「ウノウ=ラボブログ」という認識があるはずなので、そういう意味ではやはりZyngaJapanとウノウは全く別の会社として考えていいと思う。</p>
+<p>ウノウ時代からの人ももちろんいたけど、半数以上の人は最初から「ZyngaJapan」に入ったと思われるので、あまりウノウウノウ言うのもおかしいんじゃないかというのが個人的な見解です。</p>
+<h2>まとめ</h2>
+<p>とまぁ独断で好き勝手に切り分けてみたのだけど、だいたい合ってるのではないだろうかと。</p>
+<p>あなたにとって「ウノウ」とは、どの期が思い起こされますか？</p>
+<p>それぞれの期で半分ぐらい中の人が入れ替わっていて（ZyngaJapan期は憶測）、新陳代謝の活発度としては悪くない線をいってたと思います。多すぎず、少なすぎず、人は動くけど現場が破綻しない程度のさじ加減。それは間違いなく、根幹を支えていたコアメンバーたちの力によるもので、彼らの尽力たるや、そりゃもうたいへんなものだったわけです。</p>
+<p>今はもう皆それぞれの場所で素敵に活躍しているので、一部で観測された「ウノウ復活させればいいんや」的な時計の針を巻き戻すような論調はむしろ夢がないと断言します。</p>
+<p>ZyngaJapan期はよく知らないけど、それなりに入れ替わりはあったようだし、ここ一年はコアメンバーの離脱も結構ありました。</p>
+<p>なので、今回ZyngaJapanがもし閉鎖されたとしても、皆が知ってる「ウノウの人たち」は大半は既にいないわけです。今も残っているエンジニアたちは、自分が知っている人たちについては強者たちしかいないので「会社が閉鎖なんて気の毒」とか「これから彼らはどうなるんだろう」なんて心配をするのはむしろ失礼なぐらいなので、今までお疲れさまというだけです。</p>
+<p>ZyngaJapanという会社に来た人たちとは全然交流がないので分からないけど、彼らのことを案じるならばウノウではなくZyngaJapanに思いを馳せて欲しいし、ZyngaJapanがこれまで積み上げてきたものを評価するのが彼らに対する礼儀ではないかと思います。</p>
+<p>まとめのまとめ</p>
+<ul>
+<li>皆それぞれ元気でやってるんだからそれでいい</li>
+<li>ZyngaJapanはZyngaJapanとして頑張ったのだから評価されるべき</li>
+</ul>]]></content>
+</entry>
+
+<entry>
+  <title>CentOS5でもRPS/RFSでNICが捗る話</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs/"/>
+  <updated>2012-11-13T15:52:00</updated>
+  <id>http://nekoya.github.com/blog/2012/11/13/centos5-rps-rfs/</id>
+  <content type="html"><![CDATA[<p><a href="http://twitter.com/kazeburo">kazeburo</a>さんが<a href="http://blog.nomadscafe.jp/2012/08/centos-62-rpsrfs.html">CentOS6.2での事例</a>を紹介されていますが、CentOS5系でもkernelを上げればRPS/RFSが使えるようになって、NICの負荷状況が劇的に改善します。</p>
+<p>やり方は意外に簡単で、<a href="http://elrepo.org/tiki/tiki-index.php">ELRepo</a>から<a href="http://elrepo.org/linux/kernel/el5/x86_64/RPMS/kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm">kernel-ml-2.6.35-14.2.el5.elrepo.x86_64.rpm</a>を落としてきてインストール。</p>
+<p>あとは、/boot/grub/menu.lstの設定をdefault=0にしてrebootすればOK。</p>
+<pre><code>$ uname -r
+2.6.35-14.2.el5.elrepo
+</code></pre>
+<p>ELRepoはNICのドライバなんかもいろいろ提供してくれるし、古いバージョンのRPMを<a href="http://mirror.ventraip.net.au/elrepo/archive/">archive</a>で提供してくれて非常にいいですね（kernelの過去RPMはないのかな）。</p>
+<p>RPS/RFSを有効にする設定はCentOS6と同様です。</p>
+<pre><code># echo "f" &gt; /sys/class/net/eth0/queues/rx-0/rps_cpus
+# echo 4096 &gt; /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
+# echo 32768 &gt; /proc/sys/net/core/rps_sock_flow_entries
+
+# cat /sys/class/net/eth0/queues/rx-0/rps_cpus
+0f
+</code></pre>
+<p>それまで特定のコアだけが他よりも30〜50%ぐらい負荷が高かったのが、各コアにいい具合に分散するようになって、1台で捌けるトラフィックがぐっと多くなりました。</p>
+<h2>ip_conntrack_maxと監視系の変更</h2>
+<p>kernel 2.6.35を入れることで、それまでの/proc/sys/net/ipv4/ip_conntrack_maxが/proc/sys/net/nf_conntrack_maxに移動します。</p>
+<p>この値を見るNagiosプラグインを書いて、NRPE経由で監視してたのが動かなくなったので、プラグインを更新しました。</p>
+<ul>
+<li><a href="https://github.com/nekoya/nagios-plugins-ip_conntrack_max"><a href="https://github.com/nekoya/nagios-plugins-ip_conntrack_max">https://github.com/nekoya/nagios-plugins-ip_conntrack_max</a></a></li>
+</ul>
+<p>/etc/sysctl.confの設定も変わるのですが、既存のサーバと統一するために</p>
+<pre><code>net.ipv4.ip_conntrack_max = 524288
+net.nf_conntrack_max = 524288
+</code></pre>
+<p>と両方書いてしまうことにしました。</p>
+<p>sysctl -pすると</p>
+<pre><code>error: "net.ipv4.ip_conntrack_max" is an unknown key
+</code></pre>
+<p>って怒られるけど、実際のところは無視されるだけで特に実害無さそう…</p>
+<p>Puppetのテンプレートで真面目に判定すればいいんだろうけど、ひとまずこれで。</p>
+<p><a href="http://kau.li/jp">弊社</a>ではLVSをUbuntu、GWをVyattaにして自作サーバでNIC叩き回してがんばっていますが、appサーバはこれでまだ戦えそうです。</p>]]></content>
+</entry>
+
+<entry>
+  <title>Yokohama.pm#9でトークしてきました</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2012/10/30/yokohamapm9/"/>
+  <updated>2012-10-30T02:04:00</updated>
+  <id>http://nekoya.github.com/blog/2012/10/30/yokohamapm9/</id>
+  <content type="html"><![CDATA[<p><a href="http://yokohama.pm.org/2012/09/yokohamapm-9.html">Yokohama.pm #9</a>にて「インターネット広告とPerl、ここ数年の歩み」と題してお話しさせて頂きました。</p>
+<iframe src="http://www.slideshare.net/slideshow/embed_code/14813377" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
+
+<p><div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/nekoya/perl-14813377" title="インターネット広告とPerl、ここ数年の歩み" target="_blank">インターネット広告とPerl、ここ数年の歩み</a> </strong> from <strong><a href="http://www.slideshare.net/nekoya" target="_blank">Ryo Miyake</a></strong> </div></p>
+<p>アドテク関係の人はあまりこういった各言語のコミュニティには姿を現さないイメージが強く、自分もわりとそういう流れに乗るような感じで、ここしばらくあまりオープンとは言えない日々を過ごしていました。</p>
+<p>そんな中、YAPCで<a href="http://twitter.com/myfinder">@myfinder</a>さんが「<a href="http://yapcasia.org/2012/talk/show/d1edd2c0-ab9b-11e1-918c-2a656aeab6a4">平均レスポンスタイム50msをPerlで捌く中規模サービスの実装/運用</a>」と題してYAPCでトークして、しかもベストトーク賞3位というかっこいいことをやってのけてくれたことは大変な刺激になりました。</p>
+<p>自分が憧れたのはこういう世界だったなーということを思い返している間に、ここ数年のことが思い出されてこういうスライドが出来上がりました。</p>
+<p>東京に出てきてからの、この5年間でソーシャルゲーム（主にインフラ）や旅行代理店のサイト（デザインから開発・インフラまで）などもやってきましたが広告というのはなかなかに面白い分野です。</p>
+<p>技術的には特異な要素も確かにありますが、とにかく「ふつうのことをふつうにやる」ということに尽きます。</p>
+<p>これだけ情報が出そろった今時のWebサービスで未知のトラブルなんてものはそうそうなくて、日々の守りの課題は</p>
+<ul>
+<li>手を打たないと危ないのは分かっていたが、手が回らなかった</li>
+<li>まさかウチの規模でその問題に出くわすとは思わなかった</li>
+</ul>
+<p>とは言っても、そういう課題に本当に直面出来る現場というのはそうそうないはずです。</p>
+<p>手を抜くと痛い目を見る、逆に言えばちゃんとやればちゃんと結果が付いてくるのが広告の面白いところだと思います。</p>
+<p>あとは、ビジネスとエンジニアの距離がものすごく近いことも大きな特徴ですね。</p>
+<p>発表に関して言えば、<a href="https://itunes.apple.com/jp/app/keynote-remote/id300719251?mt=8">Keynote Remote</a>を初めて使ってみたんですが、思った以上に快適でした。</p>
+<p>以前は無線マウスを持って、ポチポチクリックしてスライドを進めるとかやってましたが、次のページが確認出来ると捗りますね。あとは発表中にタイマーが使えれば言うことないのだけど、どうにかならないかな…</p>
+<p>今回は資料作りもiPhone大活躍でした。 前日の朝の通勤電車でEvernoteに草稿を書いて、帰りの電車でKeynoteにペタペタ貼り付けていって、帰ってからいろいろ整えるという流れ。これが21世紀のソリューションや！</p>]]></content>
+</entry>
+
+<entry>
+  <title>Octopressを入れてみた</title>
+  <link rel="alternate" type="text/html" href="http://nekoya.github.com/blog/2012/10/02/first/"/>
+  <updated>2012-10-02T09:33:00</updated>
+  <id>http://nekoya.github.com/blog/2012/10/02/first/</id>
+  <content type="html"><![CDATA[<p>SL6.2のサーバで環境作ろうとしたら、Rubyがゴネてうまく動かなかったよ…</p>
+<p>ひとまず動いたので、こっちで書いてみよう。</p>]]></content>
+</entry>
+
+
+</feed>

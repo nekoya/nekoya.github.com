@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>逆引きPython | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/pages/python_file/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2017-07-21 Fri 05:10</p>
+  
+  <h1>逆引きPython</h1>
+  <div class="post-body"><h2>INDEX</h2>
+<li><a href="/pages/python_coding/">コーディングスタイル</a></li>
+
+<li>ファイル操作</li>
+
+<li><a href="/pages/python_date/">日付・時刻</a></li>
+
+<li><a href="/pages/python/">その他</a></li>
+
+<h2>ファイル操作</h2>
+<h3>bzip2で圧縮されたファイルの処理</h3>
+<p>Python2.7からは<a href="http://docs.python.jp/2/library/bz2.html#id1">with構文で処理できるようになった</a>ので、ふつうに書ける。</p>
+<pre class="prettyprint">
+with bz2.BZ2File('hoge.pl.bz2') as f:
+    for line in f:
+        yield line
+</pre>
+
+<h3>コマンドライン引数でファイルを処理する</h3>
+<p>標準モジュールの<a href="http://docs.python.jp/2.7/library/fileinput.html">fileinput</a>が便利。</p>
+<p>ファイルを複数指定しても処理してくれるし、引数がなければ標準入力を受けてくれる。</p>
+<p>openhookにhook_compressedを指定しておけばgzipやbzip2で圧縮したデータもよしなにやってくれる。</p>
+<pre class="prettyprint">
+import fileinput
+
+for line in fileinput.input(openhook=fileinput.hook_compressed):
+    yield line
+</pre>
+
+<h3>テンポラリファイルを扱う</h3>
+<p>ファイルシステム上で認識可能なテンポラリファイルを作る場合は、<a href="http://docs.python.jp/2/library/tempfile.html#tempfile.TemporaryFile">tempfile.NamedTemporaryFile</a>を使う。</p>
+<p>これで作ったファイルは確かにopenできるが、ファイルに何か書き込もうとするともう一工夫が必要になる。</p>
+<p>write()しただけではその書き込み内容が反映されず、close()するとファイルが消えてしまう。delete=Falseで作れば自主的に消さない限り消えないが、今度は消しそこねのリスクが発生する。</p>
+<pre class="prettyprint">
+>>> import tempfile
+>>> import os.path
+>>> with tempfile.NamedTemporaryFile() as f:
+...     _f = open(f.name, 'w')
+...     _f.write('abcde')
+...     _f.close()
+...     os.path.getsize(f.name)
+...
+5
+</pre>
+
+<p>with文で開いて、中で別途書き込みすれば好きな内容を書き込んだ上で自動削除も利用できる。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=逆引きPython%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/pages/python_file/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>逆引きPython | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/pages/python_date/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2017-07-21 Fri 05:10</p>
+  
+  <h1>逆引きPython</h1>
+  <div class="post-body"><h2>INDEX</h2>
+<li><a href="/pages/python_coding/">コーディングスタイル</a></li>
+
+<li><a href="/pages/python_file/">ファイル操作</a></li>
+
+<li>日付・時刻</li>
+
+<li><a href="/pages/python/">その他</a></li>
+
+<h2>日付・時刻</h2>
+<h3>TimeZoneの罠</h3>
+<p>Pythonの<a href="http://docs.python.jp/2/library/datetime.html#datetime-datetime">datetime.datetime</a>にはTimeZone関連のややこしい問題がある。</p>
+<ul>
+<li>コンストラクタにtzinfoを渡すと夏時間を正しく認識できない</li>
+<li>時刻が確定する前にTimeZone情報を付与すると問題が起きる</li>
+<li>naiveなdatetimeオブジェクトにreplaceでtzinfoを付与すると、日本時間がJSTでなくCJTになる</li>
+</ul>
+<p>詳細は以下のエントリを参照のこと。</p>
+<ul>
+<li><a href="http://nekoya.github.io/blog/2013/06/21/python-datetime/">Pythonの日付処理とTimeZone</a></li>
+<li><a href="http://nekoya.github.io/blog/2013/07/02/python-aware-datetime-dst/">Pythonのdatetimeで夏時間を扱う</a></li>
+<li><a href="http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/">Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない</a></li>
+</ul>
+<h3>現時刻を取得する</h3>
+<p>上記の問題を回避しつつawareなdatetimeオブジェクトを取得する。</p>
+<pre class="prettyprint">
+def now(with_microsecond=False, tzinfo=None):
+    """Better datetime.datetime.now()
+
+    - avoid DST problem (datetime constructor)
+    - avoid JST/CJT problem (replace naive datetime)
+
+    Args:
+        <bool> with_microsecond
+        <tzinfo> timezone object (optional, default UTC)
+    Returns:
+        <datetime> aware datetime object
+    """
+    dt = datetime.datetime.now(pytz.utc)
+    if not with_microsecond:
+        dt = dt.replace(microsecond=0)
+    return dt.astimezone(tzinfo) if tzinfo else dt
+</pre>
+
+<h3>UNIX timeを扱う</h3>
+<h4>現時刻をUNIX timeとして取得する</h4>
+<pre class="prettyprint">
+>>> import calendar
+>>> import datetime
+>>> calendar.timegm(datetime.datetime.utcnow().timetuple())
+1388738304
+</pre>
+
+<ul>
+<li>time.mktimeはlocaltimeを扱い、caldner.timegmはUTCを扱う</li>
+<li>calender.timegmの方が速い。</li>
+</ul>
+<h4>datetimeオブジェクトとUNIX timeの変換</h4>
+<p>awareなdatetimeオブジェクトdtをUNIX timeに変換する。</p>
+<pre class="prettyprint">
+>>> import calendar
+>>> calendar.timegm(dt.astimezone(pytz.utc).timetuple())
+1388738381
+</pre>
+
+<p>UNIX timeをawareなdatetimeに変換する。</p>
+<pre class="prettyprint">
+>>> import datetime
+>>> import pytz
+>>> datetime.datetime.fromtimestamp(1388738381, pytz.utc)
+datetime.datetime(2014, 1, 3, 8, 39, 41, tzinfo=<UTC>)
+</pre>
+
+<p>上の例ではUTCだが、TimeZone情報を後から付与するので、夏時間のある地域でも問題ない。</p>
+<h3>月の末日を求める</h3>
+<p><a href="http://docs.python.jp/2.7/library/calendar.html#calendar.monthrange">calendar.monthrange()</a>を使う。</p>
+<pre class="prettyprint">
+>>> import calendar
+>>> calendar.monthrange(2014, 2)[1]
+28
+</pre>
+
+<p>monthrange()が指定月の1日の曜日と、月の日数をtupleで返すので後者を取ればよい。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=逆引きPython%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/pages/python_date/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/blog/2013/02/08/python27-stream-handler/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2013-02-08 Fri 09:12</p>
+  
+  <h1>Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う</h1>
+  <div class="post-body"><p>CentOS5系からUbuntu12.04への移行を狙っていて、Pythonも2.6.5から2.7.3に上げようかという今日この頃。</p>
+<p>logging周りでテストがコケて、何かと思ったらStreamHandlerのキーワード引数が変わっていた。</p>
+<ul>
+<li><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler"><a href="http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler">http://docs.python.org/2.6/library/logging.html?highlight=streamhandler#logging.StreamHandler</a></a></li>
+<li><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler"><a href="http://docs.python.org/2.7/library/logging.handlers.html#streamhandler">http://docs.python.org/2.7/library/logging.handlers.html#streamhandler</a></a></li>
+</ul>
+<p>Python2.6で</p>
+<pre><code>handler = logging.StreamHandler(strm=stream)
+</code></pre>
+<p>と書いていたところが、2.7では</p>
+<pre><code>handler = logging.StreamHandler(stream=stream)
+</code></pre>
+<p>と書かないと動かなくなっています。StreamHandlerの__init__()では、</p>
+<pre><code>def __init__(self, stream=None):
+    """
+    Initialize the handler.
+
+    If stream is not specified, sys.stderr is used.
+    """
+    Handler.__init__(self)
+    if stream is None:
+        stream = sys.stderr
+    self.stream = stream
+</code></pre>
+<p>として受け取っているだけで他の引数もないので、単に</p>
+<pre><code>handler = logging.StreamHandler(stream)
+</code></pre>
+<p>とキーワード引数で渡すのをやめれば動くんだけど、こういう「短縮名じゃない方がいいよね」みたいな深い意味のなさそうな変更をあっさり入れられると萎える…</p>
+<p>それとも2.6.5と2.7.3の間にはそういう変更を入れても問題ないとされるぐらいの隔たりがあるのだろうか。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Python2.6と2.7でlogging.StreamHandlerのキーワード引数が違う%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/blog/2013/02/08/python27-stream-handler/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

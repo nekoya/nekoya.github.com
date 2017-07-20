@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>さくらのVPSにUbuntuを入れる初期設定手順 | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2013-01-24 Thu 10:15</p>
+  
+  <h1>さくらのVPSにUbuntuを入れる初期設定手順</h1>
+  <div class="post-body"><p>さくらのVPSは初期設定はCentOS6だけど、Ubuntu入れるのも簡単でいいですね。</p>
+<p>ただ、インストール直後は本当にOSを入れただけの無防備な状態で非常に危険です。</p>
+<p>最低限の設定を定型化しておかないと怖いので、以下メモ。</p>
+<p>手順はUbuntu12.04LTSを前提にしていますが、特別なことはしていないので多少の違いは問題ないはず。</p>
+<h2>OSインストール直後の安全確保</h2>
+<p>インストール自体はマニュアルに沿ってやればOK。</p>
+<p>ただし、パスワードは万が一抜かれてもいいように、普段使っていない捨てパスワードを使う。</p>
+<p>起動したら急いでufwを使ってiptablesの設定を入れる。まずは全部閉じる。</p>
+<div class="highlight"><pre><span></span>sudo ufw enable
+sudo ufw default DENY
+</pre></div>
+
+
+<p>念のためiptablesの設定を見ておく。</p>
+<div class="highlight"><pre><span></span>sudo iptables -L
+</pre></div>
+
+
+<p>いろいろ出てきたら個別のルールは精査しなくてもとりあえずはOK。</p>
+<p>外からのアクセスを遮断したら、その時点で不審なログが無いことを確認する。</p>
+<div class="highlight"><pre><span></span>sudo less /var/log/auth.log
+</pre></div>
+
+
+<h2>SSHの設定</h2>
+<p>ひとまず安全が確保されたので、ここからは落ち着いて作業できる。</p>
+<p>~/.ssh/が無いので作るところから。</p>
+<div class="highlight"><pre><span></span>mkdir .ssh
+chmod 700 .ssh
+</pre></div>
+
+
+<p>リモートコンソールのコピペボタンを使って、~/.ssh/authorized_keysを作る。</p>
+<div class="highlight"><pre><span></span>cat &gt; .ssh/authorized_keys
+chmod 600 .ssh/authorized_keys
+</pre></div>
+
+
+<p>パーミッションは644とかでも怒られなかったが、落ち着かないので600にしておく。</p>
+<p>SSHの設定もデフォルトのままなので、rootログインとパスワード認証をつぶす。</p>
+<p>リモートコンソールでのコピペが結構面倒なので、viで直接編集した方が早いかも。</p>
+<div class="highlight"><pre><span></span>sudo sed -i &#39;s/^PermitRootLogin yes/PermitRootLogin no/&#39; /etc/ssh/sshd_config
+sudo sed -i &#39;s/^#PasswordAuthentication yes/PasswordAuthentication no/&#39; /etc/ssh/sshd_config
+sudo /etc/init.d/ssh reload
+</pre></div>
+
+
+<p>外からのSSH接続を許可する。</p>
+<div class="highlight"><pre><span></span>sudo ufw allow ssh
+</pre></div>
+
+
+<p>外からrootと適当なユーザ名（user等）で入れないのを確認してから、自分のアカウントでSSH接続する。</p>
+<p>これで最低限の安全性を確保したサーバが出来るので、あとはふつうに使う。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=さくらのVPSにUbuntuを入れる初期設定手順%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.com/blog/2013/01/24/sakura-vps-ubuntu/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

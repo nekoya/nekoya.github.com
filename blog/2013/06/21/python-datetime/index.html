@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>Pythonの日付処理とTimeZone | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/blog/2013/06/21/python-datetime/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2013-06-21 Fri 10:04</p>
+  
+  <h1>Pythonの日付処理とTimeZone</h1>
+  <div class="post-body"><p>日付周りの処理というのはとても難しい問題で、特にTimeZoneが絡むと基本的に大変なことになります。</p>
+<p>Pythonは標準で用意されているdatetimeモジュールが高機能なので、それを使っておけば間違いない感があって、そういう意味では安心感があります。</p>
+<p>とは言え、その扱いにはやはり注意が必要で、現時点でこうするのがいいかなーと思っていることをつらつらと記録したエントリがこちらです。</p>
+<p>基本的にはMacのPython2.7.1で検証して、おやっと思ったところはCentOS5.8のPython2.6.5やUbuntu12.04のPython2.7.3で追試しています。</p>
+<p>なお、datetime.datetimeと書くのがだるいので本文中では、</p>
+<pre><code>from datetime import datetime
+</code></pre>
+<p>を前提としています。</p>
+<h2>naiveとaware</h2>
+<p><a href="http://docs.python.jp/2/library/datetime.html">公式ドキュメント</a>にそのまま載ってるけど、datetimeオブジェクトは自身がTimeZone情報を持つ（aware）場合と、持たない（naive）場合があります。</p>
+<p>明示的に指定しない限りnaiveになるため、プログラマは自身が「そのオブジェクトがどのTimeZoneに属するか」を常に間違いなく扱う必要があります。</p>
+<p>で、これは当然難しい。JSTとUTCぐらいならまだしも、様々なタイムゾーンを扱うシステムでは常に正しい値を扱うことは至難の業と言ってもいい。</p>
+<p>「基本はUTCで扱い、localtimeの場合は変数名にlocalと付ける」みたいなルールで頑張っても、モジュールをまたぐ時に変換間違えて残念なことになりかねません。</p>
+<p>これに対して、awareなオブジェクトは内部にTimeZone情報を持っているので、そういうケースでも安心できます。</p>
+<pre><code>&gt;&gt;&gt; import pytz
+&gt;&gt;&gt; from datetime import datetime
+&gt;&gt;&gt; datetime.now(pytz.utc)
+datetime.datetime(2013, 5, 10, 7, 38, 56, 442741, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; datetime(2013, 5, 16, tzinfo=pytz.timezone('Asia/Tokyo'))
+datetime.datetime(2013, 5, 16, 0, 0, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' CJT+9:00:00 STD&gt;)
+</code></pre>
+<p>こんな感じで、原則として全てのdatetimeオブジェクトはawareな状態で扱うようにしています。utcnow()はtzinfoを受け取れないので、UTCにする場合でも必ずnow()を使います。</p>
+<h3>pytzの位置付け</h3>
+<p>TimeZoneを表すには<a href="http://pytz.sourceforge.net/">pytz</a>を使っています。可能であればサードパーティのライブラリではなく、全て標準モジュールで済ませたいところですが、pytzは<a href="http://docs.python.jp/3.3/library/datetime.html#tzinfo-objects">Python3.3の公式ドキュメント</a>でも、</p>
+<blockquote>
+<p>pytz は最新の情報を含み、使用を推奨されています。</p>
+</blockquote>
+<p>とお墨付きが出ているので標準に近いモジュールということで利用しています。</p>
+<h3>naiveとawareの変換、あるいはTimeZone変更</h3>
+<p>naiveとawareの変換は、<del>公式にあるようにreplaceを使います</del>。naiveなdatetimeオブジェクトとawareなそれでは比較や演算が出来ないので、意外と使う場面はあります。</p>
+<p>（2013/07/05修正）replaceするとJSTがCJTと認識される問題があったので、naive→awareの変換にはlocalizeを使用します → <a href="http://nekoya.github.io/blog/2013/07/05/python-datetime-with-jst/">Pythonでdatetimeにtzinfoを付与するのにreplaceを使ってはいけない</a></p>
+<p>naive→aware</p>
+<pre><code>&gt;&gt;&gt; now = datetime.now()
+&gt;&gt;&gt; now
+datetime.datetime(2013, 6, 18, 2, 15, 2, 485439)
+&gt;&gt;&gt; pytz.utc.localize(now)
+datetime.datetime(2013, 6, 18, 2, 15, 2, 485439, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<p>aware→naive</p>
+<pre><code>&gt;&gt;&gt; now = datetime.now(pytz.utc)
+&gt;&gt;&gt; now
+datetime.datetime(2013, 6, 17, 17, 15, 43, 157502, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; now.replace(tzinfo=None)
+datetime.datetime(2013, 6, 17, 17, 15, 43, 157502)
+</code></pre>
+<p>awareなオブジェクトの持っているTimeZone情報の変更は、replaceではなくastimezoneで以下のように。</p>
+<pre><code>&gt;&gt;&gt; now = datetime.now(pytz.utc)
+&gt;&gt;&gt; now
+datetime.datetime(2013, 5, 10, 7, 55, 30, 9529, tzinfo=&lt;UTC&gt;)
+&gt;&gt;&gt; now.astimezone(pytz.timezone('Asia/Tokyo'))
+datetime.datetime(2013, 5, 10, 16, 55, 30, 9529, tzinfo=&lt;DstTzInfo 'Asia/Tokyo' JST+9:00:00 STD&gt;)
+</code></pre>
+<h2>UNIXTIMEを扱う</h2>
+<p>PythonでUNIXTIMEを得る方法として、よく紹介されるのが</p>
+<pre><code>&gt;&gt;&gt; int(time.mktime(datetime.now().timetuple()))
+1371682685
+</code></pre>
+<p>です。intでくくらないと「1371682685.0」のようなfloatが返ってきます。これはこれでいいのですが、datetimeオブジェクトからUNIXTIMEを得ようとすると、</p>
+<pre><code>&gt;&gt;&gt; int(time.mktime(datetime(1970, 1, 1).timetuple()))
+-32400
+&gt;&gt;&gt; int(time.mktime(datetime(1970, 1, 1, tzinfo=pytz.utc).timetuple()))
+-32400
+&gt;&gt;&gt; int(time.mktime(datetime(1970, 1, 1, tzinfo=pytz.timezone('Asia/Tokyo')).timetuple()))
+-32400
+</code></pre>
+<p>どうやってもUTCを認識してくれない。time.mktimeはtzinfoに対応しておらず、localtimeを受けることになっているのが原因です。</p>
+<p><a href="http://docs.python.jp/2/library/time.html">timeモジュールのドキュメント</a>にそのあたりのルールが書いてあって、UTCを扱う場合はcalendar.timegm()を使えとのこと。</p>
+<pre><code>&gt;&gt;&gt; calendar.timegm(datetime(1970, 1, 1).timetuple())
+0
+&gt;&gt;&gt; calendar.timegm(datetime(1970, 1, 1, tzinfo=pytz.utc).timetuple())
+0
+</code></pre>
+<p>今度はうまくいきましたが、入力値をUTCとして解釈するので</p>
+<pre><code>&gt;&gt;&gt; calendar.timegm(datetime(1970, 1, 1, tzinfo=pytz.timezone('Asia/Tokyo')).timetuple())
+0
+</code></pre>
+<p>こんな風にlocaltimeの1970-01-01 00:00:00を渡しても0が返ってきます。要注意。</p>
+<p>ちなみに、<a href="http://docs.python.jp/2/library/calendar.html#calendar.timegm">calendar.timegm()</a>は</p>
+<blockquote>
+<p>関連はありませんが便利な関数で、 time モジュールの gmtime() 関数の戻値のような時間のタプルを受け取り、 1970年を起点とし、POSIX規格のエンコードによるUnixのタイムスタンプに相当する値を返します。実際、 time.gmtime() と timegm() は反対の動作をします。<br />
+バージョン 2.0 で追加.</p>
+</blockquote>
+<p>なんて紹介されていて、昔はのどかだったんだなぁと思いを馳せる次第です。</p>
+<h3>結局どうすればいいのか</h3>
+<p>ベンチ取ってみたら、UTCなdatetimeオブジェクトをcalendar.timegm()にかけるのが一番速かったので、現時刻を表すUNIXTIMEを取得するには、</p>
+<pre><code>calendar.timegm(datetime.utcnow().timetuple())
+</code></pre>
+<p>が最適解でしょう。</p>
+<p>datetimeオブジェクトを変換する場合は何を優先するかによりますが、基本的には安全性を重視して</p>
+<pre><code>calendar.timegm(dt.astimezone(pytz.utc).timetuple())
+</code></pre>
+<p>とawareなdatetimeオブジェクトを確実にUTCにした上でcalendar.timegm()にかけるのがいいでしょう。</p>
+<p>dtが元々UTCの場合はastimezone()は不要ですが、その場合は実行コスト自体が小さくなるのでやはり上記の形式が最適と考えます。</p>
+<p>速度を求める場合は、</p>
+<ul>
+<li>dtがUTCならcalendar.timegm()</li>
+<li>dtがlocalならtime.mktime()</li>
+</ul>
+<p>と変換する時点でdtのTimeZoneを確実に制御してやる必要があります。この場合、datetimeオブジェクト自体もnaiveな方が若干速くなりました。</p>
+<p>datetimeオブジェクトに、tzinfoを考慮してUNIXTIMEを算出してくれるメソッドが生えていればこんなに考えなくていいのに…</p>
+<h3>strftimeでUNIXTIMEを取る</h3>
+<p>ちなみに、プラットフォーム依存なので公式ドキュメントには記載されていませんが、</p>
+<pre><code>&gt;&gt;&gt; datetime.now().strftime('%s')
+'1371683864'
+</code></pre>
+<p>strftimeで%sを使うことでUNIXTIMEが取れます。</p>
+<pre><code>&gt;&gt;&gt; datetime(1970, 1, 1).strftime('%s')
+'-32400'
+&gt;&gt;&gt; datetime(1970, 1, 1, tzinfo=pytz.utc).strftime('%s')
+'-32400'
+</code></pre>
+<p>こいつも手元では、localtimeを前提としたtzinfo非対応の挙動を示しました。検証してないけど、strftime(3)を使っててWindows非対応とかそういうことですかね。</p>
+<p>ベンチ取ったらcalendar.timegm()よりも遅かったので、特に使うメリットは無さそうです。</p>
+<h3>UNIXTIME to datetime</h3>
+<p>次にUNIXTIMEからdatetimeオブジェクトを作る方法です。</p>
+<pre><code>&gt;&gt;&gt; datetime.utcfromtimestamp(1337914193)
+datetime.datetime(2012, 5, 25, 2, 49, 53)
+</code></pre>
+<p>するとnaiveになってしまいます。先のnow()とutcnow()の関係と同様、utcfromtimestamp()ではなくfromtimestamp()にtzinfoを渡すアプローチを採ります。</p>
+<pre><code>&gt;&gt;&gt; datetime.fromtimestamp(1337914193, pytz.utc)
+datetime.datetime(2012, 5, 25, 2, 49, 53, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<h2>datetime.dateもtzinfo非対応</h2>
+<p>年・月・日で構成される、dateオブジェクトは残念ながらTimeZone情報を持つことができません。</p>
+<p>日付だって時差の影響を受けるのに、どうしてこうなっているのでしょう。残念。</p>
+<p>仕方がないので純粋に日付を扱いたい場合も、datetimeオブジェクトを作って時刻関連の情報をreplace()でつぶしています。</p>
+<pre><code>&gt;&gt;&gt; datetime.now(pytz.utc).replace(hour=0,minute=0,second=0,microsecond=0)
+datetime.datetime(2013, 6, 20, 0, 0, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<p>replace漏れがあると悲劇につながりかねないのが不安要素ではある。</p>
+<p>あと、datetimeもtoday()があって日付だけ取得できるように見えるけど、</p>
+<pre><code>&gt;&gt;&gt; datetime.today()
+datetime.datetime(2013, 6, 20, 12, 8, 14, 929174)
+</code></pre>
+<p>時刻も込みで返ってくるので、そういう用途には使えません。</p>
+<blockquote>
+<p>datetime.fromtimestamp(time.time()) と等価です<br />
+<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.today">http://docs.python.jp/2/library/datetime.html#datetime.datetime.today</a></p>
+<p>このメソッドは today() と同様ですが、可能ならば time.time() タイムスタンプを通じて得ることができる、より高い精度で時刻を提供します<br />
+<a href="http://docs.python.jp/2/library/datetime.html#datetime.datetime.now">http://docs.python.jp/2/library/datetime.html#datetime.datetime.now</a></p>
+</blockquote>
+<p>あたりの説明もなんだか微妙…</p>
+<h2>strptimeがTimeZoneを無視する</h2>
+<p>先日「<a href="http://nekoya.github.io/blog/2013/06/10/strptime-ymd/">本当は怖いstrptimeと%Y%m%dの関係</a>」でも登場したstrptimeですが、TimeZoneの情報を与えてもnaiveなdatetimeオブジェクトしか作ってくれません。</p>
+<pre><code>&gt;&gt;&gt; from datetime import datetime
+&gt;&gt;&gt; datetime.strptime('2012-06-18 UTC', '%Y-%m-%d %Z')
+datetime.datetime(2012, 6, 18, 0, 0)
+</code></pre>
+<p>仕方がないので、strptimeの後に続けてtzinfoだけ埋め込んでやります。</p>
+<pre><code>&gt;&gt;&gt; import pytz
+&gt;&gt;&gt; datetime.strptime('2012-06-18 12:31:07', '%Y-%m-%d %H:%M:%S').replace(tzinfo=pytz.utc)
+datetime.datetime(2012, 6, 18, 12, 31, 7, tzinfo=&lt;UTC&gt;)
+</code></pre>
+<h2>まとめ</h2>
+<ul>
+<li>datetimeオブジェクトはawareな状態で扱おう</li>
+<li>UNIXTIMEの扱いはTimeZoneを意識して</li>
+<li>UTCを基準にcalendar.timegmとdatetime.fromtimestampがよさそう</li>
+<li>dateやstrptimeはtzinfo非対応なので要注意</li>
+</ul>
+<p>本稿での検証に使ったベンチマークスクリプトは<a href="https://gist.github.com/nekoya/5819512"><a href="https://gist.github.com/nekoya/5819512">https://gist.github.com/nekoya/5819512</a></a>にまとめておきました。</p>
+<p>1.4GHzのCore2Duoを積んだMacBookAirだと結構な差が付いたけど、SandyBridge Core i7-2600 @3.4GHzで走らせたら3倍ぐらい速くなってあまり気にならなくなってしまった。買い換え時？</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Pythonの日付処理とTimeZone%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/blog/2013/06/21/python-datetime/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

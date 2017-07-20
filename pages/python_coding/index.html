@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>逆引きPython - コーディングスタイル（社内向け） | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/pages/python_coding/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2017-07-21 Fri 05:10</p>
+  
+  <h1>逆引きPython - コーディングスタイル（社内向け）</h1>
+  <div class="post-body"><h2>INDEX</h2>
+<li>コーディングスタイル</li>
+
+<li><a href="/pages/python_file/">ファイル操作</a></li>
+
+<li><a href="/pages/python_date/">日付・時刻</a></li>
+
+<li><a href="/pages/python/">その他</a></li>
+
+<h2>基本方針</h2>
+<p>Pythonの公式ガイドである<a href="http://www.python.org/dev/peps/pep-0008/">PEP8</a>を基本とする（<a href="https://github.com/mumumu/pep8-ja/blob/master/index.rst">mumumu版日本語訳</a>）。</p>
+<p>ただし、全てのファイルの先頭に以下のエンコーディング宣言を入れるものとする。</p>
+<pre class="prettyprint">
+# -*- coding: utf-8 -*-
+</pre>
+
+<p>これは、ソースコード内に日本語を書くことをイレギュラーとして捉えることを抑止するためである。</p>
+<p>「日本語でコメントを入れたいけど、その前にエンコーディング宣言を入れなければ」のような事態が発生することは、現状を鑑みると好ましくないと判断した。</p>
+<p>それ以外の細かい部分は原則として<a href="http://google-styleguide.googlecode.com/svn/trunk/pyguide.html">Google Python Style Guide</a>に従うが、絶対厳守というわけではない。</p>
+<p>明文化しているわけではないが、なんとなくこんな感じでやってる。</p>
+<ol>
+<li>メンバーの理解を損ねない範囲でクラスを直接importしてもよい</li>
+<li>サードパーティライブラリの公式ドキュメントにあれば関数を直接importしてもよい</li>
+</ol>
+<p>1はそろそろ改めることも考えていいかもしれない…</p>
+<p>Google Python Style Guideは<a href="http://works.surgo.jp/translation/pyguide.html">rev 2.29の和訳</a>があるが、2014/01/03現在の最新版はrev 2.59になっているので<a href="https://code.google.com/p/google-styleguide/source/list?path=/trunk/pyguide.html">差分</a>は追いかけたい。</p>
+<h2>表記に関する規約</h2>
+<h3>flake8による文法チェック</h3>
+<p>プロダクトのコードは全て<a href="https://pypi.python.org/pypi/flake8">flake8</a>による文法チェックを通過することとする。</p>
+<p>vimを使っている場合は、<a href="https://github.com/nvie/vim-flake8">vim-flake8</a>でファイルの保存時に随時チェックをかけることを推奨する。</p>
+<p>インストールは適当にやればいいが、例えばプレーンなvim環境だと~/.vim/plugin/でこういう風にやる。</p>
+<pre class="prettyprint">
+pip install flake8
+wget --no-check-certificate https://raw.github.com/nvie/vim-flake8/master/ftplugin/python_flake8.vim
+</pre>
+
+<p>.vimrcに以下を書いておくと保存時に自動チェックが出来る。</p>
+<pre class="prettyprint">
+autocmd BufWrite *.py :call Flake8()
+</pre>
+
+<p>任意で実行したければ以下のようにキーを割り当てれば良い。</p>
+<pre class="prettyprint">
+map <F6> :!inspect_python %<CR>
+" もしくは以下
+autocmd FileType python map <buffer> <F6> :call Flake8()<CR>
+</pre>
+
+<p>チェックしたくないルールは.vimrcに以下のように記述すればOK</p>
+<pre class="prettyprint">
+let g:flake8_ignore="E501,E128,E124,E221"
+</pre>
+
+<p>こういうのを書いておくと、トグルでE501の判定ON/OFFとか出来るのでご自由に。</p>
+<pre class="prettyprint">
+let g:flake8_ignore = ''
+function! Flake8IgnoreToggle()
+    let rule = 'E501'
+    if g:flake8_ignore == rule
+        echo 'flake8 check E501'
+        let g:flake8_ignore = ''
+    else
+        echo 'flake8 ignore E501'
+        let g:flake8_ignore = rule
+    endifendfunction
+nnoremap <Space>5 :<C-u>call Flake8IgnoreToggle()<CR>
+</pre>
+
+<h3>一行の文字数</h3>
+<ul>
+<li><a href="http://drillbits.hatenablog.com/entry/flake8-config">flake8 で Python のコードをチェックするときにオプションを渡すやつ - 祢占堂</a></li>
+</ul>
+<p>PEP8の制約がゆるくなって「チームで合意が取れるなら一行100文字でもいいんじゃねーの」という記述になったようだ。</p>
+<p>今までチーム的には「厳しいけど他に基準がないので80文字に収める、ただしテストコードは破ってもよい」としていたが、この変更を受けて「全てのコードを一行100文字未満に収める」ことを規約とする。</p>
+<p>プロジェクトのルートディレクトリに以下のようなsetup.cfgを置けば、あとはよしなにやってくれる。</p>
+<pre class="prettyprint">
+[flake8]
+max-line-length = 99
+</pre>
+
+<h2>テストコードの書き方</h2>
+<h3>テストランナー</h3>
+<p><a href="https://nose.readthedocs.org/en/latest/testing.html">nose</a>を使う。今のトレンドは<a href="http://pytest.org/latest-ja/">Pytest</a>っぽいけど、乗り換えるだけのメリットが感じられないので今までの路線を継続する。</p>
+<h3>ok_, eq_の禁止</h3>
+<p>今まではこの2つを積極的に利用してきたが、これから書くコードについてはこの2つを使ってはならない。</p>
+<p>Python2.7になってunittest.assertEqualでリストや辞書を比較して違った時の出力がPytestみたいに<a href="https://gist.github.com/nekoya/9522681">親切になった</a>ので、</p>
+<pre class="prettyprint">
+from nose.tools import assert_equal
+</pre>
+
+<p>としてこれを使う。</p>
+<p>ok_についてはこれまでも特に取り上げなかったが、eq_とセットで扱うべきだと考えられるので（どちらもnose/tools/trivial.pyで定義されている）個別のassert系のメソッドを利用することとする。</p>
+<h3>assert_equalのmaxDiff設定</h3>
+<p>長い項目で差異があった場合、<a href="https://gist.github.com/nekoya/9525030">assert_equalが情報を省略する</a>。この挙動は<a href="http://docs.python.jp/2/library/unittest.html#unittest.TestCase.maxDiff">maxDiff</a>で調整できる。</p>
+<pre class="prettyprint">
+import nose.tools
+nose.tools.assert_equal.__self__.maxDiff = None
+</pre>
+
+<p>のように書くと、一切の省略をしないようになる。この値をどうするかはプロジェクトごとに判断すればよい。</p>
+<p>現時点での推奨は、プロジェクトごとにtestutils.pyを持ち、その中でプロジェクト標準の設定値を与えることとする。</p>
+<h3>assertionの順序</h3>
+<p>assert_equalなどの「実値」と「期待値」を比較する場合は、期待値を後に書く。</p>
+<p><a href="http://docs.python.jp/2/library/unittest.html#unittest.TestCase.assertEqual">公式ドキュメント</a>では、</p>
+<pre class="prettyprint">
+assertEqual(first, second, msg=None)
+</pre>
+
+<p>first, secondとなっていて、順序については記載がない。</p>
+<p><a href="http://junit.sourceforge.net/javadoc/org/junit/Assert.html">JUnitでは期待値が先</a>になっていて、Javaのバックグラウンドがある人はこちらを自然なものとして捉えている。<a href="http://phpunit.de/manual/3.7/ja/writing-tests-for-phpunit.html#writing-tests-for-phpunit.assertions.assertEquals">phpunitも同様</a>である。</p>
+<p>Perlでは<a href="http://search.cpan.org/~rjbs/Test-Simple-1.001002/lib/Test/More.pm">Test::More</a>がgot, expectedの順で書くことを標準としている。</p>
+<p>Rubyの<a href="http://rspec.info/">RSpec</a>は文法そのものが違うが、実値に対して「XXであるべき」のような記述をするので期待値が後のパターンと考えられる。</p>
+<p>unittestのドキュメントにはfirst, secondとしか書いていないが、ドキュメントのサンプルコードが全て期待値を後に書いているので、それに従うことにする。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=逆引きPython - コーディングスタイル（社内向け）%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/pages/python_coding/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

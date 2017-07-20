@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>現役勢だけど自作サーバ同窓会に行ってきました | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/blog/2014/03/07/jisakuserver/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2014-03-07 Fri 09:05</p>
+  
+  <h1>現役勢だけど自作サーバ同窓会に行ってきました</h1>
+  <div class="post-body"><p>「そもそも現役バリバリだし、前回のカンファレンスの同窓会だし」とか思ってたら、いつの間にかすごい規模の公開イベントになっていた<a href="http://atnd.org/events/47968">自作サーバー同窓会</a>におじゃましてきました。主催の<a href="https://twitter.com/stanaka">@stanaka</a>さん、ありがとうございました。ご挨拶できなかった…</p>
+<p>弊社のインフラを支える<a href="https://twitter.com/SatchanP">@SatchanP</a>の当日のスライドと振り返りがこちらにございます。</p>
+<ul>
+<li><a href="http://takyaku.com/?p=402">自作サーバ同窓会で話をしてきました</a></li>
+</ul>
+<p>我々としては<a href="https://twitter.com/SatchanP">@SatchanP</a>という優秀なコンテンツをインターネッツに提供できただけで満足です。</p>
+<p>当日のトークでは物理面にフォーカスしていたので、もう少し上のレイヤにも軽く触れておきたいと思います。</p>
+<h2>調達の歴史</h2>
+<p>弊社は2009年創業で、ちょうど自作サーバカンファレンスがあった年にサービスを開始しました。2007年頃にも自作サーバでサービスを回していたこともあって、まったく抵抗なくやれたし業界的にも活気がありました。</p>
+<p>その後、Core i世代に移行してしばらく経つと自作PC市場の衰退もあり、コストメリットが出しにくくなったり、M/BもGPU統合で自作サーバに適合するものは限られてしまい、調達が難しくなってきました。</p>
+<p>この時期に「海外から直接仕入れる」というソリューションが導入され、再び大きなコストメリットを得られたことが後の展開に多大な影響をもたらしました。</p>
+<p><img src="/images/2014-03-07-jisakuserver/dynatron_fans.jpg" alt="CPUファン100個ほど" style="max-width:100%"></p>
+<p>みんな大好きDynatronのCPUファンですね。100個ぐらいあります。さすがにこのまま届いたわけではなく、2箱ぐらいに分かれて梱包されていたのをまとめたような記憶があります。</p>
+<p><img src="/images/2014-03-07-jisakuserver/utr1.jpg" alt="UTR1" style="max-width:100%"></p>
+<p>除雪機器としても有能なUTR1の山。これは国内仕入れだけど、インパクトがあったので残ってた写真おいときますね。2012年のものみたいです。</p>
+<p>2010年頃に使ってたM/Bが非常に優秀で今でもこき使ってたり、その後の世代交代で入手性が再び上がったりみたいな話もあるのですが、それはまた別の機会に。</p>
+<p>コスト面でのメリットを出すのが難しくなってきたのはこの半年〜1年ぐらいでしょうか。かつてのタイの洪水はSSDへの移行でほとんど吸収できたのですが、円安とメモリ価格の高騰はかなり大きなインパクトがあります。</p>
+<h2>自作サーバの限界</h2>
+<blockquote class="twitter-tweet" lang="en"><p>自作サーバの限界はそれを作り、回し、責任を持つ人間がスケールしないことだと思ってます <a href="https://twitter.com/search?q=%23jisakuserver&amp;src=hash">#jisakuserver</a></p>&mdash; nekoya (@nekoya) <a href="https://twitter.com/nekoya/statuses/441186527637278721">March 5, 2014</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>弊社にはこれを当たり前にこなすチームがいるのでうまく回っていますが、サービス規模の増大とともにそろそろ難しくなってきました。</p>
+<p>現在、稼働中の自作サーバが約200台で、今までの累計だと300台ぐらいでしょうか。台数としてはさくらインターネットさんとは比べるべくもありませんが、それなりの規模ではあると思います。</p>
+<p>ちょうど当日も話題になった「新人に自作サーバを教えるのか」という課題に改めて向き合っているところですね。</p>
+<p><img src="/images/2014-03-07-jisakuserver/cpu_socket.jpg" alt="ピン曲がってる…" style="max-width:100%"></p>
+<p>不慣れな人間が自作して、CPUソケットのピンが曲がってしまって、それをがんばって直したりしてると人件費でﾄｰﾀﾙｺｽﾄｶﾞｰなんてことにもなりがちです。</p>
+<p>調達から制作、運用、メンテナンスまでを全てを十分なレベルでこなせる人材を複数確保するのは確かに簡単ではありません。それを何年も維持継続できているのは幸せなことなのでしょう。</p>
+<p>知識としては持っておいた方がいいし、そこで戦えない人間にメーカー製のサーバを渡してもスペックを引き出せないという意味では「自作サーバはあり」だというのが自分のスタンスです。ただ、それと事業戦略上の選択とはまた別の話。</p>
+<h2>自作サーバは「選択肢のひとつ」</h2>
+<p>実際ほとんどのWebサービスは何も考えずにクラウドで回せばいいと思います。</p>
+<p>けれども「自作の時代は終わった」とか「もうメリットは何一つない」と自分で検証もせずに切り捨てるのは、「クラウドなんか信用できないからダメだ」と言ってるのと同じことです。</p>
+<p>一定の条件下では今でも十分なメリットが得られますし（だからやってるんですが）、今後も選択肢の一つとして保持し続けるでしょう。</p>
+<p>大切なのは自分たちのサービスの特性を知り、そこにどう向き合っていくかを常に問い続ける姿勢ではないでしょうか。</p>
+<p><img src="/images/2014-03-07-jisakuserver/servers.jpg" alt="搬出を待つ第一世代のサーバたち" style="max-width:100%"></p>
+<p>なお、弊社では変態インフラエンジニアだけでなくPythonで広告配信サービスを作りたいエンジニアさんも絶賛募集中ですので、@nekoyaまで気軽にお声がけください。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=現役勢だけど自作サーバ同窓会に行ってきました%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/blog/2014/03/07/jisakuserver/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>

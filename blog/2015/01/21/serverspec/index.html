@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>Serverspec読みました | Nekoya press</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css" />
+<link rel="stylesheet/less" type="text/css" href="/css/styles.less" />
+<link href="/atom.xml" rel="alternate" title="Nekoya press" type="application/atom+xml" />
+
+<link rel="canonical" href="http://nekoya.github.io/blog/2015/01/21/serverspec/" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title"><a href="/">Nekoya Press</a></h1>
+
+    <div class="row nav">
+      <div class="col-xs-4"><a href="/blog/archives/">archives</a></div>
+      <div class="col-xs-4"><a href="/pages/">pages</a></div>
+      <div class="col-xs-4"><a href="https://twitter.com/nekoya">@nekoya</a></div>
+    </div>
+</div>
+
+<div id="content" class="container">
+
+<div class="post">
+  
+  <p class="posted-at">2015-01-21 Wed 08:51</p>
+  
+  <h1>Serverspec読みました</h1>
+  <div class="post-body"><p>皆が待ってたServerspec本が発売されました。オライリーから電子版で購入。</p>
+<p><a href="http://www.oreilly.co.jp/books/9784873117096/"><a href="http://www.oreilly.co.jp/books/9784873117096/">http://www.oreilly.co.jp/books/9784873117096/</a></a></p>
+<p>実のところServerspecはずっと気にはしつつも、横目で見るだけで使いどころを決めかねていました。</p>
+<p>自分のサーバ管理のスタイルは、</p>
+<ul>
+<li>cobblerでOS入れる</li>
+<li>Puppetで構成管理</li>
+<li>オペレーションはfabric（以前はcapistrano）</li>
+<li>監視にNagios, CloudForecast</li>
+</ul>
+<p>というもので、<a href="http://gihyo.jp/magazine/SD/archive/2007/200712">2007年のSofeware Design</a>でmizzyさんの記事を読んでPuppetを使い始めて以来、構成管理はずっとPuppetです。</p>
+<p>モジュールは全て自作で、年単位でメンテしているモジュール群を投入しつつ、必要なものをその都度追加していくスタンス。</p>
+<p>Puppetサーバを起動するモデルではなく、--noopでdiffを確認してから必要な時だけマニフェストを適用しています。</p>
+<p>適用後のサーバの挙動に問題があれば監視からアラートが上がるので、実質的にそれがサーバの受け入れテストとなっています。</p>
+<p>現状のサーバ運用であればServerspecの必要性もあまり高くはないのですが、「マニフェストを更新するPull Requestがレビューを経てmergeされたけど実は間違っていた」みたいなこともあるので、そこをCIしたいとは思いつつ、メンテナンス対象のコードが増えることに二の足を踏んでいました。</p>
+<p>特にテストしたい部分としてはNagios等の監視ではカバー出来ない部分、例えば</p>
+<ul>
+<li>NTPミラーサーバの設定</li>
+<li>sysctlによるカーネルパラメータの更新</li>
+<li>特定プロセスのulimit</li>
+</ul>
+<p>といった細かいものが多かったのも難しい部分です。</p>
+<p>ここにServerspecを投入するのも本筋ではないよなぁなどと考えながらずるずると今日まで過ごしていました。</p>
+<p>ところが、こうした事情がdockerによって大きく変わりつつあり、いよいよ自分にとってのServerspecの必要性が一気に高まってきました。</p>
+<p>PuppetやChefなどの構成管理ツールは、そもそもが「サーバのあるべき状態」を定義するためのもので、安定した土台の上で生きていく分にはServerspecの恩恵はそこまで大きくないでしょう。そこは本書にもある通りです。</p>
+<p>一方でDockerfileは通常のシェルスクリプトのように「何をするか」を記述していくため、それらよりも簡単に扱える反面、定義的に書くものではありません。</p>
+<p>いくらシンプルなコンテナであっても、そのコンテナが正しく動作することに自信を持つのは難しくなってきます。</p>
+<p>「dockerコンテナを本番環境に投入するのにインフラをCIしないのは、テストコードを書かないのと同じ」と言い切ってもいいかもしれません。</p>
+<p>というわけで、今年は積極的にインフラのCIを回していく所存です。</p>
+<p>また、本書は周辺情報も豊富です。中でもNagiosとの連携は個人的に非常に可能性を感じました。</p>
+<p>Nagiosは台数や監視項目が増えてくると、ひとつの障害で多数のアラートが飛ぶ状況に陥りがちです。</p>
+<p>現在はそれを回避するために<a href="http://my-plugin.de/wiki/projects/check_multi/start">check_multi</a>を利用して、複数のコマンドをひとつの監視項目にまとめています。</p>
+<p>例えば、Webアプリケーションの監視は</p>
+<ul>
+<li><code>check_tcp</code>によるポート監視</li>
+<li>upstartやdaemontoolsのサービスstatusの監視</li>
+</ul>
+<p>という監視を個別に登録すると、このアプリケーションを起点とするアラートが2つ上がる場合がありますが、check_multiを使うことでこの通知を集約できます。</p>
+<p>check_multiの難点としては、コマンドそのものが複雑化するため、監視が正常に回っていることに自信を持ちづらいというものがあります。</p>
+<p>ここをServerspecに置き換えることで、開発段階からサーバ設定とテスト内容を両輪で育てていく体制が作れるのではないかと目論んでいます。</p>
+<p>Pythonのfabricと連携するenvassertも本書で知りました。</p>
+<p><a href="http://tdoc.info/blog/2013/05/14/envassert.html"><a href="http://tdoc.info/blog/2013/05/14/envassert.html">http://tdoc.info/blog/2013/05/14/envassert.html</a></a></p>
+<p>本番環境のオペレーションにはfabricを使っていますが、開発時には使っていないので自分の環境に合うかは分かりませんが、こちらも興味深いプロダクトです。</p>
+<p>他にも本書の大きなポイントは、あちこちで述べられているように、Serverspecの背景となる思想や実装の理由などが切々と語られているところにあります。</p>
+<p>ある意味Rubyっぽくないその思想には大いに共感するとともに、そうしたスタンスでRubyと付き合うのもありなのだと本書は改めて気付かせてくれます。</p>
+<p>全体的に非常に読みやすく、実用書としても読み物としても大いに楽しめるので、Serverspecを使う人だけでなく全てのWebエンジニアに強くおすすめしたい一冊です。</p></div>
+  <div class="sharing">
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-counter" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Serverspec読みました%7CNekoya press">Tweet</a>
+  <div class="fb-like" data-href="http://nekoya.github.io/blog/2015/01/21/serverspec/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+</div>
+</div>
+
+</div>
+
+<div class="container">
+  <p class="credit">nekoya.github.io</p>
+</div>
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+      t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=365970713496023";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35230565-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
